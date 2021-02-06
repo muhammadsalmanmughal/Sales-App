@@ -1,47 +1,47 @@
-import React, {useState}  from 'react'
-import { registerUser,loginUser } from '../../config/Firebase/firebase';
+import React, { useState } from 'react'
+import { loginUser } from '../../config/Firebase/firebase';
 import { useHistory } from "react-router-dom";
-import { toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
-
+import 'antd/dist/antd.css';
+import { message } from 'antd';
 import {
     LoginContainer,
     LoginDiv,
     LoginHeading,
     LoginForm,
     UserEmailTextbox,
-    UserNameTextbox,
     PasswordTextbox,
     PrimaryButton,
-    SecondryButton,
-    SignupCheckbox,
     TextWelcome,
     Paragraph,
-    BreakLine
+    BreakLine,
+    Link
 } from './style/index'
 
-export default function Login(){
-    toast.configure();
+export default function Login() {
     const history = useHistory();
-    console.log('history', history)
-    const[email , setUserEmail] = useState();
-    const[password , setPassword] = useState();
+    const [email, setUserEmail] = useState();
+    const [password, setPassword] = useState();
+    const [errorMessage, setErrorMessage] = useState(false)
 
- const onLogin = async () =>{
-    try{
-        await loginUser(email, password)
-        history.push('/dashboard');
-    }catch(error){
-        console.log(error.message)  
-        toast.error(error.message, {
-            position: toast.POSITION.TOP_RIGHT,
-            autoClose: 4000,
-            hideProgressBar: true,
-          });
+    if (localStorage.getItem('Authorization')) {
+        history.replace('/home')
+        // return
     }
 
-}
-    return(
+    const onLogin = () => {
+        if (!email || !password) {
+            message.error('Enter valid credentials')
+        } else {
+            loginUser(email, password)
+                .then((res) => {
+                    // let token = res.auth.
+                    let token = 'dummy_token'
+                    localStorage.setItem('Authorization', token)
+                    history.replace('/home')
+                });
+        }
+    }
+    return (
         <div>
             <LoginContainer>
                 <LoginDiv>
@@ -49,27 +49,27 @@ export default function Login(){
                         Welcome
                     </TextWelcome>
                     <LoginHeading>
-                        Login to continue to Sales-App
+                        Login to Sales-App
                     </LoginHeading>
                     <LoginForm>
                         <UserEmailTextbox
-                        type='text'
-                        placeholder='Email'
-                        onChange={e => setUserEmail(e.target.value)}
+                            type='text'
+                            placeholder='Email'
+                            onChange={e => setUserEmail(e.target.value)}
                         />
-                    <PasswordTextbox 
-                    type='password'
-                    placeholder='Password'
-                    onChange={e => setPassword(e.target.value)}
-                    />
-                   <PrimaryButton onClick={onLogin}>Continue</PrimaryButton> 
+                        <PasswordTextbox
+                            type='password'
+                            placeholder='Password'
+                            onChange={e => setPassword(e.target.value)}
+                        />
+                        <PrimaryButton onClick={onLogin}>Continue</PrimaryButton>
                     </LoginForm>
-                    <BreakLine/>
+                    <BreakLine />
                     <Paragraph>
-                   Don't have an account?  
-                   <a onClick={() => history.push("/signup")}>
-                       SignUp
-                   </a>
+                        Don't have an account?
+                   <Link onClick={() => history.push("/signup")}>
+                            SignUp
+                   </Link>
                     </Paragraph>
                 </LoginDiv>
             </LoginContainer>

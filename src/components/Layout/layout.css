@@ -1,0 +1,9 @@
+.main{
+    display: flex;
+
+}
+.sidebar{}
+.content{
+    background-color: red;
+    width: 100%;
+}

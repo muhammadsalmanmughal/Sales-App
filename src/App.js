@@ -1,10 +1,7 @@
-import React,{ useState, useEffect } from 'react'
+import React, { useState, useEffect } from 'react'
 import './App.css';
-import Login from './components/Login/Login'
 import Router from './config/Route/index'
-import {firebase} from './config/Firebase/firebase'
-import Navbar from './components/Navbar/navbar'
-
+import firebase from 'firebase'
 function App() {
   const [isLoggedIn, setLoggedIn] = useState(true);
   const [isLoading, setIsLoading] = useState(true);
@@ -19,13 +16,13 @@ function App() {
   };
   return (
     <div>
-      {isLoggedIn ? <Navbar/> : ''}
+      {/* {isLoggedIn ? <Layout /> : ''} */}
       <Router
         isLoggedIn={isLoggedIn}
         isLoading={isLoading}
         uid={isLoggedIn.uid}
       />
-      {console.log('is logged in---->', isLoggedIn)}
+
     </div>
   );
 }

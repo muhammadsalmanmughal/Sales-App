@@ -19,7 +19,7 @@ display: flex;
 flex-direction: column;
 justify-content: center;
 align-items: center;
-background-color: #70a2ff;
+background-color: #29b6f6;
 margin-top: 120px;
 transition: 1s;
 ${media.desktop`
@@ -45,7 +45,7 @@ export const TextWelcome = styled.h1`
 font-family: 'Quicksand', sans-serif;
 color: white;
 `
-export const LoginHeading = styled.h3`
+export const LoginHeading = styled.h5`
 font-family: 'Quicksand', sans-serif;
 color: white;
 `
@@ -71,7 +71,7 @@ width: 100%;
   &::placeholder{
     font-size: 16px;
     line-height: 19px;
-    color: black;
+    color: #000;
   }
 `
 export const PasswordTextbox = styled(UserNameTextbox)`
@@ -96,7 +96,7 @@ color: #70a2ff;
 transition: .5s;
 font-weight: bold;
 &:hover{
-  background-color: #70a2ff;
+  background-color: #29b6f6;
   color: white;
   border: 1px solid #fff;
 }
@@ -114,4 +114,13 @@ export const BreakLine = styled.div`
   height: 0;
   border: 1px solid #fff;
   margin-top: 25px;
+`
+export const Link = styled.a`
+color: #e0f2f1;
+margin-left: 10px;
+cursor: pointer;
+tranistion: 1s;
+&:hover{
+  border-bottom: 1px solid #e0f2f1;
+}
 `
