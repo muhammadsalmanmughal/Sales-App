@@ -3,9 +3,11 @@ import UserReducer from './UserReducer'
 //Initial State
 const UserInitialState = {
     userData: {
-        name: 'M.Salman',
+        firstname: 'Muhammad',
+        lastname: 'Salman',
         email: 'muhammadsalman0403@gmail.com',
-        id: '123456789abcdefgh'
+        id: '123456789abcdefgh',
+        url: 'https://static.topyaps.com/wp-content/uploads/2018/11/hera-pheri.jpeg'
     }
 }
 
