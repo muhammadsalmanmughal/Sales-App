@@ -70,7 +70,7 @@ const getUserData = () => {
 
 }
 
-const createVendor = (vendorDetails) => {
+const createVendor = (vendorDetails, vendorId) => {
   const {
     companyName,
     ownerFirstName,

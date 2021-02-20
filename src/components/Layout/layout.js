@@ -6,6 +6,7 @@ import Header from '../Header/header'
 import Dashboard from '../Dashboard/dashboard'
 import Vendor from '../Vendor/index'
 import UserProfile from '../UserProfile/userProfile'
+import Customer from '../Cutomer/cutomer'
 import './layout.css'
 
 function Layout() {
@@ -28,6 +29,7 @@ function Layout() {
                         <Route path="/home/dashboard" component={Dashboard} />
                         <Route path="/home/user-profile" component={UserProfile} />
                         <Route path="/home/vendor" component={Vendor} />
+                        <Route path="/home/customer" component={Customer} />
                     </Switch>
                 </div>
                 {/* </Router> */}

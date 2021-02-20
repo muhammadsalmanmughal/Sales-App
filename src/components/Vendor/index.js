@@ -1,9 +1,10 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import { useFormik } from 'formik'
+import { v4 as uuidv4 } from 'uuid';
 import { validationSchema } from '../YupSchema/schema'
-import {createVendor} from '../../Utils/utils'
+import { createVendor } from '../../Utils/utils'
 import { Label } from '../Textbox/style/index'
-import { VendorMainDiv, FormDiv, } from './style/index'
+import { VendorMainDiv, FormDiv, VendorIdDiv, VendorIdSpan } from './style/index'
 import ErrorText from '../FormError/formError'
 import {
     Divider,
@@ -12,8 +13,10 @@ import {
     Col,
     // Form,
     Input,
+    Tooltip,
     Button
 } from 'antd';
+import AllVendors from '../AllVendors/allVendors';
 const initialValues = {
     companyName: '',
     ownerFirstName: '',
@@ -25,10 +28,10 @@ const initialValues = {
     city: '',
     postalCode: ''
 }
-const onSubmit = values => {
+const onSubmit = (values, vendorId) => {
     console.log('values from function', values);
     console.log('postal code====>', values.companyName);
-    createVendor(values)
+    createVendor(values, vendorId)
 }
 // const validate = values => {
 //     const errors = {}
@@ -77,6 +80,16 @@ const onSubmit = values => {
 //     return errors
 // }
 const Vendor = () => {
+
+    const [vendorId, setVendorId] = useState('')
+
+    const venId = () => {
+        setVendorId(uuidv4())
+    }
+
+    useEffect(() => {
+        venId()
+    }, [])
     const formik = useFormik({
         initialValues,
         onSubmit,
@@ -95,10 +108,17 @@ const Vendor = () => {
                 <TabPane tab="Create Vendor" key="1">
                     <VendorMainDiv>
                         <form
-                         onSubmit={formik.handleSubmit}
+                            onSubmit={formik.handleSubmit}
                         >
                             <FormDiv>
-
+                                <VendorIdDiv >
+                                    <Label>
+                                        <Tooltip placement="topLeft" title='Generate automatically for new vendor'>
+                                            <VendorIdSpan>Vendor ID:</VendorIdSpan>
+                                            {vendorId}
+                                        </Tooltip>
+                                    </Label>
+                                </VendorIdDiv>
                                 <Row gutter={[10, 10]}>
                                     <Col xs={24} sm={8}>
                                         <Label>
@@ -172,7 +192,7 @@ const Vendor = () => {
                                                 // onBlur={formik.handleBlur}
                                                 // onChange={formik.handleChange}
                                                 {...formik.getFieldProps('phone')}
-                                                // max={11}
+                                            // max={11}
                                             />
                                         </Label>
                                         {formik.touched.phone && formik.errors.phone
@@ -244,8 +264,8 @@ const Vendor = () => {
                         </form>
                     </VendorMainDiv>
                 </TabPane>
-                <TabPane tab="Tab 2" key="2">
-
+                <TabPane tab="All Vendors" key="2">
+                    <AllVendors />
 
                 </TabPane>
 
