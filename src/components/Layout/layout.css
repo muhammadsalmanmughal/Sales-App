@@ -4,5 +4,8 @@
 }
 .sidebar{}
 .content{
+    font-family: 'Quicksand', sans-serif;
     width: 100%;
+    margin: 15px;
+    padding: 10px;
 }

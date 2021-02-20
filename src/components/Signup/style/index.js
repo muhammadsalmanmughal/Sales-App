@@ -21,6 +21,7 @@ justify-content: center;
 align-items: center;
 background-color: #29b6f6;
 margin-top: 120px;
+overflow: hidden;
 transition: 1s;
 ${media.desktop`
 margin-top: 117px;
@@ -123,4 +124,7 @@ tranistion: 1s;
 &:hover{
   border-bottom: 1px solid #e0f2f1;
 }
+`
+export const LoadingSpan = styled.span`
+margin-left: 10px;
 `

@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { loginUser } from '../../config/Firebase/firebase';
+import { loginUser } from '../../Utils/utils';
 import { useHistory } from "react-router-dom";
 import 'antd/dist/antd.css';
 import { message } from 'antd';

@@ -1,5 +1,5 @@
 import Dashboard from '../../components/Dashboard/dashboard'
-import RequestForQuatation from '../../components/RequestForQuatation/requestForQuatation'
+import Vendor from '../../components/Vendor/index'
 
 const routes = [
     {
@@ -9,10 +9,10 @@ const routes = [
         component: Dashboard
     },
     {
-        path: '/requestforquataion',
+        path: '/vendor',
         // sidebar: true,
-        name: 'RequestForQuatation',
-        component: RequestForQuatation
+        name: 'Vendor',
+        component: Vendor
     }
 ]
 export default routes

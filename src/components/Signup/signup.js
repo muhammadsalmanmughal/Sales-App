@@ -1,8 +1,7 @@
 import React, { useState } from 'react'
-import { createUser } from '../../config/Firebase/firebase';
+import { createUser } from '../../Utils/utils';
 import { useHistory } from "react-router-dom";
-
-
+import {Spin, Divider, message} from "antd";
 import {
     LoginContainer,
     LoginDiv,
@@ -14,16 +13,17 @@ import {
     SecondryButton,
     TextWelcome,
     Paragraph,
-    BreakLine,
+    LoadingSpan,
     Link
 } from './style/index'
 
 export default function SignUp() {
     const history = useHistory();
-    // console.log('history', history)
     const [email, setUserEmail] = useState('');
     const [name, setUserName] = useState('');
     const [password, setPassword] = useState('');
+    const [isLoading, setLoading] = useState(false)
+    const [img, setImg] = useState(null);
 
     if (localStorage.getItem('Authorization')) {
         history.replace('/home')
@@ -32,11 +32,19 @@ export default function SignUp() {
 
     const signUp = async () => {
         try {
-            await createUser(email, password, name);
+            await createUser(email, password, name, img)
+            .then(()=>{
+                setLoading(true)
+                history.replace('/home')
+            })
         } catch (error) {
             console.log(error)
+            message.error(error.message)
         }
     }
+    const onImageUpload = (e) => {
+        setImg(e.target.files[0]);
+    };
     return (
         <div>
             <LoginContainer>
@@ -47,6 +55,7 @@ export default function SignUp() {
                     <LoginHeading>
                         Create an account
                     </LoginHeading>
+                    
                     <LoginForm>
                         <UserNameTextbox
                             type='text'
@@ -63,16 +72,26 @@ export default function SignUp() {
                             placeholder='Password'
                             onChange={e => setPassword(e.target.value)}
                         />
-                        <SecondryButton onClick={signUp}>Signup</SecondryButton>
+                        <div className="input-field  col s12">
+                            <input type="file" multiple onChange={onImageUpload} />
+                        </div>
+                        <SecondryButton 
+                        onClick={signUp}>
+                            Signup
+                            <LoadingSpan>
+                            {isLoading ? <Spin/> : ''}
+                            </LoadingSpan>
+                            </SecondryButton>
 
                     </LoginForm>
-                    <BreakLine />
+                    <Divider />
                     <Paragraph>
                         Already have an account
                     <Link onClick={() => history.push('./')}>Login</Link>
                     </Paragraph>
                 </LoginDiv>
             </LoginContainer>
+            
         </div>
     )
 }

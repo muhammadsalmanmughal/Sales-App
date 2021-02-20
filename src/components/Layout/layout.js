@@ -4,7 +4,8 @@ import { UserDataProvider } from '../../context/UserContext/UserContext'
 import SideBar from '../Sidebar/sidebar'
 import Header from '../Header/header'
 import Dashboard from '../Dashboard/dashboard'
-import RequestForQuatation from '../RequestForQuatation/requestForQuatation'
+import Vendor from '../Vendor/index'
+import UserProfile from '../UserProfile/userProfile'
 import './layout.css'
 
 function Layout() {
@@ -24,8 +25,9 @@ function Layout() {
                 </div>
                 <div className='content'>
                     <Switch>
-                        <Route path="/home/requestforquatation" component={RequestForQuatation} />
                         <Route path="/home/dashboard" component={Dashboard} />
+                        <Route path="/home/user-profile" component={UserProfile} />
+                        <Route path="/home/vendor" component={Vendor} />
                     </Switch>
                 </div>
                 {/* </Router> */}

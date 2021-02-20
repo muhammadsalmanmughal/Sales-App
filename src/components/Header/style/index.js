@@ -7,6 +7,7 @@ justify-content: space-between;
 align-items: center;
 height: 50px;
 border-bottom: 1px solid gray;
+box-shadow: 5px 2px 15px #888888;
 `
 export const Logo = styled.img`
 width:50px;
@@ -14,13 +15,6 @@ height: 50px;
 margin-left: 10px;
 // justify-content: flex-start;
 `
-// export const Container = styled.div`
-// width:80%;
-// background-color: green;
-// display: flex;
-// height: 100%;
-// align-items: center;
-// `
 export const User = styled.div`
 display: flex;
 align-items: center;
@@ -36,14 +30,15 @@ text-align: center;
 justify-content: center;
 align-items: center;
 margin-top: 10px;
-max-width:400px;
+width:250px;
+overflow: hidden;
 padding:12px;
 `
-export const HeadingFour = styled.h4`
+export const UsersFirstName = styled.h4`
 margin-top:15px;
 word-spacing:1px;
 `
-export const Paragraph = styled.p`
+export const UsersEmail = styled.p`
 
 `
 export const Span = styled.span`

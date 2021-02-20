@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react'
 import './App.css';
 import Router from './config/Route/index'
 import firebase from 'firebase'
+
 function App() {
   const [isLoggedIn, setLoggedIn] = useState(true);
   const [isLoading, setIsLoading] = useState(true);
