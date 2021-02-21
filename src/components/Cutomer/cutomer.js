@@ -2,9 +2,11 @@ import React, { useState, useEffect } from 'react'
 import { useFormik } from 'formik'
 import { v4 as uuidv4 } from 'uuid';
 import { Label } from '../Textbox/style/index'
-import { VendorMainDiv, FormDiv, VendorIdDiv, VendorIdSpan, EmptyDiv } from '../Vendor/style/index'
 import { validationSchema } from './validationSchema'
+import {createNewCustomer} from '../../Utils/utils'
 import ErrorText from '../FormError/formError'
+import AllCustomers from '../AllCustomers/allCustomers';
+import { VendorMainDiv, FormDiv, VendorIdDiv, VendorIdSpan, EmptyDiv } from '../Vendor/style/index'
 import {
     Divider,
     Tabs,
@@ -16,6 +18,7 @@ import {
 } from 'antd';
 
 const { TabPane } = Tabs;
+
 
 const CreateCustomer = () => {
 
@@ -29,13 +32,14 @@ const CreateCustomer = () => {
         cusId()
     }, [])
 
-    const onSubmit = (values, onSubmitProps) => {
-        // console.log('values from function', values);
-        // console.log('postal code====>', values.companyName);
-        // console.log('vendor id from cubmit function', vendorId);
-        // createNewCustomer(values, customerId)
-        onSubmitProps.resetForm()
-    }
+    
+const onSubmit = (values, onSubmitProps) => {
+    // console.log('values from function', values);
+    // console.log('postal code====>', values.companyName);
+    // console.log('vendor id from cubmit function', vendorId);
+    createNewCustomer(values, customerId)
+    onSubmitProps.resetForm()
+}
 
     const initialValues = {
         businessName: '',
@@ -53,12 +57,14 @@ const CreateCustomer = () => {
         initialValues,
         onSubmit,
         validationSchema,
-        // cusId
+        cusId
     })
 
     function callback(key) {
         console.log(key);
     }
+    console.log('Formik ', formik);
+
     return (
         <div>
             <h1>Customer</h1>
@@ -256,13 +262,10 @@ const CreateCustomer = () => {
                         </form>
                     </VendorMainDiv>
 
-
-
-
                 </TabPane>
 
                 <TabPane tab="All Customer" key="2">
-                    Content of Tab Pane 2
+                  <AllCustomers/>
              </TabPane>
 
             </Tabs>

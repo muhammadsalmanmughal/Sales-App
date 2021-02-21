@@ -40,6 +40,24 @@ const createUser = async (email, password, name, img) => {
   }
 }
 
+const loginUser = async (email, password) => {
+
+  return await firebase.auth()
+    .signInWithEmailAndPassword(email, password)
+    .then((u) => {
+      const userId = u.user.uid
+      console.log('login u', u.user.uid)
+      localStorage.setItem('userId', userId)
+      message.success('WelCome')
+      // localStorage.setItem("userID", userId);
+    })
+    .catch(function (error) {
+      console.log(error);
+      message.error(error.message)
+      throw error
+    });
+
+};
 
 const getUserData = () => {
   const userID = localStorage.getItem('userId')
@@ -104,29 +122,48 @@ const createVendor = (vendorDetails, vendorId) => {
 
 }
 
+const createNewCustomer = (customerDetails, customerId) => {
+  console.log(customerDetails)
+  console.log(customerId);
 
+  const {
+    businessName,
+    billToAddress,
+    phone,
+    email,
+    city,
+    responsibleName,
+    responsiblePhone,
+    secondaryPhone,
+    postalCode
+  } = customerDetails
 
-const loginUser = async (email, password) => {
+  // console.log(businessName, ownerFirstName, ownerLastName, billToAddress, phone, email, city, postalCode);
 
-  return await firebase.auth()
-    .signInWithEmailAndPassword(email, password)
-    .then((u) => {
-      const userId = u.user.uid
-      console.log('login u', u.user.uid)
-      localStorage.setItem('userId', userId)
-      message.success('WelCome')
-      // localStorage.setItem("userID", userId);
-    })
-    .catch(function (error) {
-      console.log(error);
+  firebase.firestore().collection("Customer").doc(customerId).set({
+    businessName,
+    billToAddress,
+    phone,
+    email,
+    city,
+    responsibleName,
+    responsiblePhone,
+    secondaryPhone,
+    postalCode,
+    customerId
+  })
+    .then(() => {
+      message.success('Customer Created')
+    }).catch((error) => {
+      console.log('Error', error.message)
       message.error(error.message)
-      throw error
-    });
+    })
+}
 
-};
 export {
   createUser,
   loginUser,
   getUserData,
-  createVendor
+  createVendor,
+  createNewCustomer
 }

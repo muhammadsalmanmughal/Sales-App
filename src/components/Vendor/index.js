@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react'
 import { useFormik } from 'formik'
 import { v4 as uuidv4 } from 'uuid';
-import { validationSchema } from '../YupSchema/schema'
+import { validationSchema } from './schema'
 import { createVendor } from '../../Utils/utils'
 import { Label } from '../Textbox/style/index'
 import { VendorMainDiv, FormDiv, VendorIdDiv, VendorIdSpan } from './style/index'
 import ErrorText from '../FormError/formError'
+import AllVendors from '../AllVendors/allVendors';
 import {
     Divider,
     Tabs,
@@ -16,7 +17,6 @@ import {
     Tooltip,
     Button
 } from 'antd';
-import AllVendors from '../AllVendors/allVendors';
 const initialValues = {
     companyName: '',
     ownerFirstName: '',
@@ -28,10 +28,11 @@ const initialValues = {
     city: '',
     postalCode: ''
 }
-const onSubmit = (values, vendorId) => {
+const onSubmit = (values, vendorId ,onSubmitProps) => {
     console.log('values from function', values);
     console.log('postal code====>', values.companyName);
     createVendor(values, vendorId)
+    onSubmitProps.resetForm()
 }
 // const validate = values => {
 //     const errors = {}
