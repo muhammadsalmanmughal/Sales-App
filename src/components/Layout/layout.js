@@ -7,6 +7,10 @@ import Dashboard from '../Dashboard/dashboard'
 import Vendor from '../Vendor/index'
 import UserProfile from '../UserProfile/userProfile'
 import Customer from '../Cutomer/cutomer'
+import PurchaseRequisition from '../PurchaseRequisition/purchaseRequisition'
+import RFQ from '../RFQ/rfq'
+import PurchaseOrder from '../PurchaseOrder/purchaseOrder'
+
 import './layout.css'
 
 function Layout() {
@@ -30,6 +34,9 @@ function Layout() {
                         <Route path="/home/user-profile" component={UserProfile} />
                         <Route path="/home/vendor" component={Vendor} />
                         <Route path="/home/customer" component={Customer} />
+                        <Route path="/home/purchase-requisition" component={PurchaseRequisition}/>
+                        <Route path="/home/request-for-qutation" component={RFQ}/>
+                        <Route path="/home/purchase-order" component={PurchaseOrder}/>
                     </Switch>
                 </div>
                 {/* </Router> */}

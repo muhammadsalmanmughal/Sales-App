@@ -68,6 +68,7 @@ const getUserData = () => {
     .where("userId", "==", userID)
     .get()
     .then(function (querySnapshot) {
+      console.log('querySnapshot', querySnapshot)
       const comlist = [];
       querySnapshot.forEach(function (doc) {
         if (doc.exists) {
@@ -89,6 +90,7 @@ const getUserData = () => {
 }
 
 const createVendor = (vendorDetails, vendorId) => {
+  console.log('create vendor function')
   const {
     companyName,
     ownerFirstName,
@@ -100,9 +102,8 @@ const createVendor = (vendorDetails, vendorId) => {
     postalCode
   } = vendorDetails
 
-  console.log(companyName, ownerFirstName, ownerLastName, address, phone, email, city, postalCode);
-
-  firebase.firestore().collection("Vendor").doc(vendorId).set({
+  // console.log(companyName, ownerFirstName, ownerLastName, address, phone, email, city, postalCode);
+  const vendorObj = {
     companyName,
     ownerFirstName,
     ownerLastName,
@@ -111,9 +112,16 @@ const createVendor = (vendorDetails, vendorId) => {
     email,
     city,
     postalCode,
-    vendorId
-  })
-    .then(() => {
+    vendorId:''
+  }
+
+  firebase.firestore().collection("Vendor").add(
+    vendorObj
+  )
+    .then((response) => {
+      console.log('respnse', response.id)
+      firebase.firestore().collection("Vendor").doc(response.id).update({'vendorId': response.id})
+
       message.success('Vendor Created')
     }).catch((error) => {
       console.log('Error', error.message)
@@ -123,8 +131,6 @@ const createVendor = (vendorDetails, vendorId) => {
 }
 
 const createNewCustomer = (customerDetails, customerId) => {
-  console.log(customerDetails)
-  console.log(customerId);
 
   const {
     businessName,
@@ -138,9 +144,7 @@ const createNewCustomer = (customerDetails, customerId) => {
     postalCode
   } = customerDetails
 
-  // console.log(businessName, ownerFirstName, ownerLastName, billToAddress, phone, email, city, postalCode);
-
-  firebase.firestore().collection("Customer").doc(customerId).set({
+  const customerObj={
     businessName,
     billToAddress,
     phone,
@@ -150,20 +154,39 @@ const createNewCustomer = (customerDetails, customerId) => {
     responsiblePhone,
     secondaryPhone,
     postalCode,
-    customerId
-  })
-    .then(() => {
+    customerId:''
+  }
+  // console.log(businessName, ownerFirstName, ownerLastName, billToAddress, phone, email, city, postalCode);
+
+  firebase.firestore().collection("Customer").add(customerObj)
+    .then((response) => {
+      console.log('respnse', response.id)
+      firebase.firestore().collection("Customer").doc(response.id).update({'customerId': response.id})
+
+      console.log('customer response', response.id);
       message.success('Customer Created')
     }).catch((error) => {
       console.log('Error', error.message)
       message.error(error.message)
     })
 }
+const updateVendor = () => {
+  let docRef = firebase.firestore().collection("Vendor").doc();
+  // firebase.firestore().collection("Vendor").get().then(function (doc) {
+  // let cT = doc.data().companyName;
+  // docRef.update({
+  //   currentToken: cT,
+  // });
+  // });
+  console.log('update doc------->', docRef)
+
+};
 
 export {
   createUser,
   loginUser,
   getUserData,
   createVendor,
-  createNewCustomer
+  createNewCustomer,
+  updateVendor
 }

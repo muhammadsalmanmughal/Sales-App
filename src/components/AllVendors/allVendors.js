@@ -45,6 +45,10 @@ const AllVendors = () => {
                 // setIsVendor(true)
             });
     }
+
+    const updateVendor = (e) => {
+        console.log('update E', e)
+    }
     const checkVendor = () => {
         if (isVendor) {
             return <TableDiv>
@@ -72,6 +76,7 @@ const AllVendors = () => {
                                         <TableData>[{vendor.city}]</TableData>
                                         <TableData>[{vendor.address}]</TableData>
                                         <TableData>[{vendor.postalCode}]</TableData>
+                                        <TableData><button onClick={() => updateVendor(vendor)}>Update</button></TableData>
                                     </TableRow>
                                 );
                             })}
@@ -93,17 +98,7 @@ const AllVendors = () => {
     console.log('All vendros', allVendors);
     return (
         <div>
-            {/* <h2>
-                All Vendors
-            </h2> */}
-            {/* <>
-                {allVendors && allVendors.map((vendor, index)=>{
-                    return(
-                        <p>{vendor.companyName}</p>
-                    )
-                })}
-            </> */}
-{/* {!isVendor ? <span>Loading...</span> : null} */}
+
 {checkVendor()}
 
         </div>

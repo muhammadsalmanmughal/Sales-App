@@ -18,10 +18,8 @@ import {
 const AllCustomers = () => {
     const [allCustomers, setAllCustomers] = useState()
     const [isCustomer, setIsCustomer] = useState(false)
-    const [isLoading, setIsLoading]= useState(false)
 
     const getAllCustomers = () => {
-        setIsLoading(true)
         firebase
             .firestore()
             .collection("Customer")
@@ -42,7 +40,6 @@ const AllCustomers = () => {
                     }
                 });
                 setAllCustomers(customerList);
-                setIsLoading(false)
                 // setIsVendor(true)
             });
     }
@@ -83,9 +80,6 @@ const AllCustomers = () => {
                     </TableBody>
                 </Table>
             </TableDiv>
-        }
-        else if(!isCustomer || isLoading){
-            return <LoaderDiv><img src={loader}/></LoaderDiv>
         }
         return <EmptyDiv> <Empty/> </EmptyDiv>
         

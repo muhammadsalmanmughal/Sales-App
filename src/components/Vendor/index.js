@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { useFormik } from 'formik'
 import { v4 as uuidv4 } from 'uuid';
 import { validationSchema } from './schema'
-import { createVendor } from '../../Utils/utils'
+import { createVendor, updateVendor } from '../../Utils/utils'
 import { Label } from '../Textbox/style/index'
 import { VendorMainDiv, FormDiv, VendorIdDiv, VendorIdSpan } from './style/index'
 import ErrorText from '../FormError/formError'
@@ -27,12 +27,6 @@ const initialValues = {
     // country: '',
     city: '',
     postalCode: ''
-}
-const onSubmit = (values, vendorId ,onSubmitProps) => {
-    console.log('values from function', values);
-    console.log('postal code====>', values.companyName);
-    createVendor(values, vendorId)
-    onSubmitProps.resetForm()
 }
 // const validate = values => {
 //     const errors = {}
@@ -87,15 +81,24 @@ const Vendor = () => {
     const venId = () => {
         setVendorId(uuidv4())
     }
-
+    const onSubmit = (values,onSubmitProps) => {
+        // console.log('values from function', values);
+        // console.log('postal code====>', values.companyName);
+        createVendor(values, vendorId)
+        onSubmitProps.resetForm()
+    }
     useEffect(() => {
         venId()
+        updateVendor()
     }, [])
+
     const formik = useFormik({
         initialValues,
         onSubmit,
         validationSchema
     })
+
+
     const { TabPane } = Tabs;
     function callback(key) {
         console.log(key);
