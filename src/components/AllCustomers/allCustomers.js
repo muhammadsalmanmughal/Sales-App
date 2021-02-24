@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import firebase from '../../config/Firebase/firebase';
+import { useHistory } from 'react-router-dom'
 import { EmptyDiv } from './style/index'
 import { Empty } from 'antd';
 import loader from '../../assets/loader.gif'
@@ -18,6 +19,7 @@ import {
 const AllCustomers = () => {
     const [allCustomers, setAllCustomers] = useState()
     const [isCustomer, setIsCustomer] = useState(false)
+    const history = useHistory()
 
     const getAllCustomers = () => {
         firebase
@@ -43,6 +45,10 @@ const AllCustomers = () => {
                 // setIsVendor(true)
             });
     }
+
+    const updateCustomer = (e) => {
+        console.log('update E', e)
+    }
     const checkCustomer = () => {
         if (isCustomer) {
             return <TableDiv>
@@ -52,12 +58,12 @@ const AllCustomers = () => {
                         <TableHeading>BillToAddress</TableHeading>
                         <TableHeading>Phone</TableHeading>
                         <TableHeading>Email</TableHeading>
-                        <TableHeading>State</TableHeading>
+                        {/* <TableHeading>State</TableHeading> */}
                         <TableHeading>City</TableHeading>
-                        <TableHeading>Res. Name</TableHeading>
-                        <TableHeading>Res. Phone</TableHeading>
-                        <TableHeading>SecondaryPhone</TableHeading>
-                        <TableHeading>PostalCode</TableHeading>
+                        {/* <TableHeading>Res. Name</TableHeading> */}
+                        {/* <TableHeading>Res. Phone</TableHeading> */}
+                        {/* <TableHeading>SecondaryPhone</TableHeading> */}
+                        {/* <TableHeading>PostalCode</TableHeading> */}
                     </TableHead>
                     <TableBody>
                         {allCustomers &&
@@ -68,12 +74,24 @@ const AllCustomers = () => {
                                         <TableData>[{customer.billToAddress}]</TableData>
                                         <TableData>[{customer.phone}]</TableData>
                                         <TableData>[{customer.email}]</TableData>
-                                        <TableData>[{customer.state}]</TableData>
+                                        {/* <TableData>[{customer.state}]</TableData> */}
                                         <TableData>[{customer.city}]</TableData>
-                                        <TableData>[{customer.responsibleName}]</TableData>
+                                        {/* <TableData>[{customer.responsibleName}]</TableData>
                                         <TableData>[{customer.responsiblePhone}]</TableData>
                                         <TableData>[{customer.secondaryPhone}]</TableData>
-                                        <TableData>[{customer.postalCode}]</TableData>
+                                        <TableData>[{customer.postalCode}]</TableData> */}
+                                        <TableData>
+                                            <button onClick={() => updateCustomer(customer)}>
+                                                Update customer
+                                            </button>
+                                        </TableData>
+                                        <TableData>
+                                            <button onClick={() =>
+                                                history.push(`/home/vendor-details/${customer.compId}/${'Customer'}`)
+                                            } >
+                                                customer Details
+                                            </button>
+                                        </TableData>
                                     </TableRow>
                                 );
                             })}

@@ -4,7 +4,6 @@ import Customer from '../../components/Cutomer/cutomer';
 import PurchaseRequisition from '../../components/PurchaseRequisition/purchaseRequisition'
 import RFQ from '../../components/RFQ/rfq'
 import PurchaseOrder from '../../components/PurchaseOrder/purchaseOrder'
-
 const routes = [
     {
         path: '/dashboard',
@@ -35,8 +34,7 @@ const routes = [
         // sidebar: true,
         name: 'Request For Quataion',
         component: RFQ
-    }
-    ,
+    },
     {
         path: '/purchase-order',
         // sidebar: true,

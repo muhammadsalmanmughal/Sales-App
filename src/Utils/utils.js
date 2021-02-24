@@ -112,7 +112,7 @@ const createVendor = (vendorDetails, vendorId) => {
     email,
     city,
     postalCode,
-    vendorId:''
+    iD:''
   }
 
   firebase.firestore().collection("Vendor").add(
@@ -120,7 +120,7 @@ const createVendor = (vendorDetails, vendorId) => {
   )
     .then((response) => {
       console.log('respnse', response.id)
-      firebase.firestore().collection("Vendor").doc(response.id).update({'vendorId': response.id})
+      firebase.firestore().collection("Vendor").doc(response.id).update({'iD': response.id})
 
       message.success('Vendor Created')
     }).catch((error) => {
@@ -154,14 +154,14 @@ const createNewCustomer = (customerDetails, customerId) => {
     responsiblePhone,
     secondaryPhone,
     postalCode,
-    customerId:''
+    iD:''
   }
   // console.log(businessName, ownerFirstName, ownerLastName, billToAddress, phone, email, city, postalCode);
 
   firebase.firestore().collection("Customer").add(customerObj)
     .then((response) => {
       console.log('respnse', response.id)
-      firebase.firestore().collection("Customer").doc(response.id).update({'customerId': response.id})
+      firebase.firestore().collection("Customer").doc(response.id).update({'iD': response.id})
 
       console.log('customer response', response.id);
       message.success('Customer Created')
@@ -170,6 +170,7 @@ const createNewCustomer = (customerDetails, customerId) => {
       message.error(error.message)
     })
 }
+
 const updateVendor = () => {
   let docRef = firebase.firestore().collection("Vendor").doc();
   // firebase.firestore().collection("Vendor").get().then(function (doc) {
@@ -182,11 +183,41 @@ const updateVendor = () => {
 
 };
 
+const getSpecificData = (slug , Cname) => {
+  // const userID = localStorage.getItem('userId')
+  // console.log('USER ID============>',userID);
+  return firebase
+    .firestore()
+    .collection(Cname)
+    .where("iD", "==", slug)
+    .get()
+    .then(function (querySnapshot) {
+      console.log('querySnapshot', querySnapshot)
+      const comlist = [];
+      querySnapshot.forEach(function (doc) {
+        if (doc.exists) {
+          const comp = doc.data();
+          comlist.push({ ...comp, compId: doc.id });
+        } else {
+          message.info("No such document!");
+        }
+      });
+      // setCompanyList(comlist);
+      // setInitialCompany(comlist);
+      console.log('data-------->', comlist)
+      return comlist
+    })
+    .catch(function (error) {
+      console.log("Error getting documents: ", error);
+    });
+
+}
 export {
   createUser,
   loginUser,
   getUserData,
   createVendor,
   createNewCustomer,
-  updateVendor
+  updateVendor,
+  getSpecificData
 }
