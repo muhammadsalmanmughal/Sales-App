@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react'
 import firebase from '../../config/Firebase/firebase';
+import Details from '../Details/vendorDetails'
 import { useHistory } from 'react-router-dom'
 import { EmptyDiv } from './style/index'
-import { Empty } from 'antd';
+import { Empty} from 'antd';
 import loader from '../../assets/loader.gif'
 import {
     TableDiv,
@@ -59,12 +60,8 @@ const AllVendors = () => {
                     <TableHead>
                         <TableHeading>Company</TableHeading>
                         <TableHeading>FirstName</TableHeading>
-                        {/* <TableHeading>LastName</TableHeading> */}
-                        {/* <TableHeading>Email</TableHeading> */}
                         <TableHeading>Phone</TableHeading>
                         <TableHeading>City</TableHeading>
-                        {/* <TableHeading>Address</TableHeading> */}
-                        {/* <TableHeading>PostalCode</TableHeading> */}
                     </TableHead>
                     <TableBody>
                         {allVendors &&
@@ -73,21 +70,18 @@ const AllVendors = () => {
                                     <TableRow>
                                         <TableData>[{vendor.companyName}]</TableData>
                                         <TableData>[{vendor.ownerFirstName}]</TableData>
-                                        {/* <TableData>[{vendor.ownerLastName}]</TableData> */}
-                                        {/* <TableData>[{vendor.email}]</TableData> */}
                                         <TableData>[{vendor.phone}]</TableData>
                                         <TableData>[{vendor.city}]</TableData>
-                                        {/* <TableData>[{vendor.address}]</TableData> */}
-                                        {/* <TableData>[{vendor.postalCode}]</TableData> */}
                                         <TableData>
                                             <button onClick={() => updateVendor(vendor)}>
                                                 Update
                                             </button>
                                         </TableData>
                                         <TableData>
-                                            <button onClick={() =>
-                                                history.push(`/home/vendor-details/${vendor.compId}/${'Vendor'}`)
-                                            } >
+                                            <button 
+                                            onClick={() =>
+                                                history.push(`/home/vendor-details/${vendor.compId}/${'Vendor'}`)}
+                                            >
                                                 Details
                                             </button>
                                         </TableData>
@@ -114,6 +108,7 @@ const AllVendors = () => {
         <div>
 
             {checkVendor()}
+           
 
         </div>
     )

@@ -4,7 +4,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { validationSchema } from './schema'
 import { createVendor, updateVendor } from '../../Utils/utils'
 import { Label } from '../Textbox/style/index'
-import { VendorMainDiv, FormDiv, VendorIdDiv, VendorIdSpan } from './style/index'
+import { VendorMainDiv, FormDiv} from './style/index'
 import ErrorText from '../FormError/formError'
 import AllVendors from '../AllVendors/allVendors';
 import {
@@ -13,9 +13,7 @@ import {
     Row,
     Col,
     // Form,
-    Input,
-    Tooltip,
-    Button
+    Input
 } from 'antd';
 const initialValues = {
     companyName: '',
@@ -82,8 +80,6 @@ const Vendor = () => {
         setVendorId(uuidv4())
     }
     const onSubmit = (values,onSubmitProps) => {
-        // console.log('values from function', values);
-        // console.log('postal code====>', values.companyName);
         createVendor(values, vendorId)
         onSubmitProps.resetForm()
     }
@@ -115,14 +111,7 @@ const Vendor = () => {
                             onSubmit={formik.handleSubmit}
                         >
                             <FormDiv>
-                                <VendorIdDiv >
-                                    <Label>
-                                        <Tooltip placement="topLeft" title='Generate automatically for new vendor'>
-                                            <VendorIdSpan>Vendor ID:</VendorIdSpan>
-                                            {vendorId}
-                                        </Tooltip>
-                                    </Label>
-                                </VendorIdDiv>
+                               
                                 <Row gutter={[10, 10]}>
                                     <Col xs={24} sm={8}>
                                         <Label>

@@ -58,12 +58,7 @@ const AllCustomers = () => {
                         <TableHeading>BillToAddress</TableHeading>
                         <TableHeading>Phone</TableHeading>
                         <TableHeading>Email</TableHeading>
-                        {/* <TableHeading>State</TableHeading> */}
                         <TableHeading>City</TableHeading>
-                        {/* <TableHeading>Res. Name</TableHeading> */}
-                        {/* <TableHeading>Res. Phone</TableHeading> */}
-                        {/* <TableHeading>SecondaryPhone</TableHeading> */}
-                        {/* <TableHeading>PostalCode</TableHeading> */}
                     </TableHead>
                     <TableBody>
                         {allCustomers &&
@@ -74,12 +69,7 @@ const AllCustomers = () => {
                                         <TableData>[{customer.billToAddress}]</TableData>
                                         <TableData>[{customer.phone}]</TableData>
                                         <TableData>[{customer.email}]</TableData>
-                                        {/* <TableData>[{customer.state}]</TableData> */}
                                         <TableData>[{customer.city}]</TableData>
-                                        {/* <TableData>[{customer.responsibleName}]</TableData>
-                                        <TableData>[{customer.responsiblePhone}]</TableData>
-                                        <TableData>[{customer.secondaryPhone}]</TableData>
-                                        <TableData>[{customer.postalCode}]</TableData> */}
                                         <TableData>
                                             <button onClick={() => updateCustomer(customer)}>
                                                 Update customer
@@ -87,7 +77,7 @@ const AllCustomers = () => {
                                         </TableData>
                                         <TableData>
                                             <button onClick={() =>
-                                                history.push(`/home/vendor-details/${customer.compId}/${'Customer'}`)
+                                                history.push(`/home/customer-details/${customer.compId}/${'Customer'}`)
                                             } >
                                                 customer Details
                                             </button>

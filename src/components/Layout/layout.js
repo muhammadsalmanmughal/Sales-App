@@ -10,7 +10,8 @@ import Customer from '../Cutomer/cutomer'
 import PurchaseRequisition from '../PurchaseRequisition/purchaseRequisition'
 import RFQ from '../RFQ/rfq'
 import PurchaseOrder from '../PurchaseOrder/purchaseOrder'
-import Details from '../Details/details'
+import VendorDetails from '../Details/vendorDetails'
+import CustomerDetails from '../Details/customerDetails'
 import './layout.css'
 
 function Layout() {
@@ -37,7 +38,8 @@ function Layout() {
                         <Route path="/home/purchase-requisition" component={PurchaseRequisition}/>
                         <Route path="/home/request-for-qutation" component={RFQ}/>
                         <Route path="/home/purchase-order" component={PurchaseOrder}/>
-                        <Route path="/home/vendor-details/:slug/:Cname" component={Details}/>
+                        <Route path="/home/vendor-details/:slug/:Cname" component={VendorDetails}/>
+                        <Route path="/home/customer-details/:slug/:Cname" component={CustomerDetails}/>
                     </Switch>
                 </div>
                 {/* </Router> */}

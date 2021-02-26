@@ -1,16 +1,19 @@
 import React, { useEffect, useState } from 'react'
-import { useParams } from 'react-router-dom'
+import { useParams, useHistory } from 'react-router-dom'
 import { getSpecificData } from '../../Utils/utils'
+import { CaretLeftOutlined } from "@ant-design/icons";
+import {Goback} from './styles/index'
 import {
     Divider,
     Row,
     Col
 } from 'antd';
-const Details = () => {
+const VendorDetails = () => {
     const [detailsdData, setDetailsData] = useState([])
     const { slug, Cname } = useParams()
     console.log('customerDetails------->', slug, Cname)
-
+    const history = useHistory();
+    const params = useParams();
     useEffect(() => {
         getSpecificData(slug, Cname).then(data => {
             setDetailsData(data)
@@ -20,7 +23,10 @@ const Details = () => {
     const { city } = detailsdData
     return (
         <div>
-            <h2>{Cname} Details page</h2>
+            <Goback onClick={e => history.goBack()}>
+            <CaretLeftOutlined /> GoBack
+            </Goback>
+            <h2>Customer Details page</h2>
 
             {detailsdData.map(data => {
                 return (
@@ -31,7 +37,9 @@ const Details = () => {
                         <Row gutter={[10, 10]}>
                             <Col xs={24} sm={16}>
                                 <h2>Name:</h2>
-                                <h3>{data.ownerFirstName +' '+ data.ownerLastName}</h3>
+                               {
+                                <h3>{data.businessName}</h3>
+                            }
                             </Col>
                             <Col xs={24} sm={8}>
                                 <h2>Company:</h2>
@@ -55,7 +63,7 @@ const Details = () => {
                         <Row gutter={[10, 10]}>
                             <Col xs={24} sm={16}>
                                 <h2>Address:</h2>
-                                <h3>{data.address}</h3>
+                                <h3>{data.billToAddress}</h3>
                             </Col>
                             <Col xs={24} sm={8}>
                                 <h2>PostalCode:</h2>
@@ -74,6 +82,23 @@ const Details = () => {
                                 <h2>Phone Number:</h2>
                                 <h3>{data.phone}</h3>
                             </Col>
+                            <Col xs={24} sm={8}>
+                                <h2>Secondary Phone Number:</h2>
+                                <h3>{data.secondaryPhone}</h3>
+                            </Col>
+                        </Row>
+                        <Divider orientation='left'>
+                            <h2>Responsible Details</h2>
+                        </Divider>
+                        <Row gutter={[10, 10]}>
+                            <Col xs={24} sm={16}>
+                                <h2>Name:</h2>
+                                <h3>{data.email}</h3>
+                            </Col>
+                            <Col xs={24} sm={8}>
+                                <h2>Phone Number:</h2>
+                                <h3>{data.phone}</h3>
+                            </Col>
                         </Row>
                     </div>
                 )
@@ -81,4 +106,4 @@ const Details = () => {
         </div>
     )
 }
-export default Details
+export default VendorDetails

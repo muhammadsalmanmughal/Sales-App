@@ -16,12 +16,3 @@ ${media.mobile`
 flex-direction: column;
 `}
 `
-export const VendorIdDiv = styled.div`
-display: flex;
-width: 100%;
-justify-content: flex-end;
-margin-bottom:25px;
-`
-export const VendorIdSpan = styled.span`
-color: red;
-`

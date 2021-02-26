@@ -6,15 +6,13 @@ import { validationSchema } from './validationSchema'
 import {createNewCustomer} from '../../Utils/utils'
 import ErrorText from '../FormError/formError'
 import AllCustomers from '../AllCustomers/allCustomers';
-import { VendorMainDiv, FormDiv, VendorIdDiv, VendorIdSpan, EmptyDiv } from '../Vendor/style/index'
+import { VendorMainDiv, FormDiv} from '../Vendor/style/index'
 import {
     Divider,
     Tabs,
     Row,
     Col,
-    Input,
-    Tooltip,
-    Button
+    Input
 } from 'antd';
 
 const { TabPane } = Tabs;
@@ -78,14 +76,7 @@ const onSubmit = (values, onSubmitProps) => {
                             onSubmit={formik.handleSubmit}
                         >
                             <FormDiv>
-                                <VendorIdDiv >
-                                    <Label>
-                                    <Tooltip placement="topLeft" title='Generate automatically for new customer'>
-                                        <VendorIdSpan>Customer ID:</VendorIdSpan>
-                                        {customerId}
-                                    </Tooltip>
-                                    </Label>
-                                </VendorIdDiv>
+                               
                                 <Row gutter={[10, 10]}>
                                     <Col xs={24} sm={24}>
                                         <Label>
@@ -106,7 +97,7 @@ const onSubmit = (values, onSubmitProps) => {
                                     <Col xs={24} sm={24}>
                                         <Label>
                                             Bill To Address:
-                                <Input
+                                 <Input
                                                 type='text'
                                                 name='billToAddress'
                                                 // value={formik.values.billToAddress}
