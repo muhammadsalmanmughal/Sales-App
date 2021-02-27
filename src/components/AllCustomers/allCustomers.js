@@ -3,7 +3,6 @@ import firebase from '../../config/Firebase/firebase';
 import { useHistory } from 'react-router-dom'
 import { EmptyDiv } from './style/index'
 import { Empty } from 'antd';
-import loader from '../../assets/loader.gif'
 import {
     TableDiv,
     Table,
@@ -11,8 +10,7 @@ import {
     TableData,
     TableHeading,
     TableHead,
-    TableBody,
-    LoaderDiv
+    TableBody
 } from './style/index'
 
 
@@ -34,21 +32,17 @@ const AllCustomers = () => {
                         customerList.push({ ...comp, compId: doc.id });
                         setIsCustomer(true)
                     } else {
-                        // alert("No such document!");
-                        // <EmptyDiv>
-                        //     <Empty/>
-                        // </EmptyDiv>
                         setIsCustomer(false)
                     }
                 });
                 setAllCustomers(customerList);
-                // setIsVendor(true)
             });
     }
 
-    const updateCustomer = (e) => {
-        console.log('update E', e)
-    }
+    // const updateCustomer = (data) => {
+    //     console.log('update E', data)
+    //     // history.push(`/home/update-customer/:${data}`)
+    // }
     const checkCustomer = () => {
         if (isCustomer) {
             return <TableDiv>
@@ -71,7 +65,7 @@ const AllCustomers = () => {
                                         <TableData>[{customer.email}]</TableData>
                                         <TableData>[{customer.city}]</TableData>
                                         <TableData>
-                                            <button onClick={() => updateCustomer(customer)}>
+                                            <button onClick={() => history.push(`/home/update-customer/:${customer.compId}`)}>
                                                 Update customer
                                             </button>
                                         </TableData>
@@ -89,19 +83,16 @@ const AllCustomers = () => {
                 </Table>
             </TableDiv>
         }
-        return <EmptyDiv> <Empty/> </EmptyDiv>
-        
-
+        return <EmptyDiv> <Empty /> </EmptyDiv>
     }
     useEffect(() => {
         getAllCustomers()
     }, [])
 
-    console.log('All Customers', allCustomers);
+    // console.log('All Customers', allCustomers);
     return (
         <div>
-{checkCustomer()}
-
+            {checkCustomer()}
         </div>
     )
 }

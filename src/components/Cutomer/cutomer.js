@@ -32,9 +32,6 @@ const CreateCustomer = () => {
 
     
 const onSubmit = (values, onSubmitProps) => {
-    // console.log('values from function', values);
-    // console.log('postal code====>', values.companyName);
-    // console.log('vendor id from cubmit function', vendorId);
     createNewCustomer(values, customerId)
     onSubmitProps.resetForm()
 }
@@ -71,7 +68,6 @@ const onSubmit = (values, onSubmitProps) => {
 
                 <TabPane tab="Create Customer" key="1">
                     <VendorMainDiv>
-                        {/* <button onClick={venId}>Vendor id</button> */}
                         <form
                             onSubmit={formik.handleSubmit}
                         >
@@ -100,9 +96,6 @@ const onSubmit = (values, onSubmitProps) => {
                                  <Input
                                                 type='text'
                                                 name='billToAddress'
-                                                // value={formik.values.billToAddress}
-                                                // onBlur={formik.handleBlur}
-                                                // onChange={formik.handleChange}
                                                 {...formik.getFieldProps('billToAddress')}
                                             />
                                         </Label>
@@ -115,9 +108,6 @@ const onSubmit = (values, onSubmitProps) => {
                                     <Input
                                                 type='text'
                                                 name='city'
-                                                // value={formik.values.city}
-                                                // onBlur={formik.handleBlur}
-                                                // onChange={formik.handleChange}
                                                 {...formik.getFieldProps('city')}
 
                                             />
@@ -131,9 +121,6 @@ const onSubmit = (values, onSubmitProps) => {
                                     <Input
                                                 type='text'
                                                 name='state'
-                                                // value={formik.values.state}
-                                                // onBlur={formik.handleBlur}
-                                                // onChange={formik.handleChange}
                                                 {...formik.getFieldProps('state')}
                                             />
                                         </Label>
@@ -146,9 +133,6 @@ const onSubmit = (values, onSubmitProps) => {
                                     <Input
                                                 type='number'
                                                 name='postalCode'
-                                                // value={formik.values.postalCode}
-                                                // onBlur={formik.handleBlur}
-                                                // onChange={formik.handleChange}
                                                 {...formik.getFieldProps('postalCode')}
                                             />
                                         </Label>
@@ -161,11 +145,7 @@ const onSubmit = (values, onSubmitProps) => {
                                     <Input
                                                 type='number'
                                                 name='phone'
-                                                // value={formik.values.phone}
-                                                // onBlur={formik.handleBlur}
-                                                // onChange={formik.handleChange}
                                                 {...formik.getFieldProps('phone')}
-                                            // max={11}
                                             />
                                         </Label>
                                         {formik.touched.phone && formik.errors.phone
@@ -177,9 +157,6 @@ const onSubmit = (values, onSubmitProps) => {
                                     <Input
                                                 type='email'
                                                 name='email'
-                                                // value={formik.values.email}
-                                                // onBlur={formik.handleBlur}
-                                                // onChange={formik.handleChange}
                                                 {...formik.getFieldProps('email')}
                                             />
                                         </Label>
@@ -232,9 +209,6 @@ const onSubmit = (values, onSubmitProps) => {
                                     <Input
                                                 type='text'
                                                 name='city'
-                                                // value={formik.values.city}
-                                                // onBlur={formik.handleBlur}
-                                                // onChange={formik.handleChange}
                                                 {...formik.getFieldProps('city')}
                                             />
                                         </Label>
@@ -244,7 +218,6 @@ const onSubmit = (values, onSubmitProps) => {
                                     </Col>
                                    
 
-                                    {/* <Col style={style} span={8}>col-10</Col> */}
                                 </Row>
                                 <Col xs={24} sm={16}>
                                     <button type='submit' disabled={!formik.isValid}>Create Customer</button>

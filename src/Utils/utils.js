@@ -1,6 +1,7 @@
 import firebase from '../config/Firebase/firebase'
 import 'antd/dist/antd.css';
 import { message } from 'antd';
+import { buildQueries } from '@testing-library/react';
 
 const createUser = async (email, password, name, img) => {
   console.log(email, password, name, img);
@@ -68,7 +69,6 @@ const getUserData = () => {
     .where("userId", "==", userID)
     .get()
     .then(function (querySnapshot) {
-      console.log('querySnapshot', querySnapshot)
       const comlist = [];
       querySnapshot.forEach(function (doc) {
         if (doc.exists) {
@@ -183,16 +183,15 @@ const updateVendor = () => {
 
 };
 
-const getSpecificData = (slug , Cname) => {
-  // const userID = localStorage.getItem('userId')
-  // console.log('USER ID============>',userID);
+const getSpecificData = (id , Cname) => {
+  
   return firebase
     .firestore()
     .collection(Cname)
-    .where("iD", "==", slug)
+    .where("iD", "==", id)
     .get()
     .then(function (querySnapshot) {
-      console.log('querySnapshot', querySnapshot)
+      // console.log('querySnapshot', querySnapshot)
       const comlist = [];
       querySnapshot.forEach(function (doc) {
         if (doc.exists) {
@@ -204,14 +203,32 @@ const getSpecificData = (slug , Cname) => {
       });
       // setCompanyList(comlist);
       // setInitialCompany(comlist);
-      console.log('data-------->', comlist)
+      // console.log('data-------->', comlist)
       return comlist
     })
     .catch(function (error) {
       console.log("Error getting documents: ", error);
     });
-
 }
+
+const abcfunction = (customerDetail, id) => {
+  console.log('firebase=======>',customerDetail, id)
+  firebase.firestore().collection("Customer").doc(id)
+          .update({
+            businessName: customerDetail.businessName,
+            companyName: customerDetail.companyName,
+            state: customerDetail.state,
+            city: customerDetail.city,
+            billToAddress: customerDetail.billToAddress,
+            postalCode: customerDetail.postalCode,
+            phone:customerDetail.phone,
+            email:customerDetail.email,
+            secondaryPhone: customerDetail.secondaryPhone,
+            responsibleName: customerDetail.responsibleName,
+            responsiblePhone: customerDetail.responsiblePhone
+          })
+      }
+
 export {
   createUser,
   loginUser,
@@ -219,5 +236,6 @@ export {
   createVendor,
   createNewCustomer,
   updateVendor,
-  getSpecificData
+  getSpecificData,
+  abcfunction
 }

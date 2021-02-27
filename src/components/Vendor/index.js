@@ -119,9 +119,6 @@ const Vendor = () => {
                                 <Input
                                                 type='text'
                                                 name='companyName'
-                                                // value={formik.values.companyName}
-                                                // onBlur={formik.handleBlur}
-                                                // onChange={formik.handleChange}
                                                 {...formik.getFieldProps('companyName')}
                                             />
                                         </Label>
@@ -135,9 +132,6 @@ const Vendor = () => {
                                 <Input
                                                 type='text'
                                                 name='ownerFirstName'
-                                                // value={formik.values.ownerFirstName}
-                                                // onBlur={formik.handleBlur}
-                                                // onChange={formik.handleChange}
                                                 {...formik.getFieldProps('ownerFirstName')}
                                             />
                                         </Label>
@@ -150,9 +144,6 @@ const Vendor = () => {
                                     <Input
                                                 type='text'
                                                 name='ownerLastName'
-                                                // value={formik.values.ownerLastName}
-                                                // onBlur={formik.handleBlur}
-                                                // onChange={formik.handleChange}
                                                 {...formik.getFieldProps('ownerLastName')}
 
                                             />
@@ -166,9 +157,6 @@ const Vendor = () => {
                                     <Input
                                                 type='text'
                                                 name='address'
-                                                // value={formik.values.address}
-                                                // onBlur={formik.handleBlur}
-                                                // onChange={formik.handleChange}
                                                 {...formik.getFieldProps('address')}
                                             />
                                         </Label>
@@ -181,11 +169,7 @@ const Vendor = () => {
                                     <Input
                                                 type='number'
                                                 name='phone'
-                                                // value={formik.values.phone}
-                                                // onBlur={formik.handleBlur}
-                                                // onChange={formik.handleChange}
                                                 {...formik.getFieldProps('phone')}
-                                            // max={11}
                                             />
                                         </Label>
                                         {formik.touched.phone && formik.errors.phone
@@ -197,9 +181,6 @@ const Vendor = () => {
                                     <Input
                                                 type='email'
                                                 name='email'
-                                                // value={formik.values.email}
-                                                // onBlur={formik.handleBlur}
-                                                // onChange={formik.handleChange}
                                                 {...formik.getFieldProps('email')}
                                             />
                                         </Label>
@@ -222,9 +203,6 @@ const Vendor = () => {
                                     <Input
                                                 type='text'
                                                 name='city'
-                                                // value={formik.values.city}
-                                                // onBlur={formik.handleBlur}
-                                                // onChange={formik.handleChange}
                                                 {...formik.getFieldProps('city')}
                                             />
                                         </Label>
@@ -237,9 +215,6 @@ const Vendor = () => {
                                     <Input
                                                 type='number'
                                                 name='postalCode'
-                                                // value={formik.values.postalCode}
-                                                // onBlur={formik.handleBlur}
-                                                // onChange={formik.handleChange}
                                                 {...formik.getFieldProps('postalCode')}
                                             />
                                         </Label>
@@ -248,7 +223,6 @@ const Vendor = () => {
                                             : null}
                                     </Col>
 
-                                    {/* <Col style={style} span={8}>col-10</Col> */}
                                 </Row>
                                 <Col xs={24} sm={16}>
                                     <button type='submit' disabled={!formik.isValid}>Submit</button>
