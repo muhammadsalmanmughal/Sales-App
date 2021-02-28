@@ -1,88 +1,164 @@
 import React, { useEffect, useState } from 'react'
 import { useParams, useHistory } from 'react-router-dom'
-import { getSpecificData } from '../../Utils/utils'
+import { getSpecificData, UpdateVendor } from '../../Utils/utils'
 import { CaretLeftOutlined } from "@ant-design/icons";
-import {Goback} from './styles/index'
+import { Goback } from './styles/index'
 import {
     Divider,
     Row,
-    Col
+    Col,
+    Input,
+    Button,
+    Switch
 } from 'antd';
 const VendorDetails = () => {
-    const [detailsdData, setDetailsData] = useState([])
+    const [isDisable, setisDisable] = useState(true)
+    const [detailsdData, setDetailsData] = useState(
+        {
+            ownerFirstName: "",
+            ownerLastName: '',
+            companyName: "",
+            city: "",
+            address: "",
+            email: "",
+            state: '',
+            iD: "",
+            phone: '',
+            postalCode: ''
+        }
+    )
     const { slug, Cname } = useParams()
     const history = useHistory();
     useEffect(() => {
         getSpecificData(slug, Cname).then(data => {
-            setDetailsData(data)
+            setDetailsData(data[0])
         })
+        DisableFields(false)
     }, [])
+
+    function DisableFields(checked) {
+        console.log(`switch to ${checked}`);
+        setisDisable(checked)
+    }
+    const changeHandler = (key, value) => {
+        setDetailsData({ ...detailsdData, [value]: key.target.value })
+    }
+    const updateVendor = () => {
+        UpdateVendor(detailsdData, detailsdData.compId)
+        // console.log('detailsdData, detailsdData.compId', detailsdData, detailsdData.compId)
+    }
+    // console.log('VendorDetails------->', detailsdData, detailsdData.compId)
 
     return (
         <div>
             <Goback onClick={e => history.goBack()}>
-            <CaretLeftOutlined /> GoBack
+                <CaretLeftOutlined /> GoBack
             </Goback>
             <h2>Vendor Details page</h2>
+            <label> Update
+                <Switch
+                    size='small'
+                    onChange={DisableFields}
+                />
+            </label>
 
-            {detailsdData.map(data => {
-                return (
-                    <div>
-                        <Divider orientation="left">
-                            <h2>Name</h2>
-                        </Divider>
-                        <Row gutter={[10, 10]}>
-                            <Col xs={24} sm={16}>
-                                <h2>Name:</h2>
-                               {
-                                <h3>{data.ownerFirstName +' '+ data.ownerLastName}</h3>
-                            }
-                            </Col>
-                            <Col xs={24} sm={8}>
-                                <h2>Company:</h2>
-                                <h3>{data.companyName}</h3>
-                            </Col>
+            <div>
+                <Divider orientation="left">
+                    <h2>Name</h2>
+                </Divider>
+                <Row gutter={[10, 10]}>
+                    <Col xs={24} sm={8}>
+                        <h2>FirstName:</h2>
+                        {
+                            <Input type='text' value={detailsdData.ownerFirstName}
+                                onChange={(e) => changeHandler(e, 'ownerFirstName')}
+                                disabled={!isDisable}
+                            />
+                        }
+                    </Col>
+                    <Col xs={24} sm={8}>
+                        <h2>LastName:</h2>
+                        {
+                            <Input type='text' value={detailsdData.ownerLastName}
+                                onChange={(e) => changeHandler(e, 'ownerLastName')}
+                                disabled={!isDisable}
+                            />
+                        }
+                    </Col>
+                    <Col xs={24} sm={8}>
+                        <h2>Company:</h2>
+                        <Input type='text' value={detailsdData.companyName}
+                            onChange={(e) => changeHandler(e, 'companyName')}
+                            disabled={!isDisable}
+                        />
+                    </Col>
 
-                        </Row>
-                        <Divider orientation="left">
-                            <h2>Address</h2>
-                        </Divider>
-                        <Row gutter={[10, 10]}>
-                            <Col xs={24} sm={16}>
-                                <h2>State:</h2>
-                                <h3>State</h3>
-                            </Col>
-                            <Col xs={24} sm={8}>
-                                <h2>City:</h2>
-                                <h3>{data.city}</h3>
-                            </Col>
-                        </Row>
-                        <Row gutter={[10, 10]}>
-                            <Col xs={24} sm={16}>
-                                <h2>Address:</h2>
-                                <h3>{data.address}</h3>
-                            </Col>
-                            <Col xs={24} sm={8}>
-                                <h2>PostalCode:</h2>
-                                <h3>{data.postalCode}</h3>
-                            </Col>
-                        </Row>
-                        <Divider orientation='left'>
-                            <h2>Contact</h2>
-                        </Divider>
-                        <Row gutter={[10, 10]}>
-                            <Col xs={24} sm={16}>
-                                <h2>Email:</h2>
-                                <h3>{data.email}</h3>
-                            </Col>
-                            <Col xs={24} sm={8}>
-                                <h2>Phone Number:</h2>
-                                <h3>{data.phone}</h3>
-                            </Col>
-                        </Row>
-                    </div>
-                )
-            })}
+                </Row>
+                <Divider orientation="left">
+                    <h2>Address</h2>
+                </Divider>
+                <Row gutter={[10, 10]}>
+                    <Col xs={24} sm={16}>
+                        <h2>State:</h2>
+                        <Input type='text' value={detailsdData.state}
+                            onChange={(e) => changeHandler(e, 'state')}
+                            disabled={!isDisable}
+                        />
+                    </Col>
+                    <Col xs={24} sm={8}>
+                        <h2>City:</h2>
+                        <Input type='text' value={detailsdData.city}
+                            onChange={(e) => changeHandler(e, 'city')}
+                            disabled={!isDisable}
+                        />
+                    </Col>
+                </Row>
+                <Row gutter={[10, 10]}>
+                    <Col xs={24} sm={16}>
+                        <h2>Address:</h2>
+                        <Input type='text' value={detailsdData.address}
+                            onChange={(e) => changeHandler(e, 'address')}
+                            disabled={!isDisable}
+                        />
+                    </Col>
+                    <Col xs={24} sm={8}>
+                        <h2>PostalCode:</h2>
+                        <Input type='text' value={detailsdData.postalCode}
+                            onChange={(e) => changeHandler(e, 'postalCode')}
+                            disabled={!isDisable}
+                        />
+                    </Col>
+                </Row>
+                <Divider orientation='left'>
+                    <h2>Contact</h2>
+                </Divider>
+                <Row gutter={[10, 10]}>
+                    <Col xs={24} sm={16}>
+                        <h2>Email:</h2>
+                        <Input type='text' value={detailsdData.email}
+                            onChange={(e) => changeHandler(e, 'email')}
+                            disabled={!isDisable}
+                        />
+                    </Col>
+                    <Col xs={24} sm={8}>
+                        <h2>Phone Number:</h2>
+                        <Input type='text' value={detailsdData.phone}
+                            onChange={(e) => changeHandler(e, 'phone')}
+                            disabled={!isDisable}
+                        />
+                    </Col>
+                </Row>
+                <Row gutter={10, 10}>
+                    <Col xs={24} sm={16}>
+                        <Button 
+                        onClick={updateVendor}
+                        disabled={!isDisable}
+                        >Update</Button>
+                    </Col>
+                </Row>
+            </div>
+            {/* )
+            })} */}
         </div>
     )
 }

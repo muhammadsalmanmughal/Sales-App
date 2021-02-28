@@ -72,11 +72,11 @@ const AllVendors = () => {
                                         <TableData>[{vendor.ownerFirstName}]</TableData>
                                         <TableData>[{vendor.phone}]</TableData>
                                         <TableData>[{vendor.city}]</TableData>
-                                        <TableData>
+                                        {/* <TableData>
                                             <button onClick={() => updateVendor(vendor)}>
                                                 Update
                                             </button>
-                                        </TableData>
+                                        </TableData> */}
                                         <TableData>
                                             <button 
                                             onClick={() =>

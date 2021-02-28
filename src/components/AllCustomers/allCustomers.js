@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 import firebase from '../../config/Firebase/firebase';
 import { useHistory } from 'react-router-dom'
 import { EmptyDiv } from './style/index'
-import { Empty } from 'antd';
+import { Empty, Button } from 'antd';
 import {
     TableDiv,
     Table,
@@ -38,11 +38,7 @@ const AllCustomers = () => {
                 setAllCustomers(customerList);
             });
     }
-
-    // const updateCustomer = (data) => {
-    //     console.log('update E', data)
-    //     // history.push(`/home/update-customer/:${data}`)
-    // }
+    
     const checkCustomer = () => {
         if (isCustomer) {
             return <TableDiv>
@@ -65,16 +61,16 @@ const AllCustomers = () => {
                                         <TableData>[{customer.email}]</TableData>
                                         <TableData>[{customer.city}]</TableData>
                                         <TableData>
-                                            <button onClick={() => history.push(`/home/update-customer/:${customer.compId}`)}>
+                                            {/* <button onClick={() => history.push(`/home/update-customer/:${customer.compId}`)}>
                                                 Update customer
-                                            </button>
+                                            </button> */}
                                         </TableData>
                                         <TableData>
-                                            <button onClick={() =>
+                                            <Button onClick={() =>
                                                 history.push(`/home/customer-details/${customer.compId}/${'Customer'}`)
                                             } >
                                                 customer Details
-                                            </button>
+                                            </Button>
                                         </TableData>
                                     </TableRow>
                                 );

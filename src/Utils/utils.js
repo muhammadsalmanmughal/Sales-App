@@ -211,8 +211,8 @@ const getSpecificData = (id , Cname) => {
     });
 }
 
-const abcfunction = (customerDetail, id) => {
-  console.log('firebase=======>',customerDetail, id)
+const UpdateCustomer = (customerDetail, id) => {
+  // console.log('firebase=======>',customerDetail, id)
   firebase.firestore().collection("Customer").doc(id)
           .update({
             businessName: customerDetail.businessName,
@@ -227,8 +227,35 @@ const abcfunction = (customerDetail, id) => {
             responsibleName: customerDetail.responsibleName,
             responsiblePhone: customerDetail.responsiblePhone
           })
+          .then(()=>{
+            message.success('Data updated')
+          })
+          .catch((error) => {
+            message.error(error.message)
+          })
       }
 
+const UpdateVendor =(vendorDetail, id) => {
+  // console.log('vendorDetail, id--------->', vendorDetail, id)
+  firebase.firestore().collection("Vendor").doc(id)
+          .update({
+            address: vendorDetail.address,
+            ownerFirstName: vendorDetail.ownerFirstName,
+            ownerLastName: vendorDetail.ownerLastName,
+            companyName: vendorDetail.companyName,
+            state: vendorDetail.state,
+            city: vendorDetail.city,
+            postalCode: vendorDetail.postalCode,
+            phone:vendorDetail.phone,
+            email:vendorDetail.email
+          })
+          .then(()=>{
+            message.success('Data updated')
+          })
+          .catch((error) => {
+            message.error(error.message)
+          })
+}      
 export {
   createUser,
   loginUser,
@@ -237,5 +264,6 @@ export {
   createNewCustomer,
   updateVendor,
   getSpecificData,
-  abcfunction
+  UpdateCustomer,
+  UpdateVendor
 }
