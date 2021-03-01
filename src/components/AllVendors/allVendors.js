@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react'
 import firebase from '../../config/Firebase/firebase';
-import Details from '../Details/vendorDetails'
 import { useHistory } from 'react-router-dom'
 import { EmptyDiv } from './style/index'
 import { Empty} from 'antd';

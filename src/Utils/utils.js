@@ -1,7 +1,6 @@
 import firebase from '../config/Firebase/firebase'
 import 'antd/dist/antd.css';
 import { message } from 'antd';
-import { buildQueries } from '@testing-library/react';
 
 const createUser = async (email, password, name, img) => {
   console.log(email, password, name, img);
@@ -233,9 +232,9 @@ const UpdateCustomer = (customerDetail, id) => {
           .catch((error) => {
             message.error(error.message)
           })
-      }
+}
 
-const UpdateVendor =(vendorDetail, id) => {
+const UpdateVendor = (vendorDetail, id) => {
   // console.log('vendorDetail, id--------->', vendorDetail, id)
   firebase.firestore().collection("Vendor").doc(id)
           .update({
@@ -255,7 +254,9 @@ const UpdateVendor =(vendorDetail, id) => {
           .catch((error) => {
             message.error(error.message)
           })
-}      
+}  
+
+
 export {
   createUser,
   loginUser,
