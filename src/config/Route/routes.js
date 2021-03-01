@@ -1,8 +1,8 @@
 import Dashboard from '../../components/Dashboard/dashboard'
 import Vendor from '../../components/Vendor/index'
 import Customer from '../../components/Cutomer/cutomer';
-import PurchaseRequisition from '../../components/PurchaseRequisition/purchaseRequisition'
-import RFQ from '../../components/RFQ/rfq'
+import RequestForQuotation from '../../components/RequestForQuotation/requestForQuotation'
+// import RequestForQuatation from '../../components/RFQ/requestForQuatation'
 import PurchaseOrder from '../../components/PurchaseOrder/purchaseOrder'
 const routes = [
     {
@@ -24,17 +24,17 @@ const routes = [
         component: Customer
     },
     {
-        path: '/purchase-requisition',
+        path: '/request-for-quotation',
         // sidebar: true,
-        name: 'Purchase Requisition',
-        component: PurchaseRequisition
+        name: 'Request For Quotation',
+        component: RequestForQuotation
     },
-    {
-        path: '/request-for-quatation',
-        // sidebar: true,
-        name: 'Request For Quataion',
-        component: RFQ
-    },
+    // {
+    //     path: '/request-for-quatation',
+    //     // sidebar: true,
+    //     name: 'Request For Quataion',
+    //     component: RequestForQuatation
+    // },
     {
         path: '/purchase-order',
         // sidebar: true,

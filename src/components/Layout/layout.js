@@ -7,8 +7,8 @@ import Dashboard from '../Dashboard/dashboard'
 import Vendor from '../Vendor/index'
 import UserProfile from '../UserProfile/userProfile'
 import Customer from '../Cutomer/cutomer'
-import PurchaseRequisition from '../PurchaseRequisition/purchaseRequisition'
-import RFQ from '../RFQ/rfq'
+import RequestForQuotation from '../RequestForQuotation/requestForQuotation'
+// import RequestForQuatation from '../RFQ/requestForQuatation'
 import PurchaseOrder from '../PurchaseOrder/purchaseOrder'
 import VendorDetails from '../Details/vendorDetails'
 import CustomerDetails from '../Details/customerDetails'
@@ -35,8 +35,8 @@ function Layout() {
                         <Route path="/home/user-profile" component={UserProfile} />
                         <Route path="/home/vendor" component={Vendor} />
                         <Route path="/home/customer" component={Customer} />
-                        <Route path="/home/purchase-requisition" component={PurchaseRequisition}/>
-                        <Route path="/home/request-for-qutation" component={RFQ}/>
+                        <Route path="/home/request-for-quotation" component={RequestForQuotation}/>
+                        {/* <Route path="/home/request-for-qutation" component={RequestForQuatation}/> */}
                         <Route path="/home/purchase-order" component={PurchaseOrder}/>
                         <Route path="/home/vendor-details/:slug/:Cname" component={VendorDetails}/>
                         <Route path="/home/customer-details/:slug/:Cname" component={CustomerDetails}/>

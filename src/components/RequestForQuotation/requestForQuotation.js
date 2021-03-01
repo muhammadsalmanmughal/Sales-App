@@ -2,12 +2,12 @@ import React from 'react'
 import{Divider} from 'antd'
 
 
-const PurchaseRequisition = () => {
+const RequestForQuatation = () => {
     return(
         <div>
-            <h1>Purchase Requisition</h1>
+            <h1>Request For Quotation</h1>
             <Divider/>
         </div>
     )
 }
-export default PurchaseRequisition
+export default RequestForQuatation
