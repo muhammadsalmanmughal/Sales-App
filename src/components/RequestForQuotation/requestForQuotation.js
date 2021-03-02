@@ -22,7 +22,10 @@ const RequestForQuatation = () => {
               message.info("No such document!");
             }
           });
-          setAllVendorsName(comlist);
+          comlist.map((items, key)=>{
+            return setAllVendorsName(items.companyName)
+          })
+          // setAllVendorsName(comlist);
           // setInitialCompany(comlist);
           // console.log('data-------->', comlist)
           
@@ -34,18 +37,14 @@ const RequestForQuatation = () => {
     useEffect(() => {
         getAllVendorNames()
     }, [])
-    console.log('allvendorData', allVendorsName)
+    // console.log('allvendorData', allVendorsName)
     return (
         <div>
             <h1>Request For Quotation</h1>
             <Divider />
-            {allVendorsName.map((item,key) =>{
-                return(
-                   <>
-                   {console.log('items',item.companyName)}
-                   </>
-                )
-            })}
+         <ul>
+           <li>{console.log('all vendors name',allVendorsName)}</li>
+         </ul>
         </div>
     )
 }
