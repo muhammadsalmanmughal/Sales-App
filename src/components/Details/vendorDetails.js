@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { useParams, useHistory } from 'react-router-dom'
 import { getSpecificData, UpdateVendor } from '../../Utils/utils'
 import { CaretLeftOutlined } from "@ant-design/icons";
-import { Goback } from './styles/index'
+import { Goback, DetailsDiv } from './styles/index'
 import {
     Divider,
     Row,
@@ -50,7 +50,7 @@ const VendorDetails = () => {
     // console.log('VendorDetails------->', detailsdData, detailsdData.compId)
 
     return (
-        <div>
+        <DetailsDiv>
             <Goback onClick={e => history.goBack()}>
                 <CaretLeftOutlined /> GoBack
             </Goback>
@@ -159,7 +159,7 @@ const VendorDetails = () => {
             </div>
             {/* )
             })} */}
-        </div>
+        </DetailsDiv>
     )
 }
 export default VendorDetails

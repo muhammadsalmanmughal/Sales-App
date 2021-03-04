@@ -2,16 +2,16 @@ import React, { useState, useEffect } from 'react'
 import firebase from '../../config/Firebase/firebase';
 import { useHistory } from 'react-router-dom'
 import { EmptyDiv } from './style/index'
-import { Empty} from 'antd';
+import { Empty, Table, Space, Button } from 'antd';
 import loader from '../../assets/loader.gif'
 import {
     TableDiv,
-    Table,
-    TableRow,
-    TableData,
-    TableHeading,
-    TableHead,
-    TableBody,
+    // Table,
+    // TableRow,
+    // TableData,
+    // TableHeading,
+    // TableHead,
+    // TableBody,
     LoaderDiv
 } from './style/index'
 
@@ -52,10 +52,50 @@ const AllVendors = () => {
     const updateVendor = (e) => {
         console.log('update E', e)
     }
+
+    const columns = [
+        {
+            title: 'Company Name',
+            dataIndex: 'companyName',
+            key: 'name',
+        },
+        {
+            title: 'FirstName',
+            dataIndex: 'ownerFirstName',
+            key: 'firstname',
+        },
+        {
+            title: 'LastName',
+            dataIndex: 'ownerLastName',
+            key: 'lastname',
+        },
+        {
+            title: 'Phone',
+            dataIndex: 'phone',
+            key: 'phone',
+        },
+        {
+            title: 'Address',
+            dataIndex: 'address',
+            key: 'address',
+        },
+        {
+            title: 'Action',
+            key: 'action',
+            render: (allVendors) => (
+              <Space size="middle">
+                <Button
+                onClick={() =>
+                    history.push(`/home/vendor-details/${allVendors.compId}/${'Vendor'}`)}
+                >Details</Button>
+              </Space>
+            ),
+          },
+    ];
     const checkVendor = () => {
         if (isVendor) {
             return <TableDiv>
-                <Table>
+                {/* <Table>
                     <TableHead>
                         <TableHeading>Company</TableHeading>
                         <TableHeading>FirstName</TableHeading>
@@ -71,11 +111,7 @@ const AllVendors = () => {
                                         <TableData>[{vendor.ownerFirstName}]</TableData>
                                         <TableData>[{vendor.phone}]</TableData>
                                         <TableData>[{vendor.city}]</TableData>
-                                        {/* <TableData>
-                                            <button onClick={() => updateVendor(vendor)}>
-                                                Update
-                                            </button>
-                                        </TableData> */}
+                                      
                                         <TableData>
                                             <button 
                                             onClick={() =>
@@ -88,7 +124,8 @@ const AllVendors = () => {
                                 );
                             })}
                     </TableBody>
-                </Table>
+                </Table> */}
+                <Table dataSource={allVendors} columns={columns} />;
             </TableDiv>
         }
         else if (!isVendor || isLoading) {
@@ -107,7 +144,7 @@ const AllVendors = () => {
         <div>
 
             {checkVendor()}
-           
+
 
         </div>
     )
