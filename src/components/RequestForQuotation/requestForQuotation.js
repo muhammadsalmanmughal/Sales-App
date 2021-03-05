@@ -12,7 +12,9 @@ import {
 
 const RequestForQuatation = () => {
   const [allVendorsName, setAllVendorsName] = useState([])
-
+  const [items, setItems] = useState()
+  const [quantity, setQuantity] = useState()
+  const [itemsList, setItemsList] = useState([])
   const getAllVendorNames = () => {
     firebase
       .firestore()
@@ -56,7 +58,19 @@ const RequestForQuatation = () => {
   const fullDate = `${todayDate}/${todayMonth}/${year}`
   const shortid = require('shortid');
 
-  console.log(shortid.generate());
+  const CreateList = () => {
+    setItemsList([...itemsList, [ items, quantity ]])
+    setItems('')
+    setQuantity('')
+  }
+  console.log('itemsList----------->', itemsList)
+
+  const deleteItem = (id) => {
+    const newList = itemsList.filter((item) => item.id !== id);
+    setItemsList(newList);
+  }
+ console.log('new list ', itemsList)
+
   return (
     <div>
       <h1>Request For Quotation</h1>
@@ -85,23 +99,43 @@ const RequestForQuatation = () => {
           <Input
             type='text'
             placeholder='Enter item name'
+            value={items}
+            onChange={e => setItems(e.target.value)}
           />
         </Col>
         <Col xs={24} sm={10}>
-          <Input type='number' placeholder='Enter number of Quantity' />
+          <Input
+            type='number'
+            placeholder='Enter number of Quantity'
+            value={quantity}
+            onChange={e => setQuantity(e.target.value)}
+          />
         </Col>
-        <Col xs={24} sm={2}>
+        <Col xs={24} sm={4}>
 
-          <Button>Add</Button>
+          <Button onClick={CreateList}>Add</Button>
         </Col>
 
       </Row>
       <Row>
-        <Col xs={24} sm={6}>
+        <Col xs={24} sm={12}>
           <Button>Create RFQ</Button>
         </Col>
       </Row>
-
+      <ul>
+        {
+          itemsList.map((item, key)=>{
+            return(
+              <>
+              <li key={key}>
+                {item}
+              </li>
+              <li><Button onClick={() => deleteItem(key)}>delete</Button></li>
+              </>
+            )
+          })
+        }
+      </ul>
     </div>
   )
 }
