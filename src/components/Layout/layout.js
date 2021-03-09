@@ -14,6 +14,7 @@ import VendorDetails from '../Details/vendorDetails'
 import CustomerDetails from '../Details/customerDetails'
 import UpdateCustomer from '../Cutomer/updateCustomer'
 import './layout.css'
+import {VendorProvider} from '../../context/Random/random'
 
 function Layout() {
     const history = useHistory()
@@ -23,7 +24,7 @@ function Layout() {
         return null
     }
     return (
-        <UserDataProvider>
+        <VendorProvider>
             <Header />
             <div className='main'>
                 <div className='sidebar'>
@@ -44,7 +45,7 @@ function Layout() {
                     </Switch>
                 </div>
             </div>
-        </UserDataProvider>
+        </VendorProvider>
     )
 }
 export default Layout

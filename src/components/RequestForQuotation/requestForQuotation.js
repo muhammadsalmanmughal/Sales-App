@@ -1,7 +1,8 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useContext } from 'react'
 import firebase from '../../config/Firebase/firebase'
 import { Label } from '../Textbox/style/index'
-import Id from '../ShortID/id';
+import { VendorContext } from '../../context/Random/random'
+// import Id from '../ShortID/id';
 import {
   ListItem,
   ItemDiv,
@@ -27,8 +28,11 @@ const RequestForQuatation = () => {
   const [itemsList, setItemsList] = useState([])
   const [radioValue, setRadioValue] = React.useState('A-class');
 
-  const {Option} = Select;
-  function handleChange(value) {
+  const value = useContext(VendorContext)
+  const { vendors, setVendors } = useContext(VendorContext)
+console.log('context value ', value);
+  const { Option } = Select;
+  function quality(value) {
 
     console.log(`selected----> ${value}`);
   }
@@ -51,7 +55,8 @@ const RequestForQuatation = () => {
           }
         });
         // comlist.map((items, key) => {
-        return setAllVendorsName(comlist)
+         setAllVendorsName(comlist)
+         setVendors(comlist)
         // return setAllVendorsName(items.companyName)
         // })
         // setAllVendorsName(comlist);
@@ -101,17 +106,17 @@ const RequestForQuatation = () => {
       <Row gutter={[10, 10]}>
         <Col xs={24} sm={16}>
           <label>Select Vender: </label>
-          <Select xs={24} sm={16} style={{width:'200px'}} 
-          onChange={handleChange}
+          <Select xs={24} sm={16} style={{ width: '200px' }}
+            onChange={quality}
           // onSelect={e => console.log(e.target.value)}
           >
-            {allVendorsName && allVendorsName.map((name, key) => <Select.Option 
-            value={name.companyName}
-            
+            {allVendorsName && allVendorsName.map((name, key) => <Select.Option
+              value={name.companyName}
+
             >
-                  {name.companyName}
-                </Select.Option>
-              
+              {name.companyName}
+            </Select.Option>
+
             )}
 
           </Select>
@@ -122,7 +127,7 @@ const RequestForQuatation = () => {
           <h4>Date: {fullDate}</h4>
         </Col>
         <Col xs={24} sm={12}>
-          <h4>RFQ-ID: <Id /></h4>
+          {/* <h4>RFQ-ID: <Id /></h4> */}
         </Col>
       </Row>
       <Row gutter={[10, 10]}>
