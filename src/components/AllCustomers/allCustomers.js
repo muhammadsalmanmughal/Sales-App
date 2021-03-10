@@ -76,6 +76,13 @@ const AllCustomers = () => {
                                                 customer Details
                                             </Button>
                                         </TableData>
+                                        <TableData>
+                                            <Button onClick={() =>
+                                                history.push(`/home/customer-order/${customer.compId}/${'Customer'}`)
+                                            } >
+                                                customer order
+                                            </Button>
+                                        </TableData>
                                     </TableRow>
                                 );
                             })}

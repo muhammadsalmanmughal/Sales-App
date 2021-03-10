@@ -53,7 +53,7 @@ const RequestForQuatation = () => {
 
 
   const CreateList = () => {
-    setItemsList([...itemsList, [items, quantity, radioValue]])
+    setItemsList([...itemsList, {items, quantity, radioValue}])
     setItems('')
     setQuantity('')
   }
@@ -67,6 +67,7 @@ const RequestForQuatation = () => {
   const generateRFQ =() => {
     CreateRFQ(itemsList,RFQiD,fullDate,selectedVendor)
   }
+  console.log('itemList', itemsList);
   return (
     <div>
       <h1>Request For Quotation</h1>
@@ -142,7 +143,7 @@ const RequestForQuatation = () => {
       </Row>
 
       <ul>
-        {
+        {/* {
           itemsList.map((item, key) => {
             return (
               <>
@@ -165,7 +166,7 @@ const RequestForQuatation = () => {
               </>
             )
           })
-        }
+        } */}
       </ul>
       <Row>
         <Col xs={24} sm={12}>

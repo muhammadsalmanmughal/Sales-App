@@ -12,6 +12,7 @@ import RequestForQuotation from '../RequestForQuotation/requestForQuotation'
 import PurchaseOrder from '../PurchaseOrder/purchaseOrder'
 import VendorDetails from '../Details/vendorDetails'
 import CustomerDetails from '../Details/customerDetails'
+import CustomerOrder from '../CustomerOrder/customerOrder'
 import UpdateCustomer from '../Cutomer/updateCustomer'
 import './layout.css'
 import {VendorCustomerProvider} from '../../context/Random/random'
@@ -41,6 +42,7 @@ function Layout() {
                         <Route path="/home/purchase-order" component={PurchaseOrder}/>
                         <Route path="/home/vendor-details/:slug/:Cname" component={VendorDetails}/>
                         <Route path="/home/customer-details/:slug/:Cname" component={CustomerDetails}/>
+                        <Route path="/home/customer-order/:slug/:Cname" component={CustomerOrder}/>
                         <Route path="/home/update-customer/:data" component={UpdateCustomer}/>
                     </Switch>
                 </div>
