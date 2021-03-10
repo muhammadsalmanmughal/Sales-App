@@ -260,7 +260,13 @@ firebase.firestore().collection('RFQ').add(RfqObj)
   console.log('Error MEssage', error.message)
 })
 }
-
+const CurrentDate = () => {
+  const today = new Date()
+  let year = today.getFullYear();
+  let todayDate = String(today.getDate()).padStart(2, '0')
+  let todayMonth = String(today.getMonth()).padStart(2, '0')
+ return `${todayDate}/${todayMonth}/${year}`
+}
 export {
   createUser,
   loginUser,
@@ -270,5 +276,6 @@ export {
   getSpecificData,
   UpdateCustomer,
   UpdateVendor,
-  CreateRFQ
+  CreateRFQ,
+  CurrentDate
 }
