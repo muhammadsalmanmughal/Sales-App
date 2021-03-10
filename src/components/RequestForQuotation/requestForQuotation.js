@@ -61,21 +61,13 @@ console.log('quantity',quantity);
     else if (isNaN(quantity) || quantity.length > 2) {
       message.error('Quantity amount not support')
     }
-    // else if(!selectVednor == null || Object.entries(itemsList).length !== 0){
-    //   setIsDisabled(false)
-    // }
+
     else {
       setItemsList([...itemsList, { items, quantity, radioValue }])
       setItems('')
       setQuantity('')
     }
   }
-// if(selectVednor == null || Object.entries(itemsList).length === 0){
-//   setIsDisabled(true)
-// }
-// else{
-//   // setIsDisabled(false)
-// }
   const deleteItem = (id) => {
     const newList = [...itemsList]
     newList.splice(id, 1)
