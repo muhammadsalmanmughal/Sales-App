@@ -1,8 +1,7 @@
-import React, { useState, useEffect, useContext } from 'react'
-import firebase from '../../config/Firebase/firebase'
+import React, { useState,useContext } from 'react'
 import { Label } from '../Textbox/style/index'
-import { VendorContext } from '../../context/Random/random'
-// import Id from '../ShortID/id';
+import { VendorCustomerContext } from '../../context/Random/random'
+import {CreateRFQ} from '../../Utils/utils'
 import {
   ListItem,
   ItemDiv,
@@ -20,57 +19,26 @@ import {
   Radio,
   Select
 } from 'antd'
+import { generate } from 'shortid'
 
 const RequestForQuatation = () => {
-  const [allVendorsName, setAllVendorsName] = useState([])
   const [items, setItems] = useState()
   const [quantity, setQuantity] = useState()
   const [itemsList, setItemsList] = useState([])
-  const [radioValue, setRadioValue] = React.useState('A-class');
+  const [radioValue, setRadioValue] = useState('A-class');
+  const [selectedVendor, setSelectedVendor] = useState() 
+  const {vendors} = useContext(VendorCustomerContext)
 
-  const value = useContext(VendorContext)
-  const { vendors, setVendors } = useContext(VendorContext)
-console.log('context value ', value);
+  const shortid = require('shortid')
+  const RFQiD = shortid.generate()
+
   const { Option } = Select;
-  function quality(value) {
 
+  function selectVednor(value) {
     console.log(`selected----> ${value}`);
+    setSelectedVendor(value)
   }
 
-  const getAllVendorNames = () => {
-    firebase
-      .firestore()
-      .collection('Vendor')
-      // .where("iD", "==", id)
-      .get()
-      .then(function (querySnapshot) {
-        // console.log('querySnapshot', querySnapshot)
-        const comlist = [];
-        querySnapshot.forEach(function (doc) {
-          if (doc.exists) {
-            const comp = doc.data();
-            comlist.push({ ...comp, compId: doc.id });
-          } else {
-            message.info("No such document!");
-          }
-        });
-        // comlist.map((items, key) => {
-         setAllVendorsName(comlist)
-         setVendors(comlist)
-        // return setAllVendorsName(items.companyName)
-        // })
-        // setAllVendorsName(comlist);
-        // setInitialCompany(comlist);
-        // console.log('data-------->', comlist)
-
-      })
-      .catch(function (error) {
-        console.log("Error getting documents: ", error);
-      });
-  }
-  useEffect(() => {
-    getAllVendorNames()
-  }, [])
 
   const selectQuality = e => {
     console.log('radio checked', e.target.value);
@@ -89,16 +57,16 @@ console.log('context value ', value);
     setItems('')
     setQuantity('')
   }
-  // console.log('old itemsList----------->', itemsList)
 
   const deleteItem = (id) => {
     const newList = [...itemsList]
     newList.splice(id, 1)
-    // itemsList.filter((item) => item.id !== id);
     setItemsList(newList);
   }
-  // console.log('new list ', itemsList)
-  console.log('all vendors------------>', allVendorsName)
+
+  const generateRFQ =() => {
+    CreateRFQ(itemsList,RFQiD,fullDate,selectedVendor)
+  }
   return (
     <div>
       <h1>Request For Quotation</h1>
@@ -107,19 +75,20 @@ console.log('context value ', value);
         <Col xs={24} sm={16}>
           <label>Select Vender: </label>
           <Select xs={24} sm={16} style={{ width: '200px' }}
-            onChange={quality}
-          // onSelect={e => console.log(e.target.value)}
+            onChange={selectVednor}
           >
-            {allVendorsName && allVendorsName.map((name, key) => <Select.Option
+            {vendors && vendors.map((name, key) => <Select.Option
               value={name.companyName}
-
             >
               {name.companyName}
             </Select.Option>
-
             )}
-
           </Select>
+        </Col>
+        <Col xs={24} sm={8}>
+          <h4>
+            RFQ-ID:{RFQiD}
+          </h4>
         </Col>
       </Row>
       <Row gutter={[10, 10]}>
@@ -200,7 +169,7 @@ console.log('context value ', value);
       </ul>
       <Row>
         <Col xs={24} sm={12}>
-          <Button>Create RFQ</Button>
+          <Button onClick={generateRFQ}>Create RFQ</Button>
         </Col>
       </Row>
     </div>

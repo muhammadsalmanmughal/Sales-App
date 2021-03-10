@@ -1,8 +1,9 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useContext } from 'react'
 import firebase from '../../config/Firebase/firebase';
 import { useHistory } from 'react-router-dom'
 import { EmptyDiv } from './style/index'
 import { Empty, Button } from 'antd';
+import {VendorCustomerContext} from '../../context/Random/random'
 import {
     TableDiv,
     Table,
@@ -15,9 +16,12 @@ import {
 
 
 const AllCustomers = () => {
-    const [allCustomers, setAllCustomers] = useState()
     const [isCustomer, setIsCustomer] = useState(false)
     const history = useHistory()
+
+    const value = useContext(VendorCustomerContext)
+    const { customers, setCustomers } = useContext(VendorCustomerContext)
+    console.log('all customers', value)
 
     const getAllCustomers = () => {
         firebase
@@ -35,7 +39,7 @@ const AllCustomers = () => {
                         setIsCustomer(false)
                     }
                 });
-                setAllCustomers(customerList);
+                setCustomers(customerList)
             });
     }
     
@@ -51,8 +55,8 @@ const AllCustomers = () => {
                         <TableHeading>City</TableHeading>
                     </TableHead>
                     <TableBody>
-                        {allCustomers &&
-                            allCustomers.map((customer, index) => {
+                        {customers &&
+                            customers.map((customer, index) => {
                                 return (
                                     <TableRow>
                                         <TableData>[{customer.businessName}]</TableData>

@@ -1,26 +1,19 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useContext } from 'react'
 import firebase from '../../config/Firebase/firebase';
 import { useHistory } from 'react-router-dom'
 import { EmptyDiv } from './style/index'
 import { Empty, Table, Space, Button } from 'antd';
 import loader from '../../assets/loader.gif'
-import {
-    TableDiv,
-    // Table,
-    // TableRow,
-    // TableData,
-    // TableHeading,
-    // TableHead,
-    // TableBody,
-    LoaderDiv
-} from './style/index'
-
+import { VendorCustomerContext } from '../../context/Random/random'
+import {TableDiv,LoaderDiv} from './style/index'
 
 const AllVendors = () => {
-    const [allVendors, setAllVendors] = useState()
     const [isVendor, setIsVendor] = useState(false)
     const [isLoading, setIsLoading] = useState(false)
     const history = useHistory()
+
+    const value = useContext(VendorCustomerContext)
+    const { vendors, setVendors } = useContext(VendorCustomerContext)
 
     const getAllVendors = () => {
         setIsLoading(true)
@@ -43,7 +36,7 @@ const AllVendors = () => {
                         setIsVendor(false)
                     }
                 });
-                setAllVendors(vendorList);
+                setVendors(vendorList)
                 setIsLoading(false)
                 // setIsVendor(true)
             });
@@ -82,11 +75,11 @@ const AllVendors = () => {
         {
             title: 'Action',
             key: 'action',
-            render: (allVendors) => (
+            render: (vendors) => (
               <Space size="middle">
                 <Button
                 onClick={() =>
-                    history.push(`/home/vendor-details/${allVendors.compId}/${'Vendor'}`)}
+                    history.push(`/home/vendor-details/${vendors.compId}/${'Vendor'}`)}
                 >Details</Button>
               </Space>
             ),
@@ -125,7 +118,7 @@ const AllVendors = () => {
                             })}
                     </TableBody>
                 </Table> */}
-                <Table dataSource={allVendors} columns={columns} />;
+                <Table dataSource={vendors} columns={columns} />;
             </TableDiv>
         }
         else if (!isVendor || isLoading) {
@@ -139,7 +132,7 @@ const AllVendors = () => {
         getAllVendors()
     }, [])
 
-    console.log('All vendros', allVendors);
+    console.log('All vendros', vendors);
     return (
         <div>
 

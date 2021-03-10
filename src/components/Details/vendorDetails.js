@@ -29,6 +29,7 @@ const VendorDetails = () => {
     )
     const { slug, Cname } = useParams()
     const history = useHistory();
+
     useEffect(() => {
         getSpecificData(slug, Cname).then(data => {
             setDetailsData(data[0])
@@ -45,10 +46,7 @@ const VendorDetails = () => {
     }
     const updateVendor = () => {
         UpdateVendor(detailsdData, detailsdData.compId)
-        // console.log('detailsdData, detailsdData.compId', detailsdData, detailsdData.compId)
     }
-    // console.log('VendorDetails------->', detailsdData, detailsdData.compId)
-
     return (
         <DetailsDiv>
             <Goback onClick={e => history.goBack()}>

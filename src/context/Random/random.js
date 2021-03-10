@@ -1,12 +1,19 @@
 import React, { createContext, useState } from 'react'
 
-export const VendorContext = createContext()
+export const VendorCustomerContext = createContext()
 
-export const VendorProvider = ({ children }) => {
+export const VendorCustomerProvider = ({ children }) => {
     const [vendors, setVendors] = useState()
+    const [customers, setCustomers] = useState()
+    
     return (
-        <VendorContext.Provider value={{vendors, setVendors}}>
+        <VendorCustomerContext.Provider value={{
+            vendors,
+            setVendors,
+            customers, 
+            setCustomers
+            }}>
             {children}
-        </VendorContext.Provider>
+        </VendorCustomerContext.Provider>
     )
 }

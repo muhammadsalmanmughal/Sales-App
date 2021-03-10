@@ -170,18 +170,6 @@ const createNewCustomer = (customerDetails, customerId) => {
     })
 }
 
-const updateVendor = () => {
-  let docRef = firebase.firestore().collection("Vendor").doc();
-  // firebase.firestore().collection("Vendor").get().then(function (doc) {
-  // let cT = doc.data().companyName;
-  // docRef.update({
-  //   currentToken: cT,
-  // });
-  // });
-  console.log('update doc------->', docRef)
-
-};
-
 const getSpecificData = (id , Cname) => {
   
   return firebase
@@ -256,6 +244,22 @@ const UpdateVendor = (vendorDetail, id) => {
           })
 }  
 
+const CreateRFQ = (newList,RFQiD,fullDate,selectVednor)=>{
+console.log('Create Rfq Utils',newList,RFQiD,fullDate,selectVednor)
+const RfqObj={
+  newList,
+  RFQiD,
+  fullDate,
+  selectVednor
+}
+firebase.firestore().collection('RFQ').add(RfqObj)
+.then((response)=>{
+  console.log('Firebase response RFQ', response)
+})
+.catch((error)=>{
+  console.log('Error MEssage', error.message)
+})
+}
 
 export {
   createUser,
@@ -263,8 +267,8 @@ export {
   getUserData,
   createVendor,
   createNewCustomer,
-  updateVendor,
   getSpecificData,
   UpdateCustomer,
-  UpdateVendor
+  UpdateVendor,
+  CreateRFQ
 }

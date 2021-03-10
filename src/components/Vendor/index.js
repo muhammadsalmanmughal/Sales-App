@@ -76,17 +76,17 @@ const Vendor = () => {
 
     const [vendorId, setVendorId] = useState('')
 
-    const venId = () => {
-        setVendorId(uuidv4())
-    }
+    // const venId = () => {
+    //     setVendorId(uuidv4())
+    // }
     const onSubmit = (values,onSubmitProps) => {
         createVendor(values, vendorId)
         onSubmitProps.resetForm()
     }
-    useEffect(() => {
-        venId()
-        updateVendor()
-    }, [])
+    // useEffect(() => {
+    //     venId()
+    //     updateVendor()
+    // }, [])
 
     const formik = useFormik({
         initialValues,
