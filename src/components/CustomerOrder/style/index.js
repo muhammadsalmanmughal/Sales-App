@@ -4,8 +4,10 @@ export const DateHeader = styled.div`
 display: flex;
 `
 export const PageHeadingDiv = styled.div`
-display: flex;
+justify-content:flex-start;
+background-color:red;
 `
 export const DateDiv = styled.div`
-display: flex;
+justify-content:flex-end;
+background-color:red;
 `

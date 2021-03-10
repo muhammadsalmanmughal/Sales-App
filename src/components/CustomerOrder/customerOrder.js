@@ -4,6 +4,7 @@ import { getSpecificData } from '../../Utils/utils'
 import { CaretLeftOutlined } from "@ant-design/icons";
 import { Goback } from '../Details/styles/index'
 import {CurrentDate} from '../../Utils/utils'
+import {DateHeader,PageHeadingDiv,DateDiv} from './style/index'
 import {
     Divider,
     Row,
@@ -45,13 +46,13 @@ const CustomerOrder = () => {
             </Goback>
             <Row gutter={[10,10]}>
                 <Col xs={24} sm={12}>
-            <h2>
-                customer order
-            </h2>
+            <h3>
+                Customer Order
+            </h3>
                 </Col>
                 <Col xs={24} sm={12}>
             <h3>
-                {utc}
+               Date: {utc}
             </h3>
                 </Col>
             </Row>
