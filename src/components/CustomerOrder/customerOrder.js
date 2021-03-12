@@ -3,15 +3,12 @@ import { useParams, useHistory } from 'react-router-dom'
 import { getSpecificData } from '../../Utils/utils'
 import { CaretLeftOutlined } from "@ant-design/icons";
 import { Goback } from '../Details/styles/index'
-import {CurrentDate} from '../../Utils/utils'
-import {DateHeader,PageHeadingDiv,DateDiv} from './style/index'
 import {
     Divider,
     Row,
     Col,
     Input,
-    Button,
-    Switch
+    Button
 } from 'antd';
 const CustomerOrder = () => {
     const [detailsdData, setDetailsData] = useState(
@@ -30,6 +27,7 @@ const CustomerOrder = () => {
             secondaryPhone: ""
         }
     )
+    const [orderDetails, setOrderDetails] = useState()
     const { slug, Cname } = useParams()
     const history = useHistory();
     useEffect(() => {
@@ -37,23 +35,28 @@ const CustomerOrder = () => {
             setDetailsData(data[0])
         })
     }, [])
-    const  utc = new Date().toJSON().slice(0,10).replace(/-/g,'/');
-    console.log('customer order data', detailsdData);
+    const utc = new Date().toJSON().slice(0, 10).replace(/-/g, '/');
+
+    const CreateCustomerOrder = () => {
+        console.log(detailsdData && detailsdData, orderDetails)
+        setOrderDetails('')
+    }
+
     return (
         <div>
-             <Goback onClick={e => history.goBack()}>
+            <Goback onClick={e => history.goBack()}>
                 <CaretLeftOutlined /> GoBack
             </Goback>
-            <Row gutter={[10,10]}>
+            <Row gutter={[10, 10]}>
                 <Col xs={24} sm={12}>
-            <h3>
-                Customer Order
+                    <h3>
+                        Customer Order
             </h3>
                 </Col>
                 <Col xs={24} sm={12}>
-            <h3>
-               Date: {utc}
-            </h3>
+                    <h3>
+                        Date: {utc}
+                    </h3>
                 </Col>
             </Row>
             <Divider />
@@ -84,7 +87,7 @@ const CustomerOrder = () => {
                 </Col>
             </Row>
             <Row gutter={[10, 10]}>
-            <Col xs={24} sm={24}>
+                <Col xs={24} sm={24}>
                     <h4>Address:</h4>
                     {
                         <Input type='text' value={detailsdData.billToAddress}
@@ -94,7 +97,7 @@ const CustomerOrder = () => {
                 </Col>
             </Row>
             <Row gutter={[10, 10]}>
-            <Col xs={24} sm={8}>
+                <Col xs={24} sm={8}>
                     <h4>State</h4>
                     {
                         <Input type='text' value={detailsdData.state}
@@ -119,13 +122,25 @@ const CustomerOrder = () => {
                     }
                 </Col>
             </Row>
-            <Row gutter={[10,10]}>
-                    <Col xs={24} sm={24}>
+            <Row gutter={[10, 10]}>
+                <Col xs={24} sm={24}>
                     <h4>Discription</h4>
                     {
-                        <Input.TextArea rows={7}/>
+                        <Input.TextArea
+                            value={orderDetails}
+                            rows={7}
+                            onChange={e => setOrderDetails(e.target.value)} />
                     }
-                    </Col>
+                </Col>
+            </Row>
+            <Row gutter={[10, 10]}>
+                <Col xs={24} sm={16}>
+                    <Button 
+                    disabled={!orderDetails}
+                    onClick={CreateCustomerOrder}>
+                        CreateCustomerOrder
+    </Button>
+                </Col>
             </Row>
         </div>
     )
