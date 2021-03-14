@@ -49,9 +49,9 @@ const CustomerOrder = () => {
             </Goback>
             <Row gutter={[10, 10]}>
                 <Col xs={24} sm={12}>
-                    <h3>
+                    <h2>
                         Customer Order
-            </h3>
+            </h2>
                 </Col>
                 <Col xs={24} sm={12}>
                     <h3>

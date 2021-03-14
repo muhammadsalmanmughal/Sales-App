@@ -28,17 +28,17 @@ const RequestForQuatation = () => {
   const [radioValue, setRadioValue] = useState('A-class');
   const [selectedVendor, setSelectedVendor] = useState()
   const [isDisabled, setIsDisabled] = useState(false)
-  const { vendors } = useContext(VendorCustomerContext)
+  // const { vendors } = useContext(VendorCustomerContext)
 
   const shortid = require('shortid')
   const RFQiD = shortid.generate()
 
   const { Option } = Select;
 
-  function selectVednor(value) {
-    // console.log(`selected----> ${value}`);
-    setSelectedVendor(value)
-  }
+  // function selectVednor(value) {
+  //   // console.log(`selected----> ${value}`);
+  //   setSelectedVendor(value)
+  // }
 
   const selectQuality = e => {
     // console.log('radio checked', e.target.value);
@@ -75,12 +75,12 @@ console.log('quantity',quantity);
   }
 
   const generateRFQ = () => {
-    if (selectVednor == null) {
-      message.error('Please select Vendor')
-    }
-    else {
+    // if (selectVednor == null) {
+    //   message.error('Please select Vendor')
+    // }
+    // else {
       CreateRFQ(itemsList, RFQiD, fullDate, selectedVendor)
-    }
+    // }
   }
   console.log('itemList', itemsList);
   return (
@@ -88,7 +88,7 @@ console.log('quantity',quantity);
       <h1>Request For Quotation</h1>
       <Divider />
       <Row gutter={[10, 10]}>
-        <Col xs={24} sm={16}>
+        {/* <Col xs={24} sm={16}>
           <label>Select Vender: </label>
           <Select xs={24} sm={16} style={{ width: '200px' }}
             onChange={selectVednor}
@@ -100,17 +100,18 @@ console.log('quantity',quantity);
             </Select.Option>
             )}
           </Select>
-        </Col>
+        </Col> */}
         <Col xs={24} sm={8}>
           <h4>
             RFQ-ID:{RFQiD}
           </h4>
         </Col>
-      </Row>
-      <Row gutter={[10, 10]}>
         <Col xs={24} sm={12}>
           <h4>Date: {fullDate}</h4>
         </Col>
+      </Row>
+      <Row gutter={[10, 10]}>
+        
         <Col xs={24} sm={12}>
           {/* <h4>RFQ-ID: <Id /></h4> */}
         </Col>
@@ -186,7 +187,7 @@ console.log('quantity',quantity);
       </ul>
       <Row>
         <Col xs={24} sm={12}>
-          <Button onClick={generateRFQ} disabled={!isDisabled}>Create RFQ</Button>
+          <Button onClick={generateRFQ}>Create RFQ</Button>
         </Col>
       </Row>
     </div>
