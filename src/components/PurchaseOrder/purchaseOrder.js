@@ -26,7 +26,6 @@ const PurchaseOrder = () => {
     const [itemsList, setItemsList] = useState([])
     const [radioValue, setRadioValue] = useState('A-class');
     const { vendors } = useContext(VendorCustomerContext)
-    const [isDisabled, setIsDisabled] = useState(false)
 
 
     const utc = new Date().toJSON().slice(0, 10).replace(/-/g, '/');
@@ -158,7 +157,6 @@ const PurchaseOrder = () => {
             <Row>
                 <Col xs={24} sm={12}>
                     <Button 
-                    disabled={!isDisabled}
                     onClick={generatePurchaseOrder}
                     >Create Purchase Order</Button>
                 </Col>

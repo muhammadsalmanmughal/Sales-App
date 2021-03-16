@@ -3,6 +3,7 @@ import Vendor from '../../components/Vendor/index'
 import Customer from '../../components/Cutomer/cutomer';
 import RequestForQuotation from '../../components/RequestForQuotation/requestForQuotation'
 import PurchaseOrder from '../../components/PurchaseOrder/purchaseOrder'
+import Inventory from '../../components/Inventory/inventory'
 const routes = [
     {
         path: '/dashboard',
@@ -28,6 +29,11 @@ const routes = [
         path: '/purchase-order',
         name: 'Purchase Order',
         component: PurchaseOrder
+    },
+    {
+        path: '/inventory',
+        name: 'Inventory',
+        component: Inventory
     }
 
 
