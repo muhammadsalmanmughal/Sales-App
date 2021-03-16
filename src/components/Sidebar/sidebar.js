@@ -1,15 +1,10 @@
-import React, { useState } from 'react'
-import { Layout, Menu, PageHeader } from 'antd';
-// import './sidebar.css'
+import React from 'react'
+import { Layout, Menu} from 'antd';
 import routes from '../../config/Route/routes'
 import { Link } from 'react-router-dom';
 const SideBar = () => {
-    const { Content, Footer, Sider } = Layout;
-    const [collapsed, setCollapsed] = useState()
-    // const onCollapse = collapsed => {
-    //     console.log(collapsed);
-    //     setCollapsed(collapsed)
-    // };
+    const {Sider } = Layout;
+
 
     return (
         <Layout style={{ minHeight: '100vh' }}>
@@ -32,8 +27,6 @@ const SideBar = () => {
                             </Menu.Item>
                         })
                     }
-
-
                 </Menu>
             </Sider>
         </Layout>

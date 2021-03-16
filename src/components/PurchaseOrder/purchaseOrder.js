@@ -25,8 +25,9 @@ const PurchaseOrder = () => {
     const [quantity, setQuantity] = useState()
     const [itemsList, setItemsList] = useState([])
     const [radioValue, setRadioValue] = useState('A-class');
-    const [isDisable, setIsDisable] = useState(false)
     const { vendors } = useContext(VendorCustomerContext)
+    const [isDisabled, setIsDisabled] = useState(false)
+
 
     const utc = new Date().toJSON().slice(0, 10).replace(/-/g, '/');
     const shortid = require('shortid')
@@ -62,21 +63,22 @@ const PurchaseOrder = () => {
     };
     const generatePurchaseOrder = () => {
         CreatePurchaseOrder(itemsList, POiD, utc, selectedVendor)
+        setItemsList([])
     }
     return (
         <div>
             <h1>Purchase Order</h1>
             <Divider />
             <Row gutter={[10, 10]}>
-                    <Col xs={24} sm={20}>
-                        <h4>
-                            RFQ-ID:{POiD}
-                        </h4>
-                    </Col>
-                    <Col xs={24} sm={4}>
-                        <h4>Date: {utc}</h4>
-                    </Col>
-                </Row>
+                <Col xs={24} sm={20}>
+                    <h4>
+                        RFQ-ID:{POiD}
+                    </h4>
+                </Col>
+                <Col xs={24} sm={4}>
+                    <h4>Date: {utc}</h4>
+                </Col>
+            </Row>
             <Row gutter={[10, 10]}>
                 <Col xs={24} sm={16}>
                     <label>Select Vender: </label>
@@ -155,7 +157,10 @@ const PurchaseOrder = () => {
             </ul>
             <Row>
                 <Col xs={24} sm={12}>
-                    <Button onClick={generatePurchaseOrder}>Create Purchase Order</Button>
+                    <Button 
+                    disabled={!isDisabled}
+                    onClick={generatePurchaseOrder}
+                    >Create Purchase Order</Button>
                 </Col>
             </Row>
         </div>

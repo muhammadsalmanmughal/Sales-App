@@ -6,37 +6,26 @@ import PurchaseOrder from '../../components/PurchaseOrder/purchaseOrder'
 const routes = [
     {
         path: '/dashboard',
-        // sidebar: true,
         name: 'Dashboard',
         component: Dashboard
     },
     {
         path: '/vendor',
-        // sidebar: true,
         name: 'Vendor',
         component: Vendor
     },
     {
         path: '/customer',
-        // sidebar: true,
         name: 'Customer',
         component: Customer
     },
     {
         path: '/request-for-quotation',
-        // sidebar: true,
         name: 'Request For Quotation',
         component: RequestForQuotation
     },
-    // {
-    //     path: '/request-for-quatation',
-    //     // sidebar: true,
-    //     name: 'Request For Quataion',
-    //     component: RequestForQuatation
-    // },
     {
         path: '/purchase-order',
-        // sidebar: true,
         name: 'Purchase Order',
         component: PurchaseOrder
     }

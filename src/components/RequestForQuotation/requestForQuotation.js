@@ -19,29 +19,18 @@ import {
   Radio,
   Select
 } from 'antd'
-import { generate } from 'shortid'
 
 const RequestForQuatation = () => {
   const [items, setItems] = useState()
   const [quantity, setQuantity] = useState()
   const [itemsList, setItemsList] = useState([])
   const [radioValue, setRadioValue] = useState('A-class');
-  const [selectedVendor, setSelectedVendor] = useState()
-  const [isDisabled, setIsDisabled] = useState(false)
   // const { vendors } = useContext(VendorCustomerContext)
 
   const shortid = require('shortid')
   const RFQiD = shortid.generate()
 
-  const { Option } = Select;
-
-  // function selectVednor(value) {
-  //   // console.log(`selected----> ${value}`);
-  //   setSelectedVendor(value)
-  // }
-
   const selectQuality = e => {
-    // console.log('radio checked', e.target.value);
     setRadioValue(e.target.value);
   };
 console.log('items',items);
@@ -50,7 +39,6 @@ console.log('quantity',quantity);
 const utc = new Date().toJSON().slice(0, 10).replace(/-/g, '/');
 
   const CreateList = () => {
-    // setIsDisabled(false)
     if (items == null) {
       message.error('Items can not left Empty')
     }
@@ -71,12 +59,8 @@ const utc = new Date().toJSON().slice(0, 10).replace(/-/g, '/');
   }
 
   const generateRFQ = () => {
-    // if (selectVednor == null) {
-    //   message.error('Please select Vendor')
-    // }
-    // else {
       CreateRFQ(itemsList, RFQiD, utc)
-    // }
+      setItemsList([])
   }
   console.log('itemList', itemsList);
   return (
