@@ -46,12 +46,8 @@ const RequestForQuatation = () => {
   };
 console.log('items',items);
 console.log('quantity',quantity);
-  const today = new Date()
-  let year = today.getFullYear();
-  let todayDate = String(today.getDate()).padStart(2, '0')
-  let todayMonth = String(today.getMonth()).padStart(2, '0')
-  const fullDate = `${todayDate}/${todayMonth}/${year}`
 
+const utc = new Date().toJSON().slice(0, 10).replace(/-/g, '/');
 
   const CreateList = () => {
     // setIsDisabled(false)
@@ -79,7 +75,7 @@ console.log('quantity',quantity);
     //   message.error('Please select Vendor')
     // }
     // else {
-      CreateRFQ(itemsList, RFQiD, fullDate, selectedVendor)
+      CreateRFQ(itemsList, RFQiD, utc)
     // }
   }
   console.log('itemList', itemsList);
@@ -88,26 +84,13 @@ console.log('quantity',quantity);
       <h1>Request For Quotation</h1>
       <Divider />
       <Row gutter={[10, 10]}>
-        {/* <Col xs={24} sm={16}>
-          <label>Select Vender: </label>
-          <Select xs={24} sm={16} style={{ width: '200px' }}
-            onChange={selectVednor}
-          >
-            {vendors && vendors.map((name, key) => <Select.Option
-              value={name.companyName}
-            >
-              {name.companyName}
-            </Select.Option>
-            )}
-          </Select>
-        </Col> */}
         <Col xs={24} sm={8}>
           <h4>
             RFQ-ID:{RFQiD}
           </h4>
         </Col>
         <Col xs={24} sm={12}>
-          <h4>Date: {fullDate}</h4>
+          <h4>Date: {utc}</h4>
         </Col>
       </Row>
       <Row gutter={[10, 10]}>

@@ -1,5 +1,6 @@
 import React, { useState, useContext } from 'react'
 import { VendorCustomerContext } from '../../context/Random/random'
+import { CreatePurchaseOrder } from '../../Utils/utils'
 import {
     Divider,
     message,
@@ -16,7 +17,7 @@ import {
     QuantityAndButtonDiv,
     Quantity,
     DeleteButton
-  } from '../RequestForQuotation/style/index'
+} from '../RequestForQuotation/style/index'
 
 const PurchaseOrder = () => {
     const [selectedVendor, setSelectedVendor] = useState()
@@ -24,8 +25,13 @@ const PurchaseOrder = () => {
     const [quantity, setQuantity] = useState()
     const [itemsList, setItemsList] = useState([])
     const [radioValue, setRadioValue] = useState('A-class');
-    const [isDisable , setIsDisable] = useState(false)
+    const [isDisable, setIsDisable] = useState(false)
     const { vendors } = useContext(VendorCustomerContext)
+
+    const utc = new Date().toJSON().slice(0, 10).replace(/-/g, '/');
+    const shortid = require('shortid')
+    const POiD = shortid.generate()
+
     function selectVednor(value) {
         // console.log(`selected----> ${value}`);
         setSelectedVendor(value)
@@ -53,11 +59,24 @@ const PurchaseOrder = () => {
     const selectQuality = e => {
         // console.log('radio checked', e.target.value);
         setRadioValue(e.target.value);
-      };
+    };
+    const generatePurchaseOrder = () => {
+        CreatePurchaseOrder(itemsList, POiD, utc, selectedVendor)
+    }
     return (
         <div>
             <h1>Purchase Order</h1>
             <Divider />
+            <Row gutter={[10, 10]}>
+                    <Col xs={24} sm={20}>
+                        <h4>
+                            RFQ-ID:{POiD}
+                        </h4>
+                    </Col>
+                    <Col xs={24} sm={4}>
+                        <h4>Date: {utc}</h4>
+                    </Col>
+                </Row>
             <Row gutter={[10, 10]}>
                 <Col xs={24} sm={16}>
                     <label>Select Vender: </label>
@@ -72,11 +91,6 @@ const PurchaseOrder = () => {
                         )}
                     </Select>
                 </Col>
-                {/* <Col xs={24} sm={8}>
-          <h4>
-            RFQ-ID:{RFQiD}
-          </h4>
-        </Col> */}
             </Row>
             <Divider>Add Items with quantity</Divider>
             <Row gutter={[10, 10]}>
@@ -108,10 +122,7 @@ const PurchaseOrder = () => {
                 <Col xs={24} sm={4}>
 
                     <Button
-                    disabled={
-                        items.length < 1 && quantity.length < 1 
-                    } 
-                    onClick={CreateList}
+                        onClick={CreateList}
                     >Add</Button>
                 </Col>
 
@@ -144,7 +155,7 @@ const PurchaseOrder = () => {
             </ul>
             <Row>
                 <Col xs={24} sm={12}>
-                    <Button >Create Purchase Order</Button>
+                    <Button onClick={generatePurchaseOrder}>Create Purchase Order</Button>
                 </Col>
             </Row>
         </div>

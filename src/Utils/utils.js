@@ -111,7 +111,7 @@ const createVendor = (vendorDetails, vendorId) => {
     email,
     city,
     postalCode,
-    iD:''
+    iD: ''
   }
 
   firebase.firestore().collection("Vendor").add(
@@ -119,7 +119,7 @@ const createVendor = (vendorDetails, vendorId) => {
   )
     .then((response) => {
       console.log('respnse', response.id)
-      firebase.firestore().collection("Vendor").doc(response.id).update({'iD': response.id})
+      firebase.firestore().collection("Vendor").doc(response.id).update({ 'iD': response.id })
 
       message.success('Vendor Created')
     }).catch((error) => {
@@ -143,7 +143,7 @@ const createNewCustomer = (customerDetails, customerId) => {
     postalCode
   } = customerDetails
 
-  const customerObj={
+  const customerObj = {
     businessName,
     billToAddress,
     phone,
@@ -153,14 +153,14 @@ const createNewCustomer = (customerDetails, customerId) => {
     responsiblePhone,
     secondaryPhone,
     postalCode,
-    iD:''
+    iD: ''
   }
   // console.log(businessName, ownerFirstName, ownerLastName, billToAddress, phone, email, city, postalCode);
 
   firebase.firestore().collection("Customer").add(customerObj)
     .then((response) => {
       console.log('respnse', response.id)
-      firebase.firestore().collection("Customer").doc(response.id).update({'iD': response.id})
+      firebase.firestore().collection("Customer").doc(response.id).update({ 'iD': response.id })
 
       console.log('customer response', response.id);
       message.success('Customer Created')
@@ -170,8 +170,8 @@ const createNewCustomer = (customerDetails, customerId) => {
     })
 }
 
-const getSpecificData = (id , Cname) => {
-  
+const getSpecificData = (id, Cname) => {
+
   return firebase
     .firestore()
     .collection(Cname)
@@ -201,64 +201,79 @@ const getSpecificData = (id , Cname) => {
 const UpdateCustomer = (customerDetail, id) => {
   // console.log('firebase=======>',customerDetail, id)
   firebase.firestore().collection("Customer").doc(id)
-          .update({
-            businessName: customerDetail.businessName,
-            companyName: customerDetail.companyName,
-            state: customerDetail.state,
-            city: customerDetail.city,
-            billToAddress: customerDetail.billToAddress,
-            postalCode: customerDetail.postalCode,
-            phone:customerDetail.phone,
-            email:customerDetail.email,
-            secondaryPhone: customerDetail.secondaryPhone,
-            responsibleName: customerDetail.responsibleName,
-            responsiblePhone: customerDetail.responsiblePhone
-          })
-          .then(()=>{
-            message.success('Data updated')
-          })
-          .catch((error) => {
-            message.error(error.message)
-          })
+    .update({
+      businessName: customerDetail.businessName,
+      companyName: customerDetail.companyName,
+      state: customerDetail.state,
+      city: customerDetail.city,
+      billToAddress: customerDetail.billToAddress,
+      postalCode: customerDetail.postalCode,
+      phone: customerDetail.phone,
+      email: customerDetail.email,
+      secondaryPhone: customerDetail.secondaryPhone,
+      responsibleName: customerDetail.responsibleName,
+      responsiblePhone: customerDetail.responsiblePhone
+    })
+    .then(() => {
+      message.success('Data updated')
+    })
+    .catch((error) => {
+      message.error(error.message)
+    })
 }
 
 const UpdateVendor = (vendorDetail, id) => {
   // console.log('vendorDetail, id--------->', vendorDetail, id)
   firebase.firestore().collection("Vendor").doc(id)
-          .update({
-            address: vendorDetail.address,
-            ownerFirstName: vendorDetail.ownerFirstName,
-            ownerLastName: vendorDetail.ownerLastName,
-            companyName: vendorDetail.companyName,
-            state: vendorDetail.state,
-            city: vendorDetail.city,
-            postalCode: vendorDetail.postalCode,
-            phone:vendorDetail.phone,
-            email:vendorDetail.email
-          })
-          .then(()=>{
-            message.success('Data updated')
-          })
-          .catch((error) => {
-            message.error(error.message)
-          })
-}  
-
-const CreateRFQ = (newList,RFQiD,fullDate,selectVednor)=>{
-console.log('Create Rfq Utils',newList,RFQiD,fullDate,selectVednor)
-const RfqObj={
-  newList,
-  RFQiD,
-  fullDate,
-  selectVednor
+    .update({
+      address: vendorDetail.address,
+      ownerFirstName: vendorDetail.ownerFirstName,
+      ownerLastName: vendorDetail.ownerLastName,
+      companyName: vendorDetail.companyName,
+      state: vendorDetail.state,
+      city: vendorDetail.city,
+      postalCode: vendorDetail.postalCode,
+      phone: vendorDetail.phone,
+      email: vendorDetail.email
+    })
+    .then(() => {
+      message.success('Data updated')
+    })
+    .catch((error) => {
+      message.error(error.message)
+    })
 }
-firebase.firestore().collection('RFQ').add(RfqObj)
-.then((response)=>{
-  console.log('Firebase response RFQ', response)
-})
-.catch((error)=>{
-  console.log('Error MEssage', error.message)
-})
+
+const CreateRFQ = (newList, RFQiD, fullDate) => {
+  console.log('Create Rfq Utils', newList, RFQiD, fullDate)
+  const RfqObj = {
+    newList,
+    RFQiD,
+    fullDate
+  }
+  firebase.firestore().collection('RFQ').add(RfqObj)
+    .then((response) => {
+      message.success('RFQ created')
+    })
+    .catch((error) => {
+      message.error(error.message)
+    })
+}
+const CreatePurchaseOrder = (newList, POiD, fullDate, selectVendor) => {
+  console.log('Purchase Order Data', newList, POiD, fullDate, selectVendor)
+  const PO_object = {
+    newList,
+    POiD,
+    fullDate,
+    selectVendor
+  }
+  firebase.firestore().collection('PurchaseOrder').add(PO_object)
+    .then((response) => {
+      message.success('Purchase order created')
+    })
+    .catch((error) => {
+      message.error(error.message)
+    })
 }
 export {
   createUser,
@@ -269,5 +284,6 @@ export {
   getSpecificData,
   UpdateCustomer,
   UpdateVendor,
-  CreateRFQ
+  CreateRFQ,
+  CreatePurchaseOrder
 }
