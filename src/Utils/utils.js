@@ -259,6 +259,7 @@ const CreateRFQ = (newList, RFQiD, fullDate) => {
       message.error(error.message)
     })
 }
+
 const CreatePurchaseOrder = (newList, POiD, fullDate, selectVendor) => {
   console.log('Purchase Order Data', newList, POiD, fullDate, selectVendor)
   const PO_object = {
@@ -275,6 +276,20 @@ const CreatePurchaseOrder = (newList, POiD, fullDate, selectVendor) => {
       message.error(error.message)
     })
 }
+
+const CreateInventory = (itemsList) => {
+  console.log('list of inventory items', itemsList)
+  const itemsObj ={
+    itemsList
+  }
+  firebase.firestore().collection('Item_Master').add(itemsObj)
+    .then((response) => {
+      message.success('Items added succesfully')
+    })
+    .catch((error) => {
+      message.error(error.message)
+    })
+}
 export {
   createUser,
   loginUser,
@@ -285,5 +300,6 @@ export {
   UpdateCustomer,
   UpdateVendor,
   CreateRFQ,
-  CreatePurchaseOrder
+  CreatePurchaseOrder,
+  CreateInventory
 }
