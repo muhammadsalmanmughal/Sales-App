@@ -3,10 +3,10 @@ import { useFormik } from 'formik'
 import { v4 as uuidv4 } from 'uuid';
 import { Label } from '../Textbox/style/index'
 import { validationSchema } from './validationSchema'
-import {createNewCustomer} from '../../Utils/utils'
+import { createNewCustomer } from '../../Utils/utils'
 import ErrorText from '../FormError/formError'
 import AllCustomers from '../AllCustomers/allCustomers';
-import { VendorMainDiv, FormDiv} from '../Vendor/style/index'
+import { VendorMainDiv, FormDiv } from '../Vendor/style/index'
 import {
     Divider,
     Tabs,
@@ -25,17 +25,13 @@ const CreateCustomer = () => {
     const cusId = () => {
         setCustomerId(uuidv4())
     }
-
     useEffect(() => {
         cusId()
     }, [])
-
-    
-const onSubmit = (values, onSubmitProps) => {
-    createNewCustomer(values, customerId)
-    onSubmitProps.resetForm()
-}
-
+    const onSubmit = (values, onSubmitProps) => {
+        createNewCustomer(values, customerId)
+        onSubmitProps.resetForm()
+    }
     const initialValues = {
         businessName: '',
         billToAddress: '',
@@ -54,7 +50,7 @@ const onSubmit = (values, onSubmitProps) => {
         validationSchema,
         cusId
     })
-
+    
     function callback(key) {
         console.log(key);
     }
@@ -72,7 +68,7 @@ const onSubmit = (values, onSubmitProps) => {
                             onSubmit={formik.handleSubmit}
                         >
                             <FormDiv>
-                               
+
                                 <Row gutter={[10, 10]}>
                                     <Col xs={24} sm={24}>
                                         <Label>
@@ -216,7 +212,7 @@ const onSubmit = (values, onSubmitProps) => {
                                             ? <ErrorText text={formik.errors.city} />
                                             : null}
                                     </Col>
-                                   
+
 
                                 </Row>
                                 <Col xs={24} sm={16}>
@@ -229,8 +225,8 @@ const onSubmit = (values, onSubmitProps) => {
                 </TabPane>
 
                 <TabPane tab="All Customer" key="2">
-                  <AllCustomers/>
-             </TabPane>
+                    <AllCustomers />
+                </TabPane>
 
             </Tabs>
         </div>

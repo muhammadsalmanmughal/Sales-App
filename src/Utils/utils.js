@@ -277,10 +277,11 @@ const CreatePurchaseOrder = (newList, POiD, fullDate, selectVendor) => {
     })
 }
 
-const CreateInventory = (itemsList) => {
-  console.log('list of inventory items', itemsList)
+const CreateInventory = (itemsName,Type) => {
+  console.log('list of inventory items', itemsName, Type)
   const itemsObj ={
-    itemsList
+    itemsName, 
+    Type
   }
   firebase.firestore().collection('Item_Master').add(itemsObj)
     .then((response) => {
@@ -290,6 +291,7 @@ const CreateInventory = (itemsList) => {
       message.error(error.message)
     })
 }
+
 export {
   createUser,
   loginUser,

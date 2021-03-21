@@ -5,7 +5,7 @@ import { EmptyDiv } from './style/index'
 import { Empty, Table, Space, Button } from 'antd';
 import loader from '../../assets/loader.gif'
 import { VendorCustomerContext } from '../../context/Random/random'
-import {TableDiv,LoaderDiv} from './style/index'
+import { TableDiv, LoaderDiv } from './style/index'
 
 const AllVendors = () => {
     const [isVendor, setIsVendor] = useState(false)
@@ -41,7 +41,7 @@ const AllVendors = () => {
                 // setIsVendor(true)
             });
     }
-
+console.log('All Vendors-------->', vendors);
     const updateVendor = (e) => {
         console.log('update E', e)
     }
@@ -76,48 +76,18 @@ const AllVendors = () => {
             title: 'Action',
             key: 'action',
             render: (vendors) => (
-              <Space size="middle">
-                <Button
-                onClick={() =>
-                    history.push(`/home/vendor-details/${vendors.compId}/${'Vendor'}`)}
-                >Details</Button>
-              </Space>
+                <Space size="middle">
+                    <Button
+                        onClick={() =>
+                            history.push(`/home/vendor-details/${vendors.compId}/${'Vendor'}`)}
+                    >Details</Button>
+                </Space>
             ),
-          },
+        },
     ];
     const checkVendor = () => {
         if (isVendor) {
             return <TableDiv>
-                {/* <Table>
-                    <TableHead>
-                        <TableHeading>Company</TableHeading>
-                        <TableHeading>FirstName</TableHeading>
-                        <TableHeading>Phone</TableHeading>
-                        <TableHeading>City</TableHeading>
-                    </TableHead>
-                    <TableBody>
-                        {allVendors &&
-                            allVendors.map((vendor, index) => {
-                                return (
-                                    <TableRow>
-                                        <TableData>[{vendor.companyName}]</TableData>
-                                        <TableData>[{vendor.ownerFirstName}]</TableData>
-                                        <TableData>[{vendor.phone}]</TableData>
-                                        <TableData>[{vendor.city}]</TableData>
-                                      
-                                        <TableData>
-                                            <button 
-                                            onClick={() =>
-                                                history.push(`/home/vendor-details/${vendor.compId}/${'Vendor'}`)}
-                                            >
-                                                Details
-                                            </button>
-                                        </TableData>
-                                    </TableRow>
-                                );
-                            })}
-                    </TableBody>
-                </Table> */}
                 <Table dataSource={vendors} columns={columns} />;
             </TableDiv>
         }
