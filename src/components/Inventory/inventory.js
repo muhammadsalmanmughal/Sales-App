@@ -1,6 +1,8 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
+import firebase from '../../config/Firebase/firebase';
+import { useHistory } from 'react-router-dom'
 import { CreateInventory } from '../../Utils/utils'
-import AllInventory from './allInventory'
+import { PlusSquareOutlined } from "@ant-design/icons";
 import {
     Divider,
     message,
@@ -9,30 +11,23 @@ import {
     Input,
     Button,
     Select,
-    Tabs,
-    Modal
+    Modal,
+    Table,
+    Space,
 } from 'antd'
-import {
-    ListItem,
-    ItemDiv,
-    QuantityAndButtonDiv,
-    Quantity,
-    DeleteButton
-} from '../RequestForQuotation/style/index'
 const Inventory = () => {
     const [itemsName, setItemsName] = useState()
-    const [itemSize, setItemSize] = useState()
-    const [itemsList, setItemsList] = useState([])
     const [unitOfMeassure, setUnitOfMeassure] = useState()
-    //-------------------------------------------------------
+    const [inventoryItems, setInventoryItems] = useState()
+    //#region  modal
     const [isModalVisible, setIsModalVisible] = useState(false);
     const showModal = () => {
         setIsModalVisible(true);
     };
 
     const handleOk = () => {
-        if(!itemsName) return message.error('Items can not be left empty')
-        if(!unitOfMeassure) return message.error('Select Unit of Meassure')
+        if (!itemsName) return message.error('Items can not be left empty')
+        if (!unitOfMeassure) return message.error('Select Unit of Meassure')
         CreateInventory(itemsName, unitOfMeassure)
         setItemsName('')
         // setIsModalVisible(false);
@@ -41,31 +36,11 @@ const Inventory = () => {
     const handleCancel = () => {
         setIsModalVisible(false);
     };
-    //-------------------------------------------------------
-    const { Option } = Select;
-    const CreateList = () => {
-        // setIsDisabled(false)
-        if (itemsName == null) {
-            message.error('Items can not left Empty')
-        }
-        else if (isNaN(itemSize) || itemSize.length > 3) {
-            message.error('Quantity amount not support')
-        }
-        else if (unitOfMeassure == null) {
-            message.error('Please select unit of measure')
-        }
+    //#endregion
 
-        else {
-            setItemsList([...itemsList, { itemsName, itemSize, unitOfMeassure }])
-            setItemsName('')
-            setItemSize('')
-        }
-    }
-    const deleteItem = (id) => {
-        const newList = [...itemsList]
-        newList.splice(id, 1)
-        setItemsList(newList);
-    }
+    const history = useHistory();
+    const { Option } = Select;
+
     function UOM(value) {
         console.log(`selected ${value}`);
         setUnitOfMeassure(value)
@@ -73,104 +48,97 @@ const Inventory = () => {
     function callback(key) {
         console.log(key);
     }
-    const AddItemsInInventory = () => {
-        CreateInventory(itemsList, unitOfMeassure)
-        setItemsList([])
-    }
-    const GetInventoryItems = () => {
 
+    const GetInventoryItems = () => {
+        // setIsLoading(true)
+        firebase
+            .firestore()
+            .collection("Item_Master")
+            .onSnapshot(function (querySnapshot) {
+                const inventoryList = [];
+                querySnapshot.forEach(function (doc) {
+                    console.log('functions Doc', doc.data)
+                    if (doc.exists) {
+                        const comp = doc.data();
+                        inventoryList.push({ ...comp, compId: doc.id });
+                    } else {
+                        // alert("No such document!");
+                        // <EmptyDiv>
+                        //     <Empty/>
+                        // </EmptyDiv>
+                    }
+                });
+                setInventoryItems(inventoryList)
+            });
     }
-    const { TabPane } = Tabs;
+    useEffect(() => {
+        GetInventoryItems()
+    }, [])
+    console.log('All Inventory------>', inventoryItems)
+
+    const columns = [
+        {
+            title: 'Items Name',
+            dataIndex: 'itemsName',
+            key: 'name',
+        },
+        {
+            title: 'Unit Of Meassure',
+            dataIndex: 'Type',
+            key: 'uom',
+        },
+        {
+            title: 'Quantity',
+            dataIndex: '0',
+            key: 'quantity',
+        },
+        {
+            title: 'Action',
+            key: 'action',
+            render: (vendors) => (
+                <Space size="middle">
+                    <Button
+                    // onClick={() =>
+                    //     history.push(`/home/vendor-details/${vendors.compId}/${'Vendor'}`)}
+                    >Details</Button>
+                </Space>
+            ),
+        },
+    ];
+
+
     return (
         <div>
             <h1>INVENTORY</h1>
             <Divider />
-            <Button onClick={showModal}>
+            <Button type='primary' onClick={showModal}>
+                <PlusSquareOutlined />
                 Add New Items
-      </Button>
+            </Button>
             <Modal title="Add New Item" visible={isModalVisible} onOk={handleOk} onCancel={handleCancel}>
-            <Row gutter={[10, 10]}>
-                <Col xs={24} sm={14}>
-                    <Input
-                        type='text'
-                        placeholder='Enter item name'
-                        value={itemsName}
-                        onChange={e => setItemsName(e.target.value)}
-                        maxLength={20}
-                    />
-                </Col>
-                <Col xs={24} sm={10}>
-                            <Select placeholder="Select Type"  onChange={UOM}>
-                                <Option value="packet">Packet</Option>
-                                <Option value="dozen">Dozen</Option>
-                            </Select>
+                <Row gutter={[10, 10]}>
+                    <Col xs={24} sm={14}>
+                        <Input
+                            type='text'
+                            placeholder='Enter item name'
+                            value={itemsName}
+                            onChange={e => setItemsName(e.target.value)}
+                            maxLength={20}
+                        />
+                    </Col>
+                    <Col xs={24} sm={10}>
+                        <Select placeholder="Select Type" onChange={UOM}>
+                            <Option value="packet">Packet</Option>
+                            <Option value="dozen">Dozen</Option>
+                            <Option value="single">Single</Option>
+                        </Select>
 
-                        </Col>
+                    </Col>
                 </Row>
             </Modal>
-            <Row gutter={[10, 10]}>
-                {/* <Col xs={24} sm={10}>
-                    <Input
-                        type='text'
-                        placeholder='Enter item name'
-                        value={itemsName}
-                        onChange={e => setItemsName(e.target.value)}
-                        maxLength={20}
-                    />
-                </Col> */}
-                {/* <Col xs={24} sm={6}>
-                            <Input
-                                type='text'
-                                placeholder='Enter item size'
-                                value={itemSize}
-                                onChange={e => setItemSize(e.target.value)}
-                                maxLength={3}
-                            />
-                        </Col>
-                        <Col xs={24} sm={4}>
-                            <Select placeholder="Select Type" style={{ width: 120 }} onChange={handleChange}>
-                                <Option value="packet">Packet</Option>
-                                <Option value="dozen">Dozen</Option>
-                            </Select>
-
-                        </Col>
-                        <Col xs={24} sm={4}>
-
-                            <Button
-                                onClick={CreateList}
-                            >Add</Button>
-                        </Col> */}
-            </Row>
-            <ul>
-                {
-                    itemsList.map((item, key) => {
-                        return (
-                            <>
-                                <ListItem key={key} xs={24} sm={12}>
-                                    <ItemDiv>
-                                        {item.itemsName}
-                                    </ItemDiv>
-                                    <QuantityAndButtonDiv>
-                                        <Quantity>
-                                            {item.itemSize}-
-                                                    {item.unitOfMeassure}
-                                        </Quantity>
-                                        <DeleteButton>
-                                            <Button danger onClick={() => deleteItem(key)}>Delete</Button>
-                                        </DeleteButton>
-                                    </QuantityAndButtonDiv>
-
-                                </ListItem>
-                            </>
-                        )
-                    })
-                }
-            </ul>
-            {/* <Row gutter={[10, 10]}>
-                <Col xs={24} sm={6}>
-                    <Button onClick={AddItemsInInventory}>Add item to Inventory</Button>
-                </Col>
-            </Row> */}
+            <div>
+                <Table dataSource={inventoryItems} columns={columns} />;
+            </div>
 
         </div>
     )
