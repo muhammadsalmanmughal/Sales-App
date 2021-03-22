@@ -30,7 +30,6 @@ const Inventory = () => {
         if (!unitOfMeassure) return message.error('Select Unit of Meassure')
         CreateInventory(itemsName, unitOfMeassure)
         setItemsName('')
-        // setIsModalVisible(false);
     };
 
     const handleCancel = () => {
