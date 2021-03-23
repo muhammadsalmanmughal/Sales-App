@@ -1,7 +1,9 @@
-import React, { useState } from 'react'
+import React, { useState, useContext, useEffect } from 'react'
 import firebase from '../../config/Firebase/firebase'
 import { useHistory } from 'react-router-dom'
+import { message } from 'antd';
 import { getUserData } from '../../Utils/utils'
+import { UserContext } from '../../context/UserContext/UserContext'
 import {
     Navbar,
     Logo,
@@ -23,7 +25,13 @@ const Header = () => {
     const [userLastName, setUserLastName] = useState('')
     const [userEmail, setUserEmail] = useState('')
     const [userImage, setUserImage] = useState(null)
+
+    const { user, setUser } = useContext(UserContext)
+
+    console.log('UserContext', UserContext)
     const history = useHistory();
+
+
     const onLogout = () => {
         firebase.auth().signOut()
             .then(() => {
@@ -32,22 +40,55 @@ const Header = () => {
                 history.replace('/')
             })
     }
-    
-   const userInfo = getUserData().then((data)=>{
-    //    console.log('user data ===========> $',data[0].name);
-       setUserFirstName(data[0].name)
-       setUserEmail(data[0].email)
-      setUserImage(data[0].url)
-    //    console.log('user data ===========> $',data[0].email);
-    //    console.log('user data ===========> $',data[0].name);
-   });
-   
-//    console.log('User data form header', userInfo)
+
+    const userInfo = getUserData().then((data) => {
+        console.log('user data ===========> $', data);
+        setUser(data)
+        // setUserFirstName(data[0].name)
+        // setUserEmail(data[0].email)
+        // setUserImage(data[0].url)
+    });
+// console.log('userO=Info------>',userInfo&&userInfo)
+    // const getUserData = () => {
+    //     const userID = localStorage.getItem('userId')
+    //     // console.log('USER ID============>',userID);
+    //     firebase
+    //         .firestore()
+    //         .collection("Users")
+    //         .where("userId", "==", userID)
+    //         .get()
+    //         .then(function (querySnapshot) {
+    //             const comlist = [];
+    //             querySnapshot.forEach(function (doc) {
+    //                 if (doc.exists) {
+    //                     const comp = doc.data();
+    //                     comlist.push({ ...comp, compId: doc.id });
+    //                 } else {
+    //                     message.info("No such document!");
+    //                 }
+    //             });
+    //             setUser(comlist)
+    //             // setCompanyList(comlist);
+    //             // setInitialCompany(comlist);
+    //             // console.log('data-------->', comlist)
+    //             // return comlist
+    //         })
+    //         .catch(function (error) {
+    //             console.log("Error getting documents: ", error);
+    //         });
+
+    // }
+    // useEffect(() => {
+    //     getUserData()
+    // }, [])
+
+
+    console.log('user data from context', user);
+
     const showProfile = () => {
-        // console.log('userData funtion', getUserData())
         history.replace('/home/user-profile')
     }
-   
+
     const menu = (
         <Menu>
 

@@ -1,8 +1,9 @@
-import React, { useState } from 'react'
+import React, { useState, useContext } from 'react'
 import { loginUser } from '../../Utils/utils';
 import { useHistory } from "react-router-dom";
 import 'antd/dist/antd.css';
 import { message } from 'antd';
+
 import {
     LoginContainer,
     LoginDiv,
@@ -27,7 +28,6 @@ export default function Login() {
         history.replace('/home')
         // return
     }
-
     const onLogin = () => {
         if (!email || !password) {
             message.error('Enter valid credentials')

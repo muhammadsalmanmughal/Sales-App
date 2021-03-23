@@ -1,7 +1,8 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useContext} from 'react'
 import firebase from '../../config/Firebase/firebase';
 import { useHistory } from 'react-router-dom'
-import { CreateInventory } from '../../Utils/utils'
+import { CreateInventory,CapitalizeWords } from '../../Utils/utils'
+import {UserDataContext} from '../../context/UserContext/UserContext'
 import { PlusSquareOutlined } from "@ant-design/icons";
 import {
     Divider,
@@ -19,6 +20,9 @@ const Inventory = () => {
     const [itemsName, setItemsName] = useState()
     const [unitOfMeassure, setUnitOfMeassure] = useState()
     const [inventoryItems, setInventoryItems] = useState()
+    // const value = useContext(UserDataContext)
+    // const {users, setUsers} = useContext(UserDataContext)
+    // console.log('USer from context--------->', users)
     //#region  modal
     const [isModalVisible, setIsModalVisible] = useState(false);
     const showModal = () => {
@@ -28,7 +32,7 @@ const Inventory = () => {
     const handleOk = () => {
         if (!itemsName) return message.error('Items can not be left empty')
         if (!unitOfMeassure) return message.error('Select Unit of Meassure')
-        CreateInventory(itemsName, unitOfMeassure)
+        CreateInventory(CapitalizeWords(itemsName), unitOfMeassure)
         setItemsName('')
     };
 
@@ -88,7 +92,7 @@ const Inventory = () => {
         },
         {
             title: 'Quantity',
-            dataIndex: '0',
+            dataIndex: 'quantity',
             key: 'quantity',
         },
         {
@@ -122,7 +126,7 @@ const Inventory = () => {
                             placeholder='Enter item name'
                             value={itemsName}
                             onChange={e => setItemsName(e.target.value)}
-                            maxLength={20}
+                            maxLength={25}
                         />
                     </Col>
                     <Col xs={24} sm={10}>
@@ -132,6 +136,11 @@ const Inventory = () => {
                             <Option value="single">Single</Option>
                         </Select>
 
+                    </Col>
+                    <Col sm={24}>
+                        <p>
+                            By default quantity will be zero.
+                        </p>
                     </Col>
                 </Row>
             </Modal>

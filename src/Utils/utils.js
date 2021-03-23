@@ -281,7 +281,8 @@ const CreateInventory = (itemsName,Type) => {
   console.log('list of inventory items', itemsName, Type)
   const itemsObj ={
     itemsName, 
-    Type
+    Type,
+    quantity: 0
   }
   firebase.firestore().collection('Item_Master').add(itemsObj)
     .then((response) => {
@@ -292,6 +293,9 @@ const CreateInventory = (itemsName,Type) => {
     })
 }
 
+  function CapitalizeWords(str){
+    return str[0].toUpperCase()+str.slice(1)
+}
 export {
   createUser,
   loginUser,
@@ -303,5 +307,6 @@ export {
   UpdateVendor,
   CreateRFQ,
   CreatePurchaseOrder,
-  CreateInventory
+  CreateInventory,
+  CapitalizeWords
 }
