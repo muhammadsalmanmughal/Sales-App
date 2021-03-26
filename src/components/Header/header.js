@@ -42,12 +42,15 @@ const Header = () => {
     }
 
     const userInfo = getUserData().then((data) => {
-        console.log('user data ===========> $', data);
-        setUser(data)
+        console.log('user data ===========> $', data[0]);
+        // setUser(data[0])
         // setUserFirstName(data[0].name)
         // setUserEmail(data[0].email)
         // setUserImage(data[0].url)
     });
+    useEffect(()=>{
+
+    },[])
 // console.log('userO=Info------>',userInfo&&userInfo)
     // const getUserData = () => {
     //     const userID = localStorage.getItem('userId')

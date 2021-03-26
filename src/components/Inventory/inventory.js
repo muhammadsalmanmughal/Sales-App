@@ -17,6 +17,7 @@ import {
     Space,
 } from 'antd'
 const Inventory = () => {
+    //get user id from storage match and get user info
     const [itemsName, setItemsName] = useState()
     const [unitOfMeassure, setUnitOfMeassure] = useState()
     const [inventoryItems, setInventoryItems] = useState()
