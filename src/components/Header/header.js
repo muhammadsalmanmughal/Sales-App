@@ -2,7 +2,6 @@ import React, { useState, useContext, useEffect } from 'react'
 import firebase from '../../config/Firebase/firebase'
 import { useHistory } from 'react-router-dom'
 import { message } from 'antd';
-import { getUserData } from '../../Utils/utils'
 import { UserContext } from '../../context/UserContext/UserContext'
 import {
     Navbar,
@@ -28,9 +27,7 @@ const Header = () => {
 
     const { user, setUser } = useContext(UserContext)
 
-    console.log('UserContext', UserContext)
     const history = useHistory();
-
 
     const onLogout = () => {
         firebase.auth().signOut()
@@ -41,60 +38,60 @@ const Header = () => {
             })
     }
 
-    const userInfo = getUserData().then((data) => {
-        console.log('user data ===========> $', data[0]);
-        // setUser(data[0])
-        // setUserFirstName(data[0].name)
-        // setUserEmail(data[0].email)
-        // setUserImage(data[0].url)
-    });
-    useEffect(()=>{
-
-    },[])
-// console.log('userO=Info------>',userInfo&&userInfo)
-    // const getUserData = () => {
-    //     const userID = localStorage.getItem('userId')
-    //     // console.log('USER ID============>',userID);
-    //     firebase
-    //         .firestore()
-    //         .collection("Users")
-    //         .where("userId", "==", userID)
-    //         .get()
-    //         .then(function (querySnapshot) {
-    //             const comlist = [];
-    //             querySnapshot.forEach(function (doc) {
-    //                 if (doc.exists) {
-    //                     const comp = doc.data();
-    //                     comlist.push({ ...comp, compId: doc.id });
-    //                 } else {
-    //                     message.info("No such document!");
-    //                 }
-    //             });
-    //             setUser(comlist)
-    //             // setCompanyList(comlist);
-    //             // setInitialCompany(comlist);
-    //             // console.log('data-------->', comlist)
-    //             // return comlist
-    //         })
-    //         .catch(function (error) {
-    //             console.log("Error getting documents: ", error);
-    //         });
-
-    // }
-    // useEffect(() => {
-    //     getUserData()
-    // }, [])
+    // const userInfo = getUserData().then((data) => {
+    //     console.log('user data ===========> $', data[0]);
+    //     // setUser(data[0])
+    //     // setUserFirstName(data[0].name)
+    //     // setUserEmail(data[0].email)
+    //     // setUserImage(data[0].url)
+    // });
 
 
-    console.log('user data from context', user);
+    const getUserData = () => {
+        const userID = localStorage.getItem('userId')
+        // console.log('USER ID============>',userID);
+        firebase
+            .firestore()
+            .collection("Users")
+            .where("userId", "==", userID)
+            .get()
+            .then(function (querySnapshot) {
+                const comlist = [];
+                querySnapshot.forEach(function (doc) {
+                    if (doc.exists) {
+                        const comp = doc.data();
+                        comlist.push({ ...comp, compId: doc.id });
+                    } else {
+                        message.info("No such document!");
+                    }
+                });
+                setUser(comlist)
+            })
+            .catch(function (error) {
+                console.log("Error getting documents: ", error);
+            });
 
+    }
+    useEffect(() => {
+        getUserData()
+    }, [])
+    
     const showProfile = () => {
         history.replace('/home/user-profile')
     }
+    useEffect(()=>{
+        user&&user.map((item, key)=>{
+            setUserLastName(item.name)
+            setUserFirstName(item.name)
+            setUserImage(item.url)
+            setUserEmail(item.email)
+        })
+    },[user])
+  
 
     const menu = (
         <Menu>
-
+                    <>          
             <DropdownDiv>
                 <Avatar
                     src={userImage}
@@ -123,13 +120,13 @@ const Header = () => {
                 Logout
                 </a>
             </Menu.Item>
+            </>
         </Menu>
     );
     return (
         <div>
             <Navbar>
                 <Logo src='https://1000logos.net/wp-content/uploads/2017/08/CAT-logo.png' />
-                {/* <h5>Logo</h5> */}
                 <User>
                     <UserName>User First Name</UserName>
                     <UserAvatar>

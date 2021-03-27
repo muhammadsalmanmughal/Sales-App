@@ -1,8 +1,7 @@
-import React, { useState, useEffect, useContext} from 'react'
+import React, { useState, useEffect, useContext } from 'react'
 import firebase from '../../config/Firebase/firebase';
-import { useHistory } from 'react-router-dom'
-import { CreateInventory,CapitalizeWords } from '../../Utils/utils'
-import {UserDataContext} from '../../context/UserContext/UserContext'
+import { CreateInventory, getInentoryDetails, CapitalizeWords } from '../../Utils/utils'
+import { UserContext } from '../../context/UserContext/UserContext'
 import { PlusSquareOutlined } from "@ant-design/icons";
 import {
     Divider,
@@ -16,69 +15,81 @@ import {
     Table,
     Space,
 } from 'antd'
+
 const Inventory = () => {
-    //get user id from storage match and get user info
-    const [itemsName, setItemsName] = useState()
+    const [itemName, setItemsName] = useState()
     const [unitOfMeassure, setUnitOfMeassure] = useState()
     const [inventoryItems, setInventoryItems] = useState()
-    // const value = useContext(UserDataContext)
-    // const {users, setUsers} = useContext(UserDataContext)
-    // console.log('USer from context--------->', users)
+    const [itemDetails, setItemDetails] = useState()
+    const { user, setUser } = useContext(UserContext)
+
     //#region  modal
     const [isModalVisible, setIsModalVisible] = useState(false);
+    const itemDataObj = {
+        name: user && user[0].name,
+        email: user && user[0].email,
+        url: user && user[0].url,
+        unitOfMeassure,
+        date: new Date().toJSON().slice(0, 10).replace(/-/g, '/'),
+        itemsName: CapitalizeWords(itemName),
+        quantity: '0'
+    }
     const showModal = () => {
         setIsModalVisible(true);
     };
 
     const handleOk = () => {
-        if (!itemsName) return message.error('Items can not be left empty')
+        if (!itemName) return message.error('Items can not be left empty')
         if (!unitOfMeassure) return message.error('Select Unit of Meassure')
-        CreateInventory(CapitalizeWords(itemsName), unitOfMeassure)
+
+        CreateInventory(itemDataObj)
         setItemsName('')
     };
 
     const handleCancel = () => {
         setIsModalVisible(false);
     };
+
+    //----------Inventory Details--------------
+
+    const [isInventoryModalVisible, setIsInventoryModalVisible] = useState(false);
+    const showInventoryModal = (id) => {
+        getInentoryDetails(id).then(data => {
+            setItemDetails(data)
+        })
+        setIsInventoryModalVisible(true)
+    }
+    const onInvModalClose = () => {
+        setIsInventoryModalVisible(false);
+    };
     //#endregion
 
-    const history = useHistory();
     const { Option } = Select;
 
     function UOM(value) {
-        console.log(`selected ${value}`);
         setUnitOfMeassure(value)
     }
-    function callback(key) {
-        console.log(key);
-    }
 
-    const GetInventoryItems = () => {
-        // setIsLoading(true)
+    const GetAllInventory = () => {
         firebase
             .firestore()
             .collection("Item_Master")
             .onSnapshot(function (querySnapshot) {
                 const inventoryList = [];
                 querySnapshot.forEach(function (doc) {
-                    console.log('functions Doc', doc.data)
                     if (doc.exists) {
                         const comp = doc.data();
                         inventoryList.push({ ...comp, compId: doc.id });
                     } else {
-                        // alert("No such document!");
-                        // <EmptyDiv>
-                        //     <Empty/>
-                        // </EmptyDiv>
+                       message.info('No data! Please insert some')
                     }
                 });
                 setInventoryItems(inventoryList)
             });
     }
     useEffect(() => {
-        GetInventoryItems()
+        GetAllInventory()
     }, [])
-    console.log('All Inventory------>', inventoryItems)
 
     const columns = [
         {
@@ -88,7 +99,7 @@ const Inventory = () => {
         },
         {
             title: 'Unit Of Meassure',
-            dataIndex: 'Type',
+            dataIndex: 'unitOfMeassure',
             key: 'uom',
         },
         {
@@ -99,17 +110,15 @@ const Inventory = () => {
         {
             title: 'Action',
             key: 'action',
-            render: (vendors) => (
+            render: (inventoryItems) => (
                 <Space size="middle">
                     <Button
-                    // onClick={() =>
-                    //     history.push(`/home/vendor-details/${vendors.compId}/${'Vendor'}`)}
+                        onClick={() => showInventoryModal(inventoryItems.iD)}
                     >Details</Button>
                 </Space>
             ),
         },
     ];
-
 
     return (
         <div>
@@ -125,7 +134,7 @@ const Inventory = () => {
                         <Input
                             type='text'
                             placeholder='Enter item name'
-                            value={itemsName}
+                            value={itemName}
                             onChange={e => setItemsName(e.target.value)}
                             maxLength={25}
                         />
@@ -144,6 +153,18 @@ const Inventory = () => {
                         </p>
                     </Col>
                 </Row>
+            </Modal>
+
+            <Modal title="Item Detail" visible={isInventoryModalVisible} onCancel={onInvModalClose}>
+                <h3>Inventory details</h3>
+                {itemDetails && itemDetails.map((item, key) => {
+                    return (
+                        <>
+                            <h2>{item.itemsName}</h2>
+                            <h3>{item.unitOfMeassure}</h3>
+                        </>
+                    )
+                })}
             </Modal>
             <div>
                 <Table dataSource={inventoryItems} columns={columns} />;

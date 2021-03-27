@@ -59,35 +59,6 @@ const loginUser = async (email, password) => {
 
 };
 
-const getUserData = () => {
-  const userID = localStorage.getItem('userId')
-  // console.log('USER ID============>',userID);
-  return firebase
-    .firestore()
-    .collection("Users")
-    .where("userId", "==", userID)
-    .get()
-    .then(function (querySnapshot) {
-      const comlist = [];
-      querySnapshot.forEach(function (doc) {
-        if (doc.exists) {
-          const comp = doc.data();
-          comlist.push({ ...comp, compId: doc.id });
-        } else {
-          message.info("No such document!");
-        }
-      });
-      // setCompanyList(comlist);
-      // setInitialCompany(comlist);
-      // console.log('data-------->', comlist)
-      return comlist
-    })
-    .catch(function (error) {
-      console.log("Error getting documents: ", error);
-    });
-
-}
-
 const createVendor = (vendorDetails, vendorId) => {
   console.log('create vendor function')
   const {
@@ -277,29 +248,59 @@ const CreatePurchaseOrder = (newList, POiD, fullDate, selectVendor) => {
     })
 }
 
-const CreateInventory = (itemsName,Type) => {
-  console.log('list of inventory items', itemsName, Type)
-  const itemsObj ={
-    itemsName, 
-    Type,
-    quantity: 0
-  }
+const CreateInventory = (itemsObj) => {
+
+  console.log('itemData----firebase', itemsObj);
   firebase.firestore().collection('Item_Master').add(itemsObj)
     .then((response) => {
+      firebase.firestore().collection("Item_Master").doc(response.id).update({ 'iD': response.id })
+
       message.success('Items added succesfully')
     })
     .catch((error) => {
       message.error(error.message)
     })
 }
+const getInentoryDetails = (id) => {
 
-  function CapitalizeWords(str){
-    return str[0].toUpperCase()+str.slice(1)
+  return firebase
+    .firestore()
+    .collection('Item_Master')
+    .where("iD", "==", id)
+    .get()
+    .then(function (querySnapshot) {
+      // console.log('querySnapshot', querySnapshot)
+      const inventoryItem = [];
+      querySnapshot.forEach(function (doc) {
+        if (doc.exists) {
+          const comp = doc.data();
+          inventoryItem.push({ ...comp, compId: doc.id });
+        } else {
+          message.info("No such document!");
+        }
+      });
+      // setCompanyList(inventoryItem);
+      // setInitialCompany(inventoryItem);
+      // console.log('data-------->', inventoryItem)
+      return inventoryItem
+    })
+    .catch(function (error) {
+      console.log("Error getting documents: ", error);
+    });
+}
+
+function CapitalizeWords(str){
+    // return str[0].toUpperCase()+str.slice(1)
+    if(typeof str === 'string') {
+      return str.replace(/^\w/, c => c.toUpperCase());
+  } else {
+      return '';
+  }
 }
 export {
   createUser,
   loginUser,
-  getUserData,
+  getInentoryDetails,
   createVendor,
   createNewCustomer,
   getSpecificData,
