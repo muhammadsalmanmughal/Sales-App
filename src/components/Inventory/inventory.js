@@ -21,7 +21,7 @@ const Inventory = () => {
     const [unitOfMeassure, setUnitOfMeassure] = useState()
     const [inventoryItems, setInventoryItems] = useState()
     const [itemDetails, setItemDetails] = useState()
-    const { user, setUser } = useContext(UserContext)
+    const { user, setAllInventoryItems } = useContext(UserContext)
 
     //#region  modal
     const [isModalVisible, setIsModalVisible] = useState(false);
@@ -160,6 +160,7 @@ const Inventory = () => {
                 {itemDetails && itemDetails.map((item, key) => {
                     return (
                         <>
+                        {setAllInventoryItems(item.itemsName)}
                             <h2>{item.itemsName}</h2>
                             <h3>{item.unitOfMeassure}</h3>
                         </>
