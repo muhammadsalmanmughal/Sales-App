@@ -1,4 +1,6 @@
-import React from 'react'
+import React, { useState, useEffect, useContext } from 'react'
+import firebase from '../../config/Firebase/firebase';
+import {getAllInventoryItems} from '../../Utils/utils'
 import { Switch, Route, useHistory } from "react-router-dom";
 import {
     SideBar, Header,
@@ -14,17 +16,56 @@ import {
     UpdateCustomer,
     Inventory
 } from '../NavigationLinks/navLinks'
-import { VendorCustomerProvider } from '../../context/Random/random'
+import { VendorCustomerContext, VendorCustomerProvider } from '../../context/Random/random'
 import { UserProvider } from '../../context/UserContext/UserContext'
 import './layout.css'
 
 function Layout() {
+    // const { setVendors } = useContext(VendorCustomerContext)
+   
+    //#region context functions
+    const getAllVendors = () => {
+        firebase
+            .firestore()
+            .collection("Vendor")
+            .onSnapshot(function (querySnapshot) {
+                const vendorList = [];
+                querySnapshot.forEach(function (doc) {
+                    console.log('functions Doc', doc.data)
+                    if (doc.exists) {
+                        const comp = doc.data();
+                        vendorList.push({ ...comp, compId: doc.id });
+                        // setIsVendor(true)
+                    } else {
+                        // alert("No such document!");
+                        // <EmptyDiv>
+                        //     <Empty/>
+                        // </EmptyDiv>
+                        // setIs/Vendor(false)
+                    }
+                });
+                // setVendors(vendorList)
+                console.log('vendor data from layout ', vendorList);
+            });
+    }
+    //All Inventory Items store in context
+
+    useEffect(() => {
+        getAllVendors()
+        getAllInventoryItems().then(data => {
+            console.log('Inventory data in layout', data)
+        })
+    }, [])
+    //#endregion
+
     const history = useHistory()
     const token = localStorage.getItem('Authorization')
     if (!token) {
         history.replace('/')
         return null
     }
+
+
     return (
         <div>
             <UserProvider>

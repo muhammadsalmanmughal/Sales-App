@@ -17,11 +17,12 @@ import {
 } from 'antd'
 
 const Inventory = () => {
+    const { user, setAllInventoryItems } = useContext(UserContext)
     const [itemName, setItemsName] = useState()
     const [unitOfMeassure, setUnitOfMeassure] = useState()
     const [inventoryItems, setInventoryItems] = useState()
     const [itemDetails, setItemDetails] = useState()
-    const { user, setAllInventoryItems } = useContext(UserContext)
+    const [allItemsName, setAllItemsName] = useState()
 
     //#region  modal
     const [isModalVisible, setIsModalVisible] = useState(false);
@@ -65,6 +66,12 @@ const Inventory = () => {
     //#endregion
 
     const { Option } = Select;
+    useEffect(() => {
+        itemDetails && itemDetails.map((item, key) => {
+            setAllItemsName(item)
+        })
+    }, [])
+    console.log('itemDetails-----=-=-=-=-=>', itemDetails);
 
     function UOM(value) {
         setUnitOfMeassure(value)
@@ -81,7 +88,7 @@ const Inventory = () => {
                         const comp = doc.data();
                         inventoryList.push({ ...comp, compId: doc.id });
                     } else {
-                       message.info('No data! Please insert some')
+                        message.info('No data! Please insert some')
                     }
                 });
                 setInventoryItems(inventoryList)
@@ -157,15 +164,7 @@ const Inventory = () => {
 
             <Modal title="Item Detail" visible={isInventoryModalVisible} onCancel={onInvModalClose}>
                 <h3>Inventory details</h3>
-                {itemDetails && itemDetails.map((item, key) => {
-                    return (
-                        <>
-                        {setAllInventoryItems(item.itemsName)}
-                            <h2>{item.itemsName}</h2>
-                            <h3>{item.unitOfMeassure}</h3>
-                        </>
-                    )
-                })}
+                
             </Modal>
             <div>
                 <Table dataSource={inventoryItems} columns={columns} />;

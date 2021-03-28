@@ -100,6 +100,25 @@ const createVendor = (vendorDetails, vendorId) => {
 
 }
 
+const getAllVendors = () => {
+  // setIsLoading(true)
+  return firebase
+    .firestore()
+    .collection("Vendor")
+    .onSnapshot(function (querySnapshot) {
+      const vendorList = [];
+      querySnapshot.forEach(function (doc) {
+        console.log('functions Doc', doc.data)
+        if (doc.exists) {
+          const comp = doc.data();
+          vendorList.push({ ...comp, compId: doc.id });
+          // setIsVendor(true)
+        } 
+      });
+      return vendorList
+    });
+}
+
 const createNewCustomer = (customerDetails, customerId) => {
 
   const {
@@ -261,6 +280,7 @@ const CreateInventory = (itemsObj) => {
       message.error(error.message)
     })
 }
+
 const getInentoryDetails = (id) => {
 
   return firebase
@@ -289,19 +309,46 @@ const getInentoryDetails = (id) => {
     });
 }
 
-function CapitalizeWords(str){
-    // return str[0].toUpperCase()+str.slice(1)
-    if(typeof str === 'string') {
-      return str.replace(/^\w/, c => c.toUpperCase());
+const getAllInventoryItems = () => {
+  return new Promise ((resolve, reject) => {
+    firebase
+    .firestore()
+    .collection("Item_Master")
+    .onSnapshot(function (querySnapshot) {
+      const allInventoryItems = [];
+      querySnapshot.forEach(function (doc) {
+        console.log('functions Doc', doc.data)
+        if (doc.exists) {
+          const comp = doc.data();
+          allInventoryItems.push({ ...comp, compId: doc.id });
+        } else {
+          reject( message.info('No data to show.'))
+          // alert("No such document!");
+          // <EmptyDiv>
+          //     <Empty/>
+          // </EmptyDiv>
+          // setIsVendor(false)
+        }
+      });
+      resolve (allInventoryItems)
+    });
+  })
+}
+function CapitalizeWords(str) {
+  // return str[0].toUpperCase()+str.slice(1)
+  if (typeof str === 'string') {
+    return str.replace(/^\w/, c => c.toUpperCase());
   } else {
-      return '';
+    return '';
   }
 }
 export {
   createUser,
   loginUser,
   getInentoryDetails,
+  getAllInventoryItems,
   createVendor,
+  getAllVendors,
   createNewCustomer,
   getSpecificData,
   UpdateCustomer,

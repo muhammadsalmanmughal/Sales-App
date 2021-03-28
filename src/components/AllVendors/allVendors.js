@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useContext } from 'react'
 import firebase from '../../config/Firebase/firebase';
+import {getAllVendors} from '../../Utils/utils'
 import { useHistory } from 'react-router-dom'
 import { EmptyDiv } from './style/index'
 import { Empty, Table, Space, Button } from 'antd';
@@ -16,33 +17,34 @@ const AllVendors = () => {
     const value = useContext(VendorCustomerContext)
     const { vendors, setVendors } = useContext(VendorCustomerContext)
 
-    const getAllVendors = () => {
-        setIsLoading(true)
-        firebase
-            .firestore()
-            .collection("Vendor")
-            .onSnapshot(function (querySnapshot) {
-                const vendorList = [];
-                querySnapshot.forEach(function (doc) {
-                    console.log('functions Doc', doc.data)
-                    if (doc.exists) {
-                        const comp = doc.data();
-                        vendorList.push({ ...comp, compId: doc.id });
-                        setIsVendor(true)
-                    } else {
-                        // alert("No such document!");
-                        // <EmptyDiv>
-                        //     <Empty/>
-                        // </EmptyDiv>
-                        setIsVendor(false)
-                    }
-                });
-                setVendors(vendorList)
-                setIsLoading(false)
-                // setIsVendor(true)
-            });
-    }
-console.log('All Vendors-------->', vendors);
+    // const getAllVendors = () => {
+    //     setIsLoading(true)
+    //     firebase
+    //         .firestore()
+    //         .collection("Vendor")
+    //         .onSnapshot(function (querySnapshot) {
+    //             const vendorList = [];
+    //             querySnapshot.forEach(function (doc) {
+    //                 console.log('functions Doc', doc.data)
+    //                 if (doc.exists) {
+    //                     const comp = doc.data();
+    //                     vendorList.push({ ...comp, compId: doc.id });
+    //                     setIsVendor(true)
+    //                 } else {
+    //                     // alert("No such document!");
+    //                     // <EmptyDiv>
+    //                     //     <Empty/>
+    //                     // </EmptyDiv>
+    //                     setIsVendor(false)
+    //                 }
+    //             });
+    //             setVendors(vendorList)
+    //             setIsLoading(false)
+    //             // setIsVendor(true)
+    //         });
+    // }
+ 
+console.log('All Vendors from context-------->', vendors);
     const updateVendor = (e) => {
         console.log('update E', e)
     }
