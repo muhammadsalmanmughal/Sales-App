@@ -10,9 +10,9 @@ const SideBar = () => {
             <Sider
                 breakpoint="xl"
                 collapsedWidth="80"
-                onBreakpoint={broken => {
-                    console.log('break point',broken);
-                }}
+                // onBreakpoint={broken => {
+                //     console.log('break point',broken);
+                // }}
                 onCollapse={(collapsed, type) => {
                     console.log(collapsed, type);
                 }}

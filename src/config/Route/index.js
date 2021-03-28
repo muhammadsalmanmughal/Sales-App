@@ -2,9 +2,7 @@ import React from 'react'
 import {
   BrowserRouter as Router,
   Switch,
-  Route,
-  Redirect,
-  useHistory
+  Route
 } from 'react-router-dom'
 
 import Layout from '../../components/Layout/layout'
