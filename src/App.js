@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react'
+import { VendorCustomerProvider } from './context/Random/random'
 import './App.css';
 import Router from './config/Route/index'
 import firebase from 'firebase'
@@ -17,13 +18,13 @@ function App() {
   };
   return (
     <div>
-      {/* {isLoggedIn ? <Layout /> : ''} */}
-      <Router
-        isLoggedIn={isLoggedIn}
-        isLoading={isLoading}
-        uid={isLoggedIn.uid}
-      />
-
+      <VendorCustomerProvider>
+        <Router
+          isLoggedIn={isLoggedIn}
+          isLoading={isLoading}
+          uid={isLoggedIn.uid}
+        />
+      </VendorCustomerProvider>
     </div>
   );
 }

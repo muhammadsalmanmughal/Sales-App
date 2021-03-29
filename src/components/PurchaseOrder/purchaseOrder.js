@@ -25,19 +25,21 @@ const PurchaseOrder = () => {
     const [quantity, setQuantity] = useState()
     const [itemsList, setItemsList] = useState([])
     const [radioValue, setRadioValue] = useState('A-class');
-    const { vendors } = useContext(VendorCustomerContext)
+    const { vendors, allInventoryItems } = useContext(VendorCustomerContext)
 
 
     const utc = new Date().toJSON().slice(0, 10).replace(/-/g, '/');
     const shortid = require('shortid')
     const POiD = shortid.generate()
+    console.log('all items from PO', allInventoryItems)
 
     function selectVednor(value) {
-        // console.log(`selected----> ${value}`);
         setSelectedVendor(value)
     }
+    function selectInventoryItem(value){
+        console.log('value',value)
+    }
     const CreateList = () => {
-        // setIsDisabled(false)
         if (items == null) {
             message.error('Items can not left Empty')
         }
@@ -57,7 +59,6 @@ const PurchaseOrder = () => {
         setItemsList(newList);
     }
     const selectQuality = e => {
-        // console.log('radio checked', e.target.value);
         setRadioValue(e.target.value);
     };
     const generatePurchaseOrder = () => {
@@ -79,9 +80,26 @@ const PurchaseOrder = () => {
                 </Col>
             </Row>
             <Row gutter={[10, 10]}>
-                <Col xs={24} sm={16}>
+            <Col xs={24} sm={12}>
+                    <label>Select Item: </label>
+                    <Select xs={24} sm={16} 
+                    style={{ width: '200px' }}
+                    placeholder='Select Item'
+                        onChange={selectInventoryItem}
+                    >                    
+                    {allInventoryItems && allInventoryItems.map((itemName, key) => <Select.Option
+                            value={itemName.itemsName}
+                        >
+                            {itemName.itemsName}
+                        </Select.Option>
+                        )}
+                    </Select>
+                </Col>
+                <Col xs={24} sm={12}>
                     <label>Select Vender: </label>
-                    <Select xs={24} sm={16} style={{ width: '200px' }}
+                    <Select xs={24} sm={16}
+                     style={{ width: '200px' }}
+                     placeholder='Select Vendor'
                         onChange={selectVednor}
                     >
                         {vendors && vendors.map((name, key) => <Select.Option

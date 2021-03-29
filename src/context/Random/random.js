@@ -6,7 +6,6 @@ export const VendorCustomerProvider = ({ children }) => {
     const [vendors, setVendors] = useState()
     const [customers, setCustomers] = useState()
     const [allInventoryItems, setAllInventoryItems] = useState()
-    
     return (
         <VendorCustomerContext.Provider value={{
             vendors, setVendors,

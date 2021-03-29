@@ -101,8 +101,8 @@ const createVendor = (vendorDetails, vendorId) => {
 }
 
 const getAllVendors = () => {
-  // setIsLoading(true)
-  return firebase
+  return new Promise ((resolve, reject) => {
+  firebase
     .firestore()
     .collection("Vendor")
     .onSnapshot(function (querySnapshot) {
@@ -112,11 +112,14 @@ const getAllVendors = () => {
         if (doc.exists) {
           const comp = doc.data();
           vendorList.push({ ...comp, compId: doc.id });
-          // setIsVendor(true)
         } 
+        else{
+          reject(alert('no data in vendors'))
+        }
       });
-      return vendorList
+      resolve(vendorList)
     });
+  })
 }
 
 const createNewCustomer = (customerDetails, customerId) => {
@@ -334,6 +337,7 @@ const getAllInventoryItems = () => {
     });
   })
 }
+
 function CapitalizeWords(str) {
   // return str[0].toUpperCase()+str.slice(1)
   if (typeof str === 'string') {

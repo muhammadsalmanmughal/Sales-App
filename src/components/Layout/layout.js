@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useContext } from 'react'
-import firebase from '../../config/Firebase/firebase';
-import {getAllInventoryItems} from '../../Utils/utils'
+import {getAllVendors, getAllInventoryItems} from '../../Utils/utils'
 import { Switch, Route, useHistory } from "react-router-dom";
 import {
     SideBar, Header,
@@ -16,46 +15,24 @@ import {
     UpdateCustomer,
     Inventory
 } from '../NavigationLinks/navLinks'
-import { VendorCustomerContext, VendorCustomerProvider } from '../../context/Random/random'
+import { VendorCustomerContext } from '../../context/Random/random'
 import { UserProvider } from '../../context/UserContext/UserContext'
 import './layout.css'
 
 function Layout() {
-    // const { setVendors } = useContext(VendorCustomerContext)
-   
-    //#region context functions
-    const getAllVendors = () => {
-        firebase
-            .firestore()
-            .collection("Vendor")
-            .onSnapshot(function (querySnapshot) {
-                const vendorList = [];
-                querySnapshot.forEach(function (doc) {
-                    console.log('functions Doc', doc.data)
-                    if (doc.exists) {
-                        const comp = doc.data();
-                        vendorList.push({ ...comp, compId: doc.id });
-                        // setIsVendor(true)
-                    } else {
-                        // alert("No such document!");
-                        // <EmptyDiv>
-                        //     <Empty/>
-                        // </EmptyDiv>
-                        // setIs/Vendor(false)
-                    }
-                });
-                // setVendors(vendorList)
-                console.log('vendor data from layout ', vendorList);
-            });
-    }
-    //All Inventory Items store in context
-
+    const { setVendors, setAllInventoryItems } = useContext(VendorCustomerContext)
     useEffect(() => {
-        getAllVendors()
+        getAllVendors().then(data => {
+            console.log('all vendors data in layout', data)
+            setVendors(data)
+        })
+        
         getAllInventoryItems().then(data => {
             console.log('Inventory data in layout', data)
+            setAllInventoryItems(data)
         })
     }, [])
+
     //#endregion
 
     const history = useHistory()
@@ -64,12 +41,9 @@ function Layout() {
         history.replace('/')
         return null
     }
-
-
     return (
         <div>
             <UserProvider>
-                <VendorCustomerProvider>
                     <Header />
                     <div className='main'>
                         <div className='sidebar'>
@@ -91,7 +65,6 @@ function Layout() {
                             </Switch>
                         </div>
                     </div>
-                </VendorCustomerProvider>
             </UserProvider>
         </div>
 
