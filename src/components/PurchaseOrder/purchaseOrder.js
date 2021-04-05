@@ -32,7 +32,9 @@ const PurchaseOrder = () => {
     const [radioValue, setRadioValue] = useState('A-class');
     const { vendors, allInventoryItems } = useContext(VendorCustomerContext)
     const [startDate, setStartDate] = useState(new Date());
-    const [allPO, setAllPO] =useState()
+    const [requriedDate, setRequriedDate] = useState();
+    const [pricePerItem, setPricePerItem] = useState()
+    const [allPO, setAllPO] = useState()
 
     const { RangePicker } = DatePicker;
     const utc = new Date().toJSON().slice(0, 10).replace(/-/g, '/');
@@ -70,46 +72,46 @@ const PurchaseOrder = () => {
     }
 
     const selectQuality = e => {
-        setRadioValue(e.target.value);
+        setRadioValue(e);
     };
 
     const generatePurchaseOrder = () => {
-        CreatePurchaseOrder(itemsList, POiD, utc, selectedVendor)
+        CreatePurchaseOrder(itemsList, POiD, utc, requriedDate, selectedVendor,pricePerItem)
         setItemsList([])
     }
 
     const getPurchaseOrder = () => {
-            // setIsLoading(true)
-            firebase
-                .firestore()
-                .collection("PurchaseOrder")
-                .onSnapshot(function (querySnapshot) {
-                    const poList = [];
-                    querySnapshot.forEach(function (doc) {
-                        console.log('functions Doc', doc.data)
-                        if (doc.exists) {
-                            const comp = doc.data();
-                            poList.push({ ...comp, compId: doc.id });
-                            // setIsVendor(true)
-                        } else {
-                            // alert("No such document!");
-                            // <EmptyDiv>
-                            //     <Empty/>
-                            // </EmptyDiv>
-                            // setIsVendor(false)
-                            
-                        }
-                    });
-                    setAllPO(poList)
-                    // setIsVendor(true)
-                });
-        }
-useEffect(()=>{
-    getPurchaseOrder()
-},[])
+        // setIsLoading(true)
+        firebase
+            .firestore()
+            .collection("PurchaseOrder")
+            .onSnapshot(function (querySnapshot) {
+                const poList = [];
+                querySnapshot.forEach(function (doc) {
+                    console.log('functions Doc', doc.data)
+                    if (doc.exists) {
+                        const comp = doc.data();
+                        poList.push({ ...comp, compId: doc.id });
+                        // setIsVendor(true)
+                    } else {
+                        // alert("No such document!");
+                        // <EmptyDiv>
+                        //     <Empty/>
+                        // </EmptyDiv>
+                        // setIsVendor(false)
 
-// console.log('all PO', allPO?.flatMap(O => O.newList));
-console.log('all PO', allPO);
+                    }
+                });
+                setAllPO(poList)
+                // setIsVendor(true)
+            });
+    }
+    useEffect(() => {
+        getPurchaseOrder()
+    }, [])
+
+    // console.log('all PO', allPO?.flatMap(O => O.newList));
+    console.log('all PO', allPO);
     // function range(start, end) {
     //     const result = [];
     //     for (let i = start; i < end; i++) {
@@ -123,20 +125,21 @@ console.log('all PO', allPO);
         // return current && current < moment().endOf('day');
         // futureDate(current)
         // pastDate(current)
-            return current && current < moment().endOf('day')
-            // moment().add(1, 'month')  <= current;
-        
-        
+        return current && current < moment().endOf('day')
+        // moment().add(1, 'month')  <= current;
+
+
     }
 
     const disableWeekends = current => {
-        console.log('current',current);
+        console.log('current', current);
         return current.day() !== 0 && current.day() !== 6;
-      }
+    }
 
-      const selectDate = (date, dateString) => {
-console.log(dateString);
-      }
+    const selectRequriedDate = (date, dateString) => {
+        console.log(dateString);
+        setRequriedDate(dateString)
+    }
 
     //   function disabledDateTime() {
     //     return {
@@ -169,12 +172,12 @@ console.log(dateString);
                     <h4>Date: {utc}</h4>
                 </Col>
             </Row>
-            <Row gutter={[10, 10]}>
+            <Row gutter={[24, 10]}>
 
-                <Col xs={24} sm={11}>
-                    <label>Select Vender: </label>
-                    <Select xs={24} sm={16}
-                        style={{ width: '200px' }}
+                <Col>
+                    {/* <label>Select Vender: </label> */}
+                    <Select 
+                        style={{ width: 200 }}
                         placeholder='Select Vendor'
                         onChange={selectVednor}
                     >
@@ -186,29 +189,10 @@ console.log(dateString);
                         )}
                     </Select>
                 </Col>
-                <Col xs={24} sm={10}>
-                    <label>Select Delivery Date: </label>
-                    <DatePicker
-                        format="DD-MM-YYYY"
-                        disabledDate={disabledDate}
-                        // isValidDate={disableWeekends}
-                        // isOutsideRange={day => (moment().diff(day) < 6)}
-                        onChange={selectDate} 
-                        // filterDate={date => date.getDay() !== 6 && date.getDay() !== 0}
-                    //   disabledTime={disabledDateTime}
-                    //   showTime={{ defaultValue: moment('00:00:00', 'HH:mm:ss') }}
-                    />
-                    {/* {dateTimePicker()} */}
-                </Col>
-
-            </Row>
-            <Divider>Add Items with quantity</Divider>
-            <Row gutter={[10, 10]}>
-                <Col xs={24} sm={6}>
+                <Col>
                     {/* <label>Select Item: </label> */}
                     <Select
-                        xs={24} sm={6}
-                        style={{ width: '200px' }}
+                        style={{ width: 200 }}
                         placeholder='Select Item'
                         onChange={selectInventoryItem}
                     >
@@ -220,31 +204,58 @@ console.log(dateString);
                         )}
                     </Select>
                 </Col>
-                {/* <Col xs={24} sm={8}>
-                    <Input
-                        type='text'
-                        placeholder='Enter item name'
-                        value={items}
-                        onChange={e => setItems(e.target.value)}
-                        maxLength={20}
+                <Col>
+                    <Select placeholder='Select Quality type' style={{ width: 200 }} onChange={selectQuality}>
+                        <Select.Option value="a">A</Select.Option>
+                        <Select.Option value="b">B</Select.Option>
+                        <Select.Option value="c">C</Select.Option>
+                    </Select>
+                    {/* <Radio.Group onChange={selectQuality} value={radioValue}>
+                        <Radio value={'A-class'}>A</Radio>
+                        <Radio value={'B-class'}>B</Radio>
+                        <Radio value={'C-class'}>C</Radio>
+                    </Radio.Group> */}
+                </Col>
+                <Col >
+                    {/* <label>Select Delivery Date: </label> */}
+                    <DatePicker
+                        placeholder='Requried Date'
+                        format="DD-MM-YYYY"
+                        disabledDate={disabledDate}
+                        style={{ width: 200 }}
+                        // isValidDate={disableWeekends}
+                        // isOutsideRange={day => (moment().diff(day) < 6)}
+                        onChange={selectRequriedDate}
+                    // filterDate={date => date.getDay() !== 6 && date.getDay() !== 0}
+                    //   disabledTime={disabledDateTime}
+                    //   showTime={{ defaultValue: moment('00:00:00', 'HH:mm:ss') }}
                     />
-                </Col> */}
-                <Col xs={24} sm={6}>
+                    {/* {dateTimePicker()} */}
+                </Col>
+
+
+            </Row>
+            <Row gutter={[10, 10]}>
+                <Col xs={24} sm={10}>
                     <Input
                         type='number'
-                        placeholder='Enter number of Quantity'
+                        placeholder='Enter item Quantity'
                         value={quantity}
                         onChange={e => setQuantity(e.target.value)}
                         maxLength={2}
                     />
                 </Col>
-                <Col xs={24} sm={9}>
-                    <Radio.Group onChange={selectQuality} value={radioValue}>
-                        <Radio value={'A-class'}>A</Radio>
-                        <Radio value={'B-class'}>B</Radio>
-                        <Radio value={'C-class'}>C</Radio>
-                    </Radio.Group>
+                <Col xs={24} sm={10}>
+                    <Input
+                        type='number'
+                        placeholder='Price per Item'
+                        value={pricePerItem}
+                        onChange={e => setPricePerItem(e.target.value)}
+                        maxLength={3}
+                    />
                 </Col>
+
+
                 <Col xs={24} sm={1}>
 
                     <Button
@@ -253,6 +264,7 @@ console.log(dateString);
                 </Col>
 
             </Row>
+            <Divider>ITEMS LIST</Divider>
 
             <ul>
                 {
@@ -282,7 +294,7 @@ console.log(dateString);
             <Row>
                 <Col xs={24} sm={12}>
                     <Button
-                    onClick={generatePurchaseOrder}
+                        onClick={generatePurchaseOrder}
                     >Create Purchase Order</Button>
                 </Col>
             </Row>
