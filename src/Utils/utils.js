@@ -254,13 +254,14 @@ const CreateRFQ = (newList, RFQiD, fullDate) => {
 }
 
 const CreatePurchaseOrder = (newList, POiD, fullDate, selectVendor) => {
-  console.log('Purchase Order Data', newList, POiD, fullDate, selectVendor)
+  // console.log('Purchase Order Data', newList, POiD, fullDate, selectVendor)
   const PO_object = {
     newList,
     POiD,
     fullDate,
     selectVendor
   }
+  console.log('PO_object',PO_object);
   firebase.firestore().collection('PurchaseOrder').add(PO_object)
     .then((response) => {
       message.success('Purchase order created')

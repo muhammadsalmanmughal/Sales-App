@@ -13,9 +13,11 @@ const AllVendors = () => {
     const [isVendor, setIsVendor] = useState(false)
     const [isLoading, setIsLoading] = useState(false)
     const history = useHistory()
+    const [allVendors, setAllVendors] = useState()
 
     const value = useContext(VendorCustomerContext)
     const { vendors, setVendors } = useContext(VendorCustomerContext)
+    console.log('vendors',vendors);
 
     // const getAllVendors = () => {
     //     setIsLoading(true)
@@ -36,8 +38,10 @@ const AllVendors = () => {
     //                     //     <Empty/>
     //                     // </EmptyDiv>
     //                     setIsVendor(false)
+                        
     //                 }
     //             });
+    //             setAllVendors(vendorList)
     //             setVendors(vendorList)
     //             setIsLoading(false)
     //             // setIsVendor(true)
@@ -78,11 +82,11 @@ console.log('All Vendors from context-------->', vendors);
         {
             title: 'Action',
             key: 'action',
-            render: (vendors) => (
+            render: (allVendors) => (
                 <Space size="middle">
                     <Button
                         onClick={() =>
-                            history.push(`/home/vendor-details/${vendors.compId}/${'Vendor'}`)}
+                            history.push(`/home/vendor-details/${allVendors.compId}/${'Vendor'}`)}
                     >Details</Button>
                 </Space>
             ),
@@ -91,18 +95,21 @@ console.log('All Vendors from context-------->', vendors);
     const checkVendor = () => {
         if (isVendor) {
             return <TableDiv>
-                <Table dataSource={vendors} columns={columns} />;
+                <Table dataSource={allVendors} columns={columns} />;
             </TableDiv>
         }
-        else if (!isVendor || isLoading) {
-            return <LoaderDiv><img src={loader} /></LoaderDiv>
-        }
-        return <EmptyDiv> <Empty /> </EmptyDiv>
+        // else if (!isVendor || isLoading) {
+        //     return <LoaderDiv><img src={loader} /></LoaderDiv>
+        // }
+        // return <EmptyDiv> <Empty /> </EmptyDiv>
 
 
     }
     useEffect(() => {
-        getAllVendors()
+        getAllVendors().then(data => {
+            console.log('then all vendors', data);
+            setAllVendors(data)
+        })
     }, [])
 
     console.log('All vendros', vendors);
