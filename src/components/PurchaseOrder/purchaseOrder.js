@@ -1,7 +1,9 @@
 import React, { useState, useContext, useEffect } from 'react'
 import firebase from '../../config/Firebase/firebase';
 import { VendorCustomerContext } from '../../context/Random/random'
+import { CopyToClipboard } from 'react-copy-to-clipboard'
 import { CreatePurchaseOrder } from '../../Utils/utils'
+import { FaRegClipboard } from "react-icons/fa";
 import moment from 'moment'
 // import DatePicker from 'react-datepicker'
 // import 'react-datepicker/dist/react-datepicker.css'
@@ -12,7 +14,7 @@ import {
     Col,
     Input,
     Button,
-    Radio,
+    Tooltip,
     Select,
     DatePicker
 } from 'antd'
@@ -23,6 +25,7 @@ import {
     Quantity,
     DeleteButton
 } from '../RequestForQuotation/style/index'
+import { Label } from '../Textbox/style';
 
 const PurchaseOrder = () => {
     const [selectedVendor, setSelectedVendor] = useState()
@@ -76,7 +79,7 @@ const PurchaseOrder = () => {
     };
 
     const generatePurchaseOrder = () => {
-        CreatePurchaseOrder(itemsList, POiD, utc, requriedDate, selectedVendor,pricePerItem)
+        CreatePurchaseOrder(itemsList, POiD, utc, requriedDate, selectedVendor, pricePerItem)
         setItemsList([])
     }
 
@@ -163,10 +166,22 @@ const PurchaseOrder = () => {
             <h1>Purchase Order</h1>
             <Divider />
             <Row gutter={[10, 10]}>
-                <Col xs={24} sm={20}>
-                    <h4>
-                        RFQ-ID:{POiD}
-                    </h4>
+                <Col>
+                    <div style={{ marginBottom: 16 }}>
+                        <Input addonAfter={
+                            <Tooltip placement="topRight" title='Click to Copy'>
+                                <CopyToClipboard text={POiD}>
+                                    <FaRegClipboard
+                                        onClick={() => alert(POiD)}
+                                        style={{ cursor: 'pointer' }}
+                                    />
+                                </CopyToClipboard>
+                            </Tooltip>
+                        }
+                            value={POiD}
+                            disabled
+                        />
+                    </div>
                 </Col>
                 <Col xs={24} sm={4}>
                     <h4>Date: {utc}</h4>
@@ -176,7 +191,7 @@ const PurchaseOrder = () => {
 
                 <Col>
                     {/* <label>Select Vender: </label> */}
-                    <Select 
+                    <Select
                         style={{ width: 200 }}
                         placeholder='Select Vendor'
                         onChange={selectVednor}
