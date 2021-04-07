@@ -3,6 +3,7 @@ import firebase from '../../config/Firebase/firebase';
 import { CreateInventory, getInentoryDetails, CapitalizeWords } from '../../Utils/utils'
 import { UserContext } from '../../context/UserContext/UserContext'
 import { PlusSquareOutlined } from "@ant-design/icons";
+
 import {
     Divider,
     message,
@@ -26,6 +27,7 @@ const Inventory = () => {
 
     //#region  modal
     const [isModalVisible, setIsModalVisible] = useState(false);
+    const [updateInventoryModal, setUpdateInventoryModal] = useState(false)
     const itemDataObj = {
         name: user && user[0].name,
         email: user && user[0].email,
@@ -38,7 +40,12 @@ const Inventory = () => {
     const showModal = () => {
         setIsModalVisible(true);
     };
-
+    const showUpdateInventoryModal = () => {
+        setUpdateInventoryModal(true);
+    };
+    const closeUpdateInventoryModal = () => {
+        setUpdateInventoryModal(false);
+    };
     const handleOk = () => {
         if (!itemName) return message.error('Items can not be left empty')
         if (!unitOfMeassure) return message.error('Select Unit of Meassure')
@@ -66,11 +73,13 @@ const Inventory = () => {
     //#endregion
 
     const { Option } = Select;
+
     useEffect(() => {
         itemDetails && itemDetails.map((item, key) => {
             setAllItemsName(item)
         })
     }, [])
+
     console.log('itemDetails-----=-=-=-=-=>', itemDetails);
 
     function UOM(value) {
@@ -94,6 +103,7 @@ const Inventory = () => {
                 setInventoryItems(inventoryList)
             });
     }
+
     useEffect(() => {
         GetAllInventory()
     }, [])
@@ -131,9 +141,13 @@ const Inventory = () => {
         <div>
             <h1>INVENTORY</h1>
             <Divider />
-            <Button type='primary' onClick={showModal}>
+            <Button onClick={showModal}>
                 <PlusSquareOutlined />
                 Add New Items
+            </Button>
+            <Button onClick={showUpdateInventoryModal}>
+                <PlusSquareOutlined />
+                Update Inventory
             </Button>
             <Modal title="Add New Item" visible={isModalVisible} onOk={handleOk} onCancel={handleCancel}>
                 <Row gutter={[10, 10]}>
@@ -164,8 +178,32 @@ const Inventory = () => {
 
             <Modal title="Item Detail" visible={isInventoryModalVisible} onCancel={onInvModalClose}>
                 <h3>Inventory details</h3>
-                
+
             </Modal>
+
+            <Modal title="Update Inventory" visible={updateInventoryModal} onCancel={closeUpdateInventoryModal}>
+                <h3>Update inventory modal</h3>
+                <Row gutter={[10, 10]}>
+                    <Col xs={24} sm={10}>
+                        <Select placeholder="Select Type" style={{ width: '170px' }} onChange={UOM}>
+                            <Option value="packet">All</Option>
+                            <Option value="dozen">Inventory</Option>
+                            <Option value="single">Items</Option>
+                        </Select>
+
+                    </Col>
+                    <Col xs={24} sm={10}>
+                        <Input placeholder='Show item quantity here' disabled/>
+                    </Col>
+                    <Col xs={24} sm={10}>
+                        <Input placeholder='Add new amount of inventory' disabled/>
+                    </Col>
+                    <Col xs={24} sm={10}>
+                        <Button>Update Inentory</Button>
+                    </Col>
+                </Row>
+            </Modal>
+
             <div>
                 <Table dataSource={inventoryItems} columns={columns} />;
             </div>
