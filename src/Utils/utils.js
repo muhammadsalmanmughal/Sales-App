@@ -339,6 +339,10 @@ const getAllInventoryItems = () => {
   })
 }
 
+const getInventoryItem = (itemName) => {
+console.log('Item Name', itemName)
+}
+
 function CapitalizeWords(str) {
   // return str[0].toUpperCase()+str.slice(1)
   if (typeof str === 'string') {
@@ -352,6 +356,7 @@ export {
   loginUser,
   getInentoryDetails,
   getAllInventoryItems,
+  getInventoryItem,
   createVendor,
   getAllVendors,
   createNewCustomer,

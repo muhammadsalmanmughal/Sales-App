@@ -1,6 +1,12 @@
 import React, { useState, useEffect, useContext } from 'react'
 import firebase from '../../config/Firebase/firebase';
-import { CreateInventory, getInentoryDetails, CapitalizeWords } from '../../Utils/utils'
+import {VendorCustomerContext} from '../../context/Random/random'
+import { 
+    CreateInventory,
+    getInentoryDetails,
+    CapitalizeWords,
+    getInventoryItem
+ } from '../../Utils/utils'
 import { UserContext } from '../../context/UserContext/UserContext'
 import { PlusSquareOutlined } from "@ant-design/icons";
 
@@ -18,12 +24,16 @@ import {
 } from 'antd'
 
 const Inventory = () => {
-    const { user, setAllInventoryItems } = useContext(UserContext)
+    const { user, allInventoryItems } = useContext(UserContext)
+    const value = useContext(VendorCustomerContext)
+    console.log('valiue--------->',value.allInventoryItems)
     const [itemName, setItemsName] = useState()
     const [unitOfMeassure, setUnitOfMeassure] = useState()
     const [inventoryItems, setInventoryItems] = useState()
     const [itemDetails, setItemDetails] = useState()
     const [allItemsName, setAllItemsName] = useState()
+    // ----------------------------------------------------
+    const [retreiveItem,setRetreiveItem] = useState()
 
     //#region  modal
     const [isModalVisible, setIsModalVisible] = useState(false);
@@ -80,12 +90,14 @@ const Inventory = () => {
         })
     }, [])
 
-    console.log('itemDetails-----=-=-=-=-=>', itemDetails);
+    console.log('retreiveItem', retreiveItem);
 
     function UOM(value) {
         setUnitOfMeassure(value)
     }
-
+    function getItemQuantity(value) {
+        setRetreiveItem(value)
+    }
     const GetAllInventory = () => {
         firebase
             .firestore()
@@ -181,14 +193,21 @@ const Inventory = () => {
 
             </Modal>
 
-            <Modal title="Update Inventory" visible={updateInventoryModal} onCancel={closeUpdateInventoryModal}>
+            <Modal 
+            title="Update Inventory" 
+            visible={updateInventoryModal} 
+            onCancel={closeUpdateInventoryModal}>
                 <h3>Update inventory modal</h3>
+                {console.log('itemName.itemsName',allInventoryItems && allInventoryItems)}
                 <Row gutter={[10, 10]}>
                     <Col xs={24} sm={10}>
-                        <Select placeholder="Select Type" style={{ width: '170px' }} onChange={UOM}>
-                            <Option value="packet">All</Option>
-                            <Option value="dozen">Inventory</Option>
-                            <Option value="single">Items</Option>
+                        <Select placeholder="Select Type" style={{ width: '170px' }} onChange={getItemQuantity}>
+                        {value.allInventoryItems && value.allInventoryItems.map((itemName, key) => <Select.Option
+                            value={itemName.itemsName}
+                        >
+                            {itemName.itemsName}
+                        </Select.Option>
+                        )}
                         </Select>
 
                     </Col>
