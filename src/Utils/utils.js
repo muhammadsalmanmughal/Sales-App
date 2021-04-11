@@ -101,24 +101,24 @@ const createVendor = (vendorDetails, vendorId) => {
 }
 
 const getAllVendors = () => {
-  return new Promise ((resolve, reject) => {
-  firebase
-    .firestore()
-    .collection("Vendor")
-    .onSnapshot(function (querySnapshot) {
-      const vendorList = [];
-      querySnapshot.forEach(function (doc) {
-        console.log('functions Doc', doc.data)
-        if (doc.exists) {
-          const comp = doc.data();
-          vendorList.push({ ...comp, compId: doc.id });
-        } 
-        else{
-          reject(alert('no data in vendors'))
-        }
+  return new Promise((resolve, reject) => {
+    firebase
+      .firestore()
+      .collection("Vendor")
+      .onSnapshot(function (querySnapshot) {
+        const vendorList = [];
+        querySnapshot.forEach(function (doc) {
+          console.log('functions Doc', doc.data)
+          if (doc.exists) {
+            const comp = doc.data();
+            vendorList.push({ ...comp, compId: doc.id });
+          }
+          else {
+            reject(alert('no data in vendors'))
+          }
+        });
+        resolve(vendorList)
       });
-      resolve(vendorList)
-    });
   })
 }
 
@@ -261,7 +261,7 @@ const CreatePurchaseOrder = (newList, POiD, fullDate, selectVendor) => {
     fullDate,
     selectVendor
   }
-  console.log('PO_object',PO_object);
+  console.log('PO_object', PO_object);
   firebase.firestore().collection('PurchaseOrder').add(PO_object)
     .then((response) => {
       message.success('Purchase order created')
@@ -314,33 +314,63 @@ const getInentoryDetails = (id) => {
 }
 
 const getAllInventoryItems = () => {
-  return new Promise ((resolve, reject) => {
+  return new Promise((resolve, reject) => {
     firebase
-    .firestore()
-    .collection("Item_Master")
-    .onSnapshot(function (querySnapshot) {
-      const allInventoryItems = [];
-      querySnapshot.forEach(function (doc) {
-        console.log('functions Doc', doc.data)
-        if (doc.exists) {
-          const comp = doc.data();
-          allInventoryItems.push({ ...comp, compId: doc.id });
-        } else {
-          reject( message.info('No data to show.'))
-          // alert("No such document!");
-          // <EmptyDiv>
-          //     <Empty/>
-          // </EmptyDiv>
-          // setIsVendor(false)
-        }
+      .firestore()
+      .collection("Item_Master")
+      .onSnapshot(function (querySnapshot) {
+        const allInventoryItems = [];
+        querySnapshot.forEach(function (doc) {
+          console.log('functions Doc', doc.data)
+          if (doc.exists) {
+            const comp = doc.data();
+            allInventoryItems.push({ ...comp, compId: doc.id });
+          } else {
+            reject(message.info('No data to show.'))
+            // alert("No such document!");
+            // <EmptyDiv>
+            //     <Empty/>
+            // </EmptyDiv>
+            // setIsVendor(false)
+          }
+        });
+        resolve(allInventoryItems)
       });
-      resolve (allInventoryItems)
-    });
   })
 }
 
-const getInventoryItem = (itemName) => {
-console.log('Item Name', itemName)
+const getInventoryItemData = (itemName) => {
+  const val = itemName && itemName
+  console.log('getInventoryItemData is called', val)
+  if (itemName) {
+    return new Promise((resolve, reject) => {
+      firebase
+        .firestore()
+        .collection('Item_Master')
+        .where("itemsName", "==", itemName)
+        .get()
+        .then(function (querySnapshot) {
+          // console.log('querySnapshot', querySnapshot)
+          const comlist = [];
+          querySnapshot.forEach(function (doc) {
+            if (doc.exists) {
+              const comp = doc.data();
+              comlist.push({ ...comp, compId: doc.id });
+            }else {
+              reject(message.info("No such document!"))
+            } 
+          });
+          // setCompanyList(comlist);
+          // setInitialCompany(comlist);
+          // console.log('data-------->', comlist)
+          resolve(comlist)
+        })
+        .catch(function (error) {
+          console.log("Error getting documents: ", error);
+        });
+    }
+    )
+  }
 }
 
 function CapitalizeWords(str) {
@@ -356,7 +386,7 @@ export {
   loginUser,
   getInentoryDetails,
   getAllInventoryItems,
-  getInventoryItem,
+  getInventoryItemData,
   createVendor,
   getAllVendors,
   createNewCustomer,

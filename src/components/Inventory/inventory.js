@@ -1,39 +1,32 @@
 import React, { useState, useEffect, useContext } from 'react'
 import firebase from '../../config/Firebase/firebase';
-import {VendorCustomerContext} from '../../context/Random/random'
-import { 
+import { VendorCustomerContext } from '../../context/Random/random'
+import {
     CreateInventory,
     getInentoryDetails,
     CapitalizeWords,
-    getInventoryItem
- } from '../../Utils/utils'
+    getInventoryItemData
+} from '../../Utils/utils'
 import { UserContext } from '../../context/UserContext/UserContext'
 import { PlusSquareOutlined } from "@ant-design/icons";
 
 import {
-    Divider,
-    message,
-    Row,
-    Col,
-    Input,
-    Button,
-    Select,
-    Modal,
-    Table,
-    Space,
+    Divider, message, Row, Col, Input, Button, Select, Modal, Table, Space, Alert
 } from 'antd'
 
 const Inventory = () => {
     const { user, allInventoryItems } = useContext(UserContext)
     const value = useContext(VendorCustomerContext)
-    console.log('valiue--------->',value.allInventoryItems)
+    console.log('valiue--------->', value.allInventoryItems)
+
     const [itemName, setItemsName] = useState()
     const [unitOfMeassure, setUnitOfMeassure] = useState()
     const [inventoryItems, setInventoryItems] = useState()
     const [itemDetails, setItemDetails] = useState()
     const [allItemsName, setAllItemsName] = useState()
     // ----------------------------------------------------
-    const [retreiveItem,setRetreiveItem] = useState()
+    const [retreiveItem, setRetreiveItem] = useState('')
+    const [specificItemData, setSpecificItemData] = useState()
 
     //#region  modal
     const [isModalVisible, setIsModalVisible] = useState(false);
@@ -91,13 +84,35 @@ const Inventory = () => {
     }, [])
 
     console.log('retreiveItem', retreiveItem);
-
+    const getItemData = (retreiveItem) => {
+        console.log('retreiveItem', retreiveItem);
+    }
+    useEffect(() => {
+        // getInventoryItemData(retreiveItem)
+        if(!retreiveItem) {
+            <Alert
+      message="Error"
+      description="Select item."
+      type="error"
+      showIcon
+    />
+        }
+        else{
+            getInventoryItemData(retreiveItem).then((data) => {
+                console.log('specific item detail data function called', data)
+                setSpecificItemData(data)
+            })
+        }
+    }, [retreiveItem])
+    console.log('specificItemData', specificItemData)
     function UOM(value) {
         setUnitOfMeassure(value)
     }
+
     function getItemQuantity(value) {
         setRetreiveItem(value)
     }
+
     const GetAllInventory = () => {
         firebase
             .firestore()
@@ -193,32 +208,33 @@ const Inventory = () => {
 
             </Modal>
 
-            <Modal 
-            title="Update Inventory" 
-            visible={updateInventoryModal} 
-            onCancel={closeUpdateInventoryModal}>
+            <Modal
+                title="Update Inventory"
+                visible={updateInventoryModal}
+                onCancel={closeUpdateInventoryModal}>
+
                 <h3>Update inventory modal</h3>
-                {console.log('itemName.itemsName',allInventoryItems && allInventoryItems)}
+                {console.log('itemName.itemsName', allInventoryItems && allInventoryItems)}
                 <Row gutter={[10, 10]}>
                     <Col xs={24} sm={10}>
                         <Select placeholder="Select Type" style={{ width: '170px' }} onChange={getItemQuantity}>
-                        {value.allInventoryItems && value.allInventoryItems.map((itemName, key) => <Select.Option
-                            value={itemName.itemsName}
-                        >
-                            {itemName.itemsName}
-                        </Select.Option>
-                        )}
+                            {value.allInventoryItems && value.allInventoryItems.map((itemName, key) => <Select.Option
+                                value={itemName.itemsName}
+                            >
+                                {itemName.itemsName}
+                            </Select.Option>
+                            )}
                         </Select>
 
                     </Col>
                     <Col xs={24} sm={10}>
-                        <Input placeholder='Show item quantity here' disabled/>
+                        <Input placeholder='Show item quantity here' disabled />
                     </Col>
                     <Col xs={24} sm={10}>
-                        <Input placeholder='Add new amount of inventory' disabled/>
+                        <Input placeholder='Add new amount of inventory' disabled />
                     </Col>
                     <Col xs={24} sm={10}>
-                        <Button>Update Inentory</Button>
+                        <Button onClick={getItemData}>Update Inentory</Button>
                     </Col>
                 </Row>
             </Modal>
