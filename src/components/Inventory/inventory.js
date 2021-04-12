@@ -11,9 +11,9 @@ import { UserContext } from '../../context/UserContext/UserContext'
 import { PlusSquareOutlined } from "@ant-design/icons";
 
 import {
-    Divider, message, Row, Col, Input, Button, Select, Modal, Table, Space, Alert
+    Divider, message, Row, Col, Input, Button, Select, Modal, Table, Space, Alert, Tabs
 } from 'antd'
-
+const { TabPane } = Tabs;
 const Inventory = () => {
     const { user, allInventoryItems } = useContext(UserContext)
     const value = useContext(VendorCustomerContext)
@@ -100,7 +100,7 @@ const Inventory = () => {
         else{
             getInventoryItemData(retreiveItem).then((data) => {
                 console.log('specific item detail data function called', data)
-                setSpecificItemData(data)
+                setSpecificItemData(data[0].quantity)
             })
         }
     }, [retreiveItem])
@@ -228,14 +228,14 @@ const Inventory = () => {
 
                     </Col>
                     <Col xs={24} sm={10}>
-                        <Input placeholder='Show item quantity here' disabled />
+                        <Input placeholder='Show item quantity here' value={specificItemData} disabled />
                     </Col>
                     <Col xs={24} sm={10}>
-                        <Input placeholder='Add new amount of inventory' disabled />
+                        <Input placeholder='Add new amount of inventory' disabled={!specificItemData} />
                     </Col>
-                    <Col xs={24} sm={10}>
-                        <Button onClick={getItemData}>Update Inentory</Button>
-                    </Col>
+                        {/* <Col xs={24} sm={10}>
+                            <Button onClick={getItemData}>Update Inentory</Button>
+                        </Col> */}
                 </Row>
             </Modal>
 
