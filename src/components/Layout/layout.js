@@ -13,7 +13,8 @@ import {
     CustomerDetails,
     CustomerOrder,
     UpdateCustomer,
-    Inventory
+    Inventory,
+    PurchaseOrderDetails
 } from '../NavigationLinks/navLinks'
 import { VendorCustomerContext } from '../../context/Random/random'
 import { UserProvider } from '../../context/UserContext/UserContext'
@@ -57,6 +58,7 @@ function Layout() {
                                 <Route path="/home/customer" component={Customer} />
                                 <Route path="/home/request-for-quotation" component={RequestForQuotation} />
                                 <Route path="/home/purchase-order" component={PurchaseOrder} />
+                                <Route path="/home/purchase-order-details/:slug/" component={PurchaseOrderDetails} />
                                 <Route path="/home/vendor-details/:slug/:Cname" component={VendorDetails} />
                                 <Route path="/home/customer-details/:slug/:Cname" component={CustomerDetails} />
                                 <Route path="/home/customer-order/:slug/:Cname" component={CustomerOrder} />

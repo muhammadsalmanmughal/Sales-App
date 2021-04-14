@@ -1,6 +1,7 @@
 import React, { useState, useContext, useEffect } from 'react'
 import firebase from '../../config/Firebase/firebase';
 import { VendorCustomerContext } from '../../context/Random/random'
+import { useHistory } from 'react-router-dom'
 import { CopyToClipboard } from 'react-copy-to-clipboard'
 import { CreatePurchaseOrder } from '../../Utils/utils'
 import { FaRegClipboard } from "react-icons/fa";
@@ -50,6 +51,8 @@ const PurchaseOrder = () => {
     const POiD = shortid.generate()
     console.log('all items from PO', allInventoryItems)
 
+    const history = useHistory()
+    
     function selectVednor(value) {
         setSelectedVendor(value)
     }
@@ -180,8 +183,8 @@ const PurchaseOrder = () => {
             key: 'action',
             render: (allPO) => (
                 <Space size="middle">
-                    <Button
-                        // onClick={() => showInventoryModal(inventoryItems.iD)}
+                    <Button onClick={() =>
+                            history.push(`/home/purchase-order-details/${allPO.compId}`)}
                     >Details</Button>
                 </Space>
             ),
