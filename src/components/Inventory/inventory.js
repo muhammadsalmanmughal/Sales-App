@@ -13,7 +13,7 @@ import { PlusSquareOutlined } from "@ant-design/icons";
 import {
     Divider, message, Row, Col, Input, Button, Select, Modal, Table, Space, Alert, Tabs
 } from 'antd'
-const { TabPane } = Tabs;
+
 const Inventory = () => {
     const { user, allInventoryItems } = useContext(UserContext)
     const value = useContext(VendorCustomerContext)
@@ -89,22 +89,24 @@ const Inventory = () => {
     }
     useEffect(() => {
         // getInventoryItemData(retreiveItem)
-        if(!retreiveItem) {
+        if (!retreiveItem) {
             <Alert
-      message="Error"
-      description="Select item."
-      type="error"
-      showIcon
-    />
+                message="Error"
+                description="Select item."
+                type="error"
+                showIcon
+            />
         }
-        else{
+        else {
             getInventoryItemData(retreiveItem).then((data) => {
                 console.log('specific item detail data function called', data)
                 setSpecificItemData(data[0].quantity)
             })
         }
     }, [retreiveItem])
-    console.log('specificItemData', specificItemData)
+
+    // console.log('specificItemData', specificItemData)
+
     function UOM(value) {
         setUnitOfMeassure(value)
     }
@@ -233,15 +235,15 @@ const Inventory = () => {
                     <Col xs={24} sm={10}>
                         <Input placeholder='Add new amount of inventory' disabled={!specificItemData} />
                     </Col>
-                        {/* <Col xs={24} sm={10}>
+                    {/* <Col xs={24} sm={10}>
                             <Button onClick={getItemData}>Update Inentory</Button>
                         </Col> */}
                 </Row>
             </Modal>
-
-            <div>
-                <Table dataSource={inventoryItems} columns={columns} />;
-            </div>
+          
+                    <div>
+                        <Table dataSource={inventoryItems} columns={columns} />;
+                     </div>
 
         </div>
     )

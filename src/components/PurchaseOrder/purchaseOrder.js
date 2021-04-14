@@ -16,7 +16,10 @@ import {
     Button,
     Tooltip,
     Select,
-    DatePicker
+    DatePicker,
+    Tabs,
+    Table,
+    Space
 } from 'antd'
 import {
     ListItem,
@@ -26,6 +29,7 @@ import {
     DeleteButton
 } from '../RequestForQuotation/style/index'
 import { Label } from '../Textbox/style';
+const { TabPane } = Tabs;
 
 const PurchaseOrder = () => {
     const [selectedVendor, setSelectedVendor] = useState()
@@ -37,6 +41,7 @@ const PurchaseOrder = () => {
     const [startDate, setStartDate] = useState(new Date());
     const [requriedDate, setRequriedDate] = useState();
     const [pricePerItem, setPricePerItem] = useState()
+    const [discription, setDiscription] = useState()
     const [allPO, setAllPO] = useState()
 
     const { RangePicker } = DatePicker;
@@ -66,7 +71,7 @@ const PurchaseOrder = () => {
             setQuantity('')
         }
     }
-    console.log(itemsList)
+    // console.log(itemsList)
 
     const deleteItem = (id) => {
         const newList = [...itemsList]
@@ -79,7 +84,7 @@ const PurchaseOrder = () => {
     };
 
     const generatePurchaseOrder = () => {
-        CreatePurchaseOrder(itemsList, POiD, utc, requriedDate, selectedVendor, pricePerItem)
+        CreatePurchaseOrder(itemsList, POiD, utc, requriedDate, selectedVendor, pricePerItem,discription)
         setItemsList([])
     }
 
@@ -115,13 +120,6 @@ const PurchaseOrder = () => {
 
     // console.log('all PO', allPO?.flatMap(O => O.newList));
     console.log('all PO', allPO);
-    // function range(start, end) {
-    //     const result = [];
-    //     for (let i = start; i < end; i++) {
-    //         result.push(i);
-    //     }
-    //     return result;
-    // }
 
     function disabledDate(current) {
         // Can not select days before today and today
@@ -161,10 +159,40 @@ const PurchaseOrder = () => {
     //       />
     //     ); onChange={e => selectDate(e.target.value)}
     //   };
+    const columns = [
+        {
+            title: 'PO ID',
+            dataIndex: 'POiD',
+            key: 'purchase order id',
+        },
+        {
+            title: 'Date',
+            dataIndex: 'fullDate',
+            key: 'uom',
+        },
+        // {
+        //     title: 'Quantity',
+        //     dataIndex: 'quantity',
+        //     key: 'quantity',
+        // },
+        {
+            title: 'Action',
+            key: 'action',
+            render: (allPO) => (
+                <Space size="middle">
+                    <Button
+                        // onClick={() => showInventoryModal(inventoryItems.iD)}
+                    >Details</Button>
+                </Space>
+            ),
+        },
+    ];
     return (
         <div>
             <h1>Purchase Order</h1>
             <Divider />
+            <Tabs defaultActiveKey="1">
+                <TabPane tab="New Purchase Order" key="1">
             <Row gutter={[10, 10]}>
                 <Col>
                     <div style={{ marginBottom: 16 }}>
@@ -270,6 +298,13 @@ const PurchaseOrder = () => {
                     />
                 </Col>
 
+                <Col xs={24} sm={20}>
+                    <Input 
+                    type='text'
+                    placeholder='Enter a small discription'
+                    onChange={e => setDiscription(e.target.value)}
+                    maxLength={100}/>
+                </Col>  
 
                 <Col xs={24} sm={1}>
 
@@ -313,6 +348,23 @@ const PurchaseOrder = () => {
                     >Create Purchase Order</Button>
                 </Col>
             </Row>
+            </TabPane>
+
+            <TabPane tab="All Purchase Orders" key="2">
+                    <h1>hello world</h1>
+                    {/* {allPO&&allPO.map((items,key)=>{
+                        return(
+                            <div>
+                                <p>{items.POiD}</p>
+                                <p>{}</p>
+                            </div>
+                        )
+                    })} */}
+                     <div>
+                        <Table dataSource={allPO} columns={columns} />;
+                     </div>
+            </TabPane>
+            </Tabs>
         </div>
     )
 }
