@@ -69,7 +69,7 @@ const PurchaseOrder = () => {
         }
 
         else {
-            setItemsList([...itemsList, { items, quantity, radioValue }])
+            setItemsList([...itemsList, { items, quantity, radioValue,pricePerItem,discription }])
             setItems('')
             setQuantity('')
         }
@@ -87,7 +87,7 @@ const PurchaseOrder = () => {
     };
 
     const generatePurchaseOrder = () => {
-        CreatePurchaseOrder(itemsList, POiD, utc, requriedDate, selectedVendor, pricePerItem,discription)
+        CreatePurchaseOrder(itemsList, POiD, utc, requriedDate, selectedVendor)
         setItemsList([])
     }
 
@@ -169,9 +169,14 @@ const PurchaseOrder = () => {
             key: 'purchase order id',
         },
         {
-            title: 'Date',
-            dataIndex: 'fullDate',
-            key: 'uom',
+            title: 'Created-Date',
+            dataIndex: 'createdDate',
+            key: 'createdDate',
+        },
+        {
+            title: 'Requried-Date',
+            dataIndex: 'requriedDate',
+            key: 'requriedDate',
         },
         // {
         //     title: 'Quantity',

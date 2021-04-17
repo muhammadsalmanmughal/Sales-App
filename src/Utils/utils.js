@@ -253,22 +253,51 @@ const CreateRFQ = (newList, RFQiD, fullDate) => {
     })
 }
 
-const CreatePurchaseOrder = (newList, POiD, fullDate, selectVendor) => {
-  // console.log('Purchase Order Data', newList, POiD, fullDate, selectVendor)
+const CreatePurchaseOrder = (newList, POiD, createdDate, requriedDate ,selectVendor) => {
+  console.log('Purchase Order Data', newList, POiD, createdDate,requriedDate, selectVendor)
   const PO_object = {
     newList,
     POiD,
-    fullDate,
+    createdDate,
+      requriedDate,
     selectVendor
   }
   console.log('PO_object', PO_object);
   firebase.firestore().collection('PurchaseOrder').add(PO_object)
     .then((response) => {
+      firebase.firestore().collection("PurchaseOrder").doc(response.id).update({ 'iD': response.id })
       message.success('Purchase order created')
     })
     .catch((error) => {
       message.error(error.message)
     })
+}
+
+const getPODetails = (id) => {
+  return firebase
+  .firestore()
+  .collection('PurchaseOrder')
+  .where("iD", "==", id)
+  .get()
+  .then(function (querySnapshot) {
+    // console.log('querySnapshot', querySnapshot)
+    const PODetails = [];
+    querySnapshot.forEach(function (doc) {
+      if (doc.exists) {
+        const comp = doc.data();
+        PODetails.push({ ...comp, compId: doc.id });
+      } else {
+        message.info("No such document!");
+      }
+    });
+    // setCompanyList(PODetails);
+    // setInitialCompany(PODetails);
+    // console.log('data-------->', PODetails)
+    return PODetails
+  })
+  .catch(function (error) {
+    console.log("Error getting documents: ", error);
+  });
 }
 
 const CreateInventory = (itemsObj) => {
@@ -395,6 +424,7 @@ export {
   UpdateVendor,
   CreateRFQ,
   CreatePurchaseOrder,
+  getPODetails,
   CreateInventory,
   CapitalizeWords
 }
