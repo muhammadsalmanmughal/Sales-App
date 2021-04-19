@@ -4,12 +4,13 @@ import { CaretLeftOutlined } from "@ant-design/icons";
 import { Goback } from '../Details/styles/index'
 import { getPODetails } from '../../Utils/utils'
 import {
-    Divider, Skeleton, Table
+    Divider, Input, Skeleton, Table, Space
 } from 'antd'
 
 import {TableSkeleton, ParaSkeleton} from '../../Utils/skeleton'
 const PurchaseOrderDetails = () => {
     const [POItemData, setPOItemData] = useState()
+    const [retrieveQuantity,setRetrieveQuantity] = useState()
     const history = useHistory()
     const { slug } = useParams()
 
@@ -18,13 +19,21 @@ const PurchaseOrderDetails = () => {
             setPOItemData(data)
         })
     }, [])
-    // console.log('all PO', POItemData?.flatMap(O => O.newList));
     const itemsList = POItemData?.flatMap(O => O.newList)
-    console.log({ itemsList });
+        
+    const itemRetrieveValue = (quantity) => {
+        console.log({quantity})
+    }
+    // console.log({ itemsList });
 
 
-    console.log({ POItemData });
+    // console.log({ POItemData });
     const columns = [
+        {
+            title: 'Items ID',
+            dataIndex: 'itemId',
+            key: 'id',
+        },
         {
             title: 'Items Name',
             dataIndex: 'items',
@@ -36,9 +45,26 @@ const PurchaseOrderDetails = () => {
             key: 'price',
         },
         {
-            title: 'Quantity',
+            title: 'Requested Quantity',
             dataIndex: 'quantity',
-            key: 'quantity',
+            key: 'requested_quantity',
+        },
+        {
+            title: 'Retrieve Quantity',
+            key: 'retrieve_quantity',
+            render: (allPO) => (
+                <Space size="middle">
+                    {/* <Button onClick={() =>
+                        history.push(`/home/purchase-order-details/${allPO.compId}`)}
+                    >Details</Button> */}
+                    <Input
+                    type='number' 
+                    placeholder='Enter Retrieve Quantity'
+                    // value={}
+                    onChange={e => itemRetrieveValue(e.target.value)}
+                    />
+                </Space>
+            ),
         },
         {
             title: 'Class',
@@ -67,6 +93,7 @@ const PurchaseOrderDetails = () => {
                             <p>Requried Date:{item.requriedDate}</p>
                             <p>created Date:{item.createdDate}</p>
                             <p>Vendor Name:{item.selectVendor}</p>
+                            <p>Status: {item.POStatus}</p>
                         </div>
                     )
                 }) : <Skeleton active />

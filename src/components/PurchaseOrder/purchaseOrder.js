@@ -3,7 +3,7 @@ import firebase from '../../config/Firebase/firebase';
 import { VendorCustomerContext } from '../../context/Random/random'
 import { useHistory } from 'react-router-dom'
 import { CopyToClipboard } from 'react-copy-to-clipboard'
-import { CreatePurchaseOrder, UpdatePOStatus } from '../../Utils/utils'
+import { CreatePurchaseOrder, UpdatePOStatus, getItemsId } from '../../Utils/utils'
 import { FaRegClipboard } from "react-icons/fa";
 import moment from 'moment'
 // import DatePicker from 'react-datepicker'
@@ -37,6 +37,7 @@ const PurchaseOrder = () => {
     const [items, setItems] = useState()
     const [quantity, setQuantity] = useState()
     const [itemsList, setItemsList] = useState([])
+    const [itemId, setItemId] = useState()
     const [radioValue, setRadioValue] = useState('A-class');
     const [stauts, setStatus] = useState()
     const { vendors, allInventoryItems } = useContext(VendorCustomerContext)
@@ -58,9 +59,14 @@ const PurchaseOrder = () => {
         setSelectedVendor(value)
     }
     function selectInventoryItem(value) {
+        getItemsId(value).then(data => {
+            setItemId(data[0].itemId)
+        })
         console.log('value', value)
         setItems(value)
     }
+    console.log('items ID------------->',itemId)
+
     const CreateList = () => {
         if (items == null) {
             message.error('Items can not left Empty')
@@ -70,7 +76,7 @@ const PurchaseOrder = () => {
         }
 
         else {
-            setItemsList([...itemsList, { items, quantity, radioValue, pricePerItem, discription }])
+            setItemsList([...itemsList, {itemId, items, quantity, radioValue, pricePerItem, discription }])
             setItems('')
             setQuantity('')
         }
@@ -277,6 +283,13 @@ const PurchaseOrder = () => {
                                 </Select.Option>
                                 )}
                             </Select>
+                        </Col>
+                        <Col>
+                        <Input
+                        value={itemId}
+                        placeholder='Selected items id'
+                        disabled
+                        />
                         </Col>
                         <Col>
                             <Select placeholder='Select Quality type' style={{ width: 200 }} onChange={selectQuality}>

@@ -20,6 +20,7 @@ const Inventory = () => {
     console.log('valiue--------->', value.allInventoryItems)
 
     const [itemName, setItemsName] = useState()
+    const [itemID,setItemID] = useState()
     const [unitOfMeassure, setUnitOfMeassure] = useState()
     const [inventoryItems, setInventoryItems] = useState()
     const [itemDetails, setItemDetails] = useState()
@@ -33,6 +34,7 @@ const Inventory = () => {
     const [updateInventoryModal, setUpdateInventoryModal] = useState(false)
     const itemDataObj = {
         name: user && user[0].name,
+        itemId:itemID,
         email: user && user[0].email,
         url: user && user[0].url,
         unitOfMeassure,
@@ -52,8 +54,8 @@ const Inventory = () => {
     const handleOk = () => {
         if (!itemName) return message.error('Items can not be left empty')
         if (!unitOfMeassure) return message.error('Select Unit of Meassure')
-
-        CreateInventory(itemDataObj)
+        if ( itemID < 0 ) return message.error('Items Id not acceptable')
+        // CreateInventory(itemDataObj)
         setItemsName('')
     };
 
@@ -189,6 +191,16 @@ const Inventory = () => {
                             maxLength={25}
                         />
                     </Col>
+                    <Col xs={24} sm={14}>
+                        <Input
+                            type='number'
+                            placeholder='Enter item ID'
+                            // value={itemName}
+                            onChange={e => setItemID(e.target.value)}
+                            maxLength={3}
+                        />
+                    </Col>
+                    
                     <Col xs={24} sm={10}>
                         <Select placeholder="Select Type" onChange={UOM}>
                             <Option value="packet">Packet</Option>

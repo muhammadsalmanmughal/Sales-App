@@ -320,7 +320,32 @@ const CreateInventory = (itemsObj) => {
       message.error(error.message)
     })
 }
-
+const getItemsId = (itemName) => {
+  return firebase
+  .firestore()
+  .collection('Item_Master')
+  .where("itemsName", "==", itemName)
+  .get()
+  .then(function (querySnapshot) {
+    // console.log('querySnapshot', querySnapshot)
+    const itemID = [];
+    querySnapshot.forEach(function (doc) {
+      if (doc.exists) {
+        const comp = doc.data();
+        itemID.push({ ...comp, compId: doc.id });
+      } else {
+        message.info("No such document!");
+      }
+    });
+    // setCompanyList(itemID);
+    // setInitialCompany(itemID);
+    // console.log('data-------->', itemID)
+    return itemID
+  })
+  .catch(function (error) {
+    console.log("Error getting documents: ", error);
+  });
+}
 const getInentoryDetails = (id) => {
 
   return firebase
@@ -423,6 +448,7 @@ export {
   getInentoryDetails,
   getAllInventoryItems,
   getInventoryItemData,
+  getItemsId,
   createVendor,
   getAllVendors,
   createNewCustomer,
