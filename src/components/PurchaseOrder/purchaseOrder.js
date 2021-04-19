@@ -3,7 +3,7 @@ import firebase from '../../config/Firebase/firebase';
 import { VendorCustomerContext } from '../../context/Random/random'
 import { useHistory } from 'react-router-dom'
 import { CopyToClipboard } from 'react-copy-to-clipboard'
-import { CreatePurchaseOrder } from '../../Utils/utils'
+import { CreatePurchaseOrder, UpdatePOStatus } from '../../Utils/utils'
 import { FaRegClipboard } from "react-icons/fa";
 import moment from 'moment'
 // import DatePicker from 'react-datepicker'
@@ -38,6 +38,7 @@ const PurchaseOrder = () => {
     const [quantity, setQuantity] = useState()
     const [itemsList, setItemsList] = useState([])
     const [radioValue, setRadioValue] = useState('A-class');
+    const [stauts, setStatus] = useState()
     const { vendors, allInventoryItems } = useContext(VendorCustomerContext)
     const [startDate, setStartDate] = useState(new Date());
     const [requriedDate, setRequriedDate] = useState();
@@ -52,7 +53,7 @@ const PurchaseOrder = () => {
     console.log('all items from PO', allInventoryItems)
 
     const history = useHistory()
-    
+
     function selectVednor(value) {
         setSelectedVendor(value)
     }
@@ -69,7 +70,7 @@ const PurchaseOrder = () => {
         }
 
         else {
-            setItemsList([...itemsList, { items, quantity, radioValue,pricePerItem,discription }])
+            setItemsList([...itemsList, { items, quantity, radioValue, pricePerItem, discription }])
             setItems('')
             setQuantity('')
         }
@@ -85,6 +86,9 @@ const PurchaseOrder = () => {
     const selectQuality = e => {
         setRadioValue(e);
     };
+    const changeStatus = (e, id) => {
+        UpdatePOStatus(e, id)
+    };
 
     const generatePurchaseOrder = () => {
         CreatePurchaseOrder(itemsList, POiD, utc, requriedDate, selectedVendor)
@@ -92,7 +96,6 @@ const PurchaseOrder = () => {
     }
 
     const getPurchaseOrder = () => {
-        // setIsLoading(true)
         firebase
             .firestore()
             .collection("PurchaseOrder")
@@ -189,8 +192,28 @@ const PurchaseOrder = () => {
             render: (allPO) => (
                 <Space size="middle">
                     <Button onClick={() =>
-                            history.push(`/home/purchase-order-details/${allPO.compId}`)}
+                        history.push(`/home/purchase-order-details/${allPO.compId}`)}
                     >Details</Button>
+                </Space>
+            ),
+        },
+        {
+            title: 'Status',
+            key: 'status',
+            render: (allPO) => (
+                <Space size="middle">
+                    {/* <Button 
+                    onClick={() =>
+                            history.push(`/home/purchase-order-details/${allPO.compId}`)}
+                    >Details</Button> */}
+                    <Select
+                        defaultValue={allPO.POStatus}
+                        placeholder='Select Status'
+                        style={{ width: 200 }}
+                        onChange={e => changeStatus(e, allPO.iD)}>
+                        <Select.Option value="approved">Approved</Select.Option>
+                        <Select.Option value="rejected">Rejected</Select.Option>
+                    </Select>
                 </Space>
             ),
         },
@@ -201,177 +224,169 @@ const PurchaseOrder = () => {
             <Divider />
             <Tabs defaultActiveKey="1">
                 <TabPane tab="New Purchase Order" key="1">
-            <Row gutter={[10, 10]}>
-                <Col>
-                    <div style={{ marginBottom: 16 }}>
-                        <Input addonAfter={
-                            <Tooltip placement="topRight" title='Click to Copy'>
-                                <CopyToClipboard text={POiD}>
-                                    <FaRegClipboard
-                                        onClick={() => alert(POiD)}
-                                        style={{ cursor: 'pointer' }}
-                                    />
-                                </CopyToClipboard>
-                            </Tooltip>
-                        }
-                            value={POiD}
-                            disabled
-                        />
-                    </div>
-                </Col>
-                <Col xs={24} sm={4}>
-                    <h4>Date: {utc}</h4>
-                </Col>
-            </Row>
-            <Row gutter={[24, 10]}>
+                    <Row gutter={[10, 10]}>
+                        <Col>
+                            <div style={{ marginBottom: 16 }}>
+                                <Input addonAfter={
+                                    <Tooltip placement="topRight" title='Click to Copy'>
+                                        <CopyToClipboard text={POiD}>
+                                            <FaRegClipboard
+                                                onClick={() => alert(POiD)}
+                                                style={{ cursor: 'pointer' }}
+                                            />
+                                        </CopyToClipboard>
+                                    </Tooltip>
+                                }
+                                    value={POiD}
+                                    disabled
+                                />
+                            </div>
+                        </Col>
+                        <Col xs={24} sm={4}>
+                            <h4>Date: {utc}</h4>
+                        </Col>
+                    </Row>
+                    <Row gutter={[24, 10]}>
 
-                <Col>
-                    {/* <label>Select Vender: </label> */}
-                    <Select
-                        style={{ width: 200 }}
-                        placeholder='Select Vendor'
-                        onChange={selectVednor}
-                    >
-                        {vendors && vendors.map((name, key) => <Select.Option
-                            value={name.companyName}
-                        >
-                            {name.companyName}
-                        </Select.Option>
-                        )}
-                    </Select>
-                </Col>
-                <Col>
-                    {/* <label>Select Item: </label> */}
-                    <Select
-                        style={{ width: 200 }}
-                        placeholder='Select Item'
-                        onChange={selectInventoryItem}
-                    >
-                        {allInventoryItems && allInventoryItems.map((itemName, key) => <Select.Option
-                            value={itemName.itemsName}
-                        >
-                            {itemName.itemsName}
-                        </Select.Option>
-                        )}
-                    </Select>
-                </Col>
-                <Col>
-                    <Select placeholder='Select Quality type' style={{ width: 200 }} onChange={selectQuality}>
-                        <Select.Option value="a">A</Select.Option>
-                        <Select.Option value="b">B</Select.Option>
-                        <Select.Option value="c">C</Select.Option>
-                    </Select>
-                    {/* <Radio.Group onChange={selectQuality} value={radioValue}>
+                        <Col>
+                            {/* <label>Select Vender: </label> */}
+                            <Select
+                                style={{ width: 200 }}
+                                placeholder='Select Vendor'
+                                onChange={selectVednor}
+                            >
+                                {vendors && vendors.map((name, key) => <Select.Option
+                                    value={name.companyName}
+                                >
+                                    {name.companyName}
+                                </Select.Option>
+                                )}
+                            </Select>
+                        </Col>
+                        <Col>
+                            {/* <label>Select Item: </label> */}
+                            <Select
+                                style={{ width: 200 }}
+                                placeholder='Select Item'
+                                onChange={selectInventoryItem}
+                            >
+                                {allInventoryItems && allInventoryItems.map((itemName, key) => <Select.Option
+                                    value={itemName.itemsName}
+                                >
+                                    {itemName.itemsName}
+                                </Select.Option>
+                                )}
+                            </Select>
+                        </Col>
+                        <Col>
+                            <Select placeholder='Select Quality type' style={{ width: 200 }} onChange={selectQuality}>
+                                <Select.Option value="a">A</Select.Option>
+                                <Select.Option value="b">B</Select.Option>
+                                <Select.Option value="c">C</Select.Option>
+                            </Select>
+                            {/* <Radio.Group onChange={selectQuality} value={radioValue}>
                         <Radio value={'A-class'}>A</Radio>
                         <Radio value={'B-class'}>B</Radio>
                         <Radio value={'C-class'}>C</Radio>
                     </Radio.Group> */}
-                </Col>
-                <Col >
-                    {/* <label>Select Delivery Date: </label> */}
-                    <DatePicker
-                        placeholder='Requried Date'
-                        format="DD-MM-YYYY"
-                        disabledDate={disabledDate}
-                        style={{ width: 200 }}
-                        // isValidDate={disableWeekends}
-                        // isOutsideRange={day => (moment().diff(day) < 6)}
-                        onChange={selectRequriedDate}
-                    // filterDate={date => date.getDay() !== 6 && date.getDay() !== 0}
-                    //   disabledTime={disabledDateTime}
-                    //   showTime={{ defaultValue: moment('00:00:00', 'HH:mm:ss') }}
-                    />
-                    {/* {dateTimePicker()} */}
-                </Col>
+                        </Col>
+                        <Col >
+                            {/* <label>Select Delivery Date: </label> */}
+                            <DatePicker
+                                placeholder='Requried Date'
+                                format="DD-MM-YYYY"
+                                disabledDate={disabledDate}
+                                style={{ width: 200 }}
+                                // isValidDate={disableWeekends}
+                                // isOutsideRange={day => (moment().diff(day) < 6)}
+                                onChange={selectRequriedDate}
+                            // filterDate={date => date.getDay() !== 6 && date.getDay() !== 0}
+                            //   disabledTime={disabledDateTime}
+                            //   showTime={{ defaultValue: moment('00:00:00', 'HH:mm:ss') }}
+                            />
+                            {/* {dateTimePicker()} */}
+                        </Col>
 
 
-            </Row>
-            <Row gutter={[10, 10]}>
-                <Col xs={24} sm={10}>
-                    <Input
-                        type='number'
-                        placeholder='Enter item Quantity'
-                        value={quantity}
-                        onChange={e => setQuantity(e.target.value)}
-                        maxLength={2}
-                    />
-                </Col>
-                <Col xs={24} sm={10}>
-                    <Input
-                        type='number'
-                        placeholder='Price per Item'
-                        value={pricePerItem}
-                        onChange={e => setPricePerItem(e.target.value)}
-                        maxLength={3}
-                    />
-                </Col>
+                    </Row>
+                    <Row gutter={[10, 10]}>
+                        <Col xs={24} sm={10}>
+                            <Input
+                                type='number'
+                                placeholder='Enter item Quantity'
+                                value={quantity}
+                                onChange={e => setQuantity(e.target.value)}
+                                maxLength={2}
+                            />
+                        </Col>
+                        <Col xs={24} sm={10}>
+                            <Input
+                                type='number'
+                                placeholder='Price per Item'
+                                value={pricePerItem}
+                                onChange={e => setPricePerItem(e.target.value)}
+                                maxLength={3}
+                            />
+                        </Col>
 
-                <Col xs={24} sm={20}>
-                    <Input 
-                    type='text'
-                    placeholder='Enter a small discription'
-                    onChange={e => setDiscription(e.target.value)}
-                    maxLength={100}/>
-                </Col>  
+                        <Col xs={24} sm={20}>
+                            <Input
+                                type='text'
+                                placeholder='Enter a small discription'
+                                onChange={e => setDiscription(e.target.value)}
+                                maxLength={100} />
+                        </Col>
 
-                <Col xs={24} sm={1}>
+                        <Col xs={24} sm={1}>
 
-                    <Button
-                        onClick={CreateList}
-                    >Add</Button>
-                </Col>
+                            <Button
+                                onClick={CreateList}
+                            >Add</Button>
+                        </Col>
 
-            </Row>
-            <Divider>ITEMS LIST</Divider>
+                    </Row>
+                    <Divider>ITEMS LIST</Divider>
 
-            <ul>
-                {
-                    itemsList.map((item, key) => {
-                        return (
-                            <>
-                                <ListItem key={key} xs={24} sm={12}>
-                                    <ItemDiv>
-                                        {item.items}
-                                    </ItemDiv>
-                                    <QuantityAndButtonDiv>
-                                        <Quantity>
-                                            {item.quantity}/
+                    <ul>
+                        {
+                            itemsList.map((item, key) => {
+                                return (
+                                    <>
+                                        <ListItem key={key} xs={24} sm={12}>
+                                            <ItemDiv>
+                                                {item.items}
+                                            </ItemDiv>
+                                            <QuantityAndButtonDiv>
+                                                <Quantity>
+                                                    {item.quantity}/
                       {item.radioValue}
-                                        </Quantity>
-                                        <DeleteButton>
-                                            <Button danger onClick={() => deleteItem(key)}>Delete</Button>
-                                        </DeleteButton>
-                                    </QuantityAndButtonDiv>
+                                                </Quantity>
+                                                <DeleteButton>
+                                                    <Button danger onClick={() => deleteItem(key)}>Delete</Button>
+                                                </DeleteButton>
+                                            </QuantityAndButtonDiv>
 
-                                </ListItem>
-                            </>
-                        )
-                    })
-                }
-            </ul>
-            <Row>
-                <Col xs={24} sm={12}>
-                    <Button
-                        onClick={generatePurchaseOrder}
-                    >Create Purchase Order</Button>
-                </Col>
-            </Row>
-            </TabPane>
+                                        </ListItem>
+                                    </>
+                                )
+                            })
+                        }
+                    </ul>
+                    <Row>
+                        <Col xs={24} sm={12}>
+                            <Button
+                                onClick={generatePurchaseOrder}
+                            >Create Purchase Order</Button>
+                        </Col>
+                    </Row>
+                </TabPane>
 
-            <TabPane tab="All Purchase Orders" key="2">
+                <TabPane tab="All Purchase Orders" key="2">
                     <h1>hello world</h1>
-                    {/* {allPO&&allPO.map((items,key)=>{
-                        return(
-                            <div>
-                                <p>{items.POiD}</p>
-                                <p>{}</p>
-                            </div>
-                        )
-                    })} */}
-                     <div>
+                    <div>
                         <Table dataSource={allPO} columns={columns} />;
                      </div>
-            </TabPane>
+                </TabPane>
             </Tabs>
         </div>
     )

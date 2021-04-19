@@ -237,6 +237,12 @@ const UpdateVendor = (vendorDetail, id) => {
     })
 }
 
+const UpdatePOStatus = (status, id) => {
+  firebase.firestore().collection("PurchaseOrder").doc(id)
+.update({
+  POStatus: status
+})
+}
 const CreateRFQ = (newList, RFQiD, fullDate) => {
   console.log('Create Rfq Utils', newList, RFQiD, fullDate)
   const RfqObj = {
@@ -253,14 +259,15 @@ const CreateRFQ = (newList, RFQiD, fullDate) => {
     })
 }
 
-const CreatePurchaseOrder = (newList, POiD, createdDate, requriedDate ,selectVendor) => {
+const CreatePurchaseOrder = (newList, POiD, createdDate, requriedDate ,selectVendor, POStatus) => {
   console.log('Purchase Order Data', newList, POiD, createdDate,requriedDate, selectVendor)
   const PO_object = {
     newList,
     POiD,
     createdDate,
       requriedDate,
-    selectVendor
+    selectVendor,
+    POStatus:'Not Defined'
   }
   console.log('PO_object', PO_object);
   firebase.firestore().collection('PurchaseOrder').add(PO_object)
@@ -425,6 +432,7 @@ export {
   CreateRFQ,
   CreatePurchaseOrder,
   getPODetails,
+  UpdatePOStatus,
   CreateInventory,
   CapitalizeWords
 }
