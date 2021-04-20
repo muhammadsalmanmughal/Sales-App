@@ -239,9 +239,9 @@ const UpdateVendor = (vendorDetail, id) => {
 
 const UpdatePOStatus = (status, id) => {
   firebase.firestore().collection("PurchaseOrder").doc(id)
-.update({
-  POStatus: status
-})
+    .update({
+      POStatus: status
+    })
 }
 const CreateRFQ = (newList, RFQiD, fullDate) => {
   console.log('Create Rfq Utils', newList, RFQiD, fullDate)
@@ -259,15 +259,16 @@ const CreateRFQ = (newList, RFQiD, fullDate) => {
     })
 }
 
-const CreatePurchaseOrder = (newList, POiD, createdDate, requriedDate ,selectVendor, POStatus) => {
-  console.log('Purchase Order Data', newList, POiD, createdDate,requriedDate, selectVendor)
+const CreatePurchaseOrder = (newList, POiD, createdDate, requriedDate, selectVendor, POStatus) => {
+  console.log('Purchase Order Data', newList, POiD, createdDate, requriedDate, selectVendor)
   const PO_object = {
     newList,
     POiD,
     createdDate,
-      requriedDate,
+    requriedDate,
     selectVendor,
-    POStatus:'Not Defined'
+    POStatus: 'Not Defined',
+    remaining: 0
   }
   console.log('PO_object', PO_object);
   firebase.firestore().collection('PurchaseOrder').add(PO_object)
@@ -282,29 +283,29 @@ const CreatePurchaseOrder = (newList, POiD, createdDate, requriedDate ,selectVen
 
 const getPODetails = (id) => {
   return firebase
-  .firestore()
-  .collection('PurchaseOrder')
-  .where("iD", "==", id)
-  .get()
-  .then(function (querySnapshot) {
-    // console.log('querySnapshot', querySnapshot)
-    const PODetails = [];
-    querySnapshot.forEach(function (doc) {
-      if (doc.exists) {
-        const comp = doc.data();
-        PODetails.push({ ...comp, compId: doc.id });
-      } else {
-        message.info("No such document!");
-      }
+    .firestore()
+    .collection('PurchaseOrder')
+    .where("iD", "==", id)
+    .get()
+    .then(function (querySnapshot) {
+      // console.log('querySnapshot', querySnapshot)
+      const PODetails = [];
+      querySnapshot.forEach(function (doc) {
+        if (doc.exists) {
+          const comp = doc.data();
+          PODetails.push({ ...comp, compId: doc.id });
+        } else {
+          message.info("No such document!");
+        }
+      });
+      // setCompanyList(PODetails);
+      // setInitialCompany(PODetails);
+      // console.log('data-------->', PODetails)
+      return PODetails
+    })
+    .catch(function (error) {
+      console.log("Error getting documents: ", error);
     });
-    // setCompanyList(PODetails);
-    // setInitialCompany(PODetails);
-    // console.log('data-------->', PODetails)
-    return PODetails
-  })
-  .catch(function (error) {
-    console.log("Error getting documents: ", error);
-  });
 }
 
 const CreateInventory = (itemsObj) => {
@@ -320,32 +321,34 @@ const CreateInventory = (itemsObj) => {
       message.error(error.message)
     })
 }
+
 const getItemsId = (itemName) => {
   return firebase
-  .firestore()
-  .collection('Item_Master')
-  .where("itemsName", "==", itemName)
-  .get()
-  .then(function (querySnapshot) {
-    // console.log('querySnapshot', querySnapshot)
-    const itemID = [];
-    querySnapshot.forEach(function (doc) {
-      if (doc.exists) {
-        const comp = doc.data();
-        itemID.push({ ...comp, compId: doc.id });
-      } else {
-        message.info("No such document!");
-      }
+    .firestore()
+    .collection('Item_Master')
+    .where("itemsName", "==", itemName)
+    .get()
+    .then(function (querySnapshot) {
+      // console.log('querySnapshot', querySnapshot)
+      const itemID = [];
+      querySnapshot.forEach(function (doc) {
+        if (doc.exists) {
+          const comp = doc.data();
+          itemID.push({ ...comp, compId: doc.id });
+        } else {
+          message.info("No such document!");
+        }
+      });
+      // setCompanyList(itemID);
+      // setInitialCompany(itemID);
+      // console.log('data-------->', itemID)
+      return itemID
+    })
+    .catch(function (error) {
+      console.log("Error getting documents: ", error);
     });
-    // setCompanyList(itemID);
-    // setInitialCompany(itemID);
-    // console.log('data-------->', itemID)
-    return itemID
-  })
-  .catch(function (error) {
-    console.log("Error getting documents: ", error);
-  });
 }
+
 const getInentoryDetails = (id) => {
 
   return firebase
@@ -417,9 +420,9 @@ const getInventoryItemData = (itemName) => {
             if (doc.exists) {
               const comp = doc.data();
               comlist.push({ ...comp, compId: doc.id });
-            }else {
+            } else {
               reject(message.info("No such document!"))
-            } 
+            }
           });
           // setCompanyList(comlist);
           // setInitialCompany(comlist);
@@ -433,7 +436,23 @@ const getInventoryItemData = (itemName) => {
     )
   }
 }
-
+// update inventory code 
+// const getCurrentToken = () => {
+//   docRef.get().then(function (doc) {
+//     let cT = doc.data().currentToken + 1;
+//     docRef.update({
+//       currentToken: cT,
+//     });
+//   });
+// };
+const updateInventoryItem = (itemId, quantity) =>{
+console.log('itemID', itemId,quantity);
+firebase.firestore().collection("Item_Master")
+.where("itemId", "==", itemId)
+    .update({
+      quantity: status
+    })
+}
 function CapitalizeWords(str) {
   // return str[0].toUpperCase()+str.slice(1)
   if (typeof str === 'string') {
@@ -449,6 +468,7 @@ export {
   getAllInventoryItems,
   getInventoryItemData,
   getItemsId,
+  updateInventoryItem,
   createVendor,
   getAllVendors,
   createNewCustomer,
