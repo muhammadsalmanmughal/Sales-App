@@ -29,7 +29,6 @@ import {
     Quantity,
     DeleteButton
 } from '../RequestForQuotation/style/index'
-import { Label } from '../Textbox/style';
 const { TabPane } = Tabs;
 
 const PurchaseOrder = () => {
@@ -39,7 +38,7 @@ const PurchaseOrder = () => {
     const [itemsList, setItemsList] = useState([])
     const [itemId, setItemId] = useState()
     const [radioValue, setRadioValue] = useState('A-class');
-    const [stauts, setStatus] = useState()
+    const [itemCollectionId, setItemCollectionId] = useState()
     const { vendors, allInventoryItems } = useContext(VendorCustomerContext)
     const [startDate, setStartDate] = useState(new Date());
     const [requriedDate, setRequriedDate] = useState();
@@ -61,8 +60,8 @@ const PurchaseOrder = () => {
     function selectInventoryItem(value) {
         getItemsId(value).then(data => {
             setItemId(data[0].itemId)
+            setItemCollectionId(data[0].compId)
         })
-        console.log('value', value)
         setItems(value)
     }
     console.log('items ID------------->',itemId)
@@ -76,7 +75,7 @@ const PurchaseOrder = () => {
         }
 
         else {
-            setItemsList([...itemsList, {itemId, items, quantity, radioValue, pricePerItem, discription }])
+            setItemsList([...itemsList, {itemCollectionId,itemId, items, quantity, radioValue, pricePerItem, discription }])
             setItems('')
             setQuantity('')
         }
@@ -108,22 +107,12 @@ const PurchaseOrder = () => {
             .onSnapshot(function (querySnapshot) {
                 const poList = [];
                 querySnapshot.forEach(function (doc) {
-                    console.log('functions Doc', doc.data)
                     if (doc.exists) {
                         const comp = doc.data();
                         poList.push({ ...comp, compId: doc.id });
-                        // setIsVendor(true)
-                    } else {
-                        // alert("No such document!");
-                        // <EmptyDiv>
-                        //     <Empty/>
-                        // </EmptyDiv>
-                        // setIsVendor(false)
-
                     }
                 });
                 setAllPO(poList)
-                // setIsVendor(true)
             });
     }
     useEffect(() => {
@@ -134,12 +123,8 @@ const PurchaseOrder = () => {
     console.log('all PO', allPO);
 
     function disabledDate(current) {
-        // Can not select days before today and today
-        // return current && current < moment().endOf('day');
-        // futureDate(current)
-        // pastDate(current)
+ 
         return current && current < moment().endOf('day')
-        // moment().add(1, 'month')  <= current;
 
 
     }
@@ -154,23 +139,6 @@ const PurchaseOrder = () => {
         setRequriedDate(dateString)
     }
 
-    //   function disabledDateTime() {
-    //     return {
-    //       disabledHours: () => range(0, 24).splice(4, 20),
-    //       disabledMinutes: () => range(30, 60),
-    //       disabledSeconds: () => [55, 56],
-    //     };
-    //   }
-    // const dateTimePicker = () => {
-    //     return (
-    //       <DatePicker
-    //         selected={startDate}
-    //         onChange={date => setStartDate(date)}
-    //         dateFormat="MM/yyyy"
-    //         showMonthYearPicker
-    //       />
-    //     ); onChange={e => selectDate(e.target.value)}
-    //   };
     const columns = [
         {
             title: 'PO ID',
@@ -198,7 +166,8 @@ const PurchaseOrder = () => {
             render: (allPO) => (
                 <Space size="middle">
                     <Button onClick={() =>
-                        history.push(`/home/purchase-order-details/${allPO.compId}`)}
+                        history.push(`/home/purchase-order-details/${allPO.compId}`)
+                    }
                     >Details</Button>
                 </Space>
             ),
@@ -208,10 +177,6 @@ const PurchaseOrder = () => {
             key: 'status',
             render: (allPO) => (
                 <Space size="middle">
-                    {/* <Button 
-                    onClick={() =>
-                            history.push(`/home/purchase-order-details/${allPO.compId}`)}
-                    >Details</Button> */}
                     <Select
                         defaultValue={allPO.POStatus}
                         placeholder='Select Status'

@@ -2,23 +2,22 @@ import React, { useState, useEffect } from 'react'
 import { useHistory, useParams } from 'react-router-dom'
 import { CaretLeftOutlined } from "@ant-design/icons";
 import { Goback } from '../Details/styles/index'
-import { getPODetails,updateInventoryItem } from '../../Utils/utils'
+import { getPODetails, updateInventoryItem } from '../../Utils/utils'
 import {
-    Divider, Modal, Input,Button, Skeleton, Table, Space, message
+    Divider, Input, Button, Skeleton, Table, Space, message, Drawer
 } from 'antd'
 
 import { TableSkeleton, ParaSkeleton } from '../../Utils/skeleton'
 const PurchaseOrderDetails = () => {
     const [POItemData, setPOItemData] = useState()
-    const [retrieveQuantity, setRetrieveQuantity] = useState()
-    const [isModalVisible, setIsModalVisible] = useState(false);
-    const [itemID,setItemID] = useState()
-    const [requestedQuantity,setRequestedQuantity] =useState()
-    const [itemQuantity,setItemQuantity] = useState()
+    const [visible, setVisible] = useState(false);
+    const [itemID, setItemID] = useState()
+    const [requestedQuantity, setRequestedQuantity] = useState()
+    const [itemQuantity, setItemQuantity] = useState()
+    const [collectionId, setCollectionId] = useState()
 
     const history = useHistory()
     const { slug } = useParams()
-
     useEffect(() => {
         getPODetails(slug).then(data => {
             setPOItemData(data)
@@ -27,35 +26,27 @@ const PurchaseOrderDetails = () => {
 
     const itemsList = POItemData?.flatMap(O => O.newList)
 
-    // const itemRetrieveValue = (quantity) => {
-    //     console.log({ quantity })
-    //     setRetrieveQuantity(quantity)
-    // }
-    // console.log({ itemsList });
 
-    // const updateItemQuantity = (id) => {
-    //     console.log(`itemID: ${id}`, `item Amount: ${retrieveQuantity}`);
-    // }
-    // ------------Modal-------------
-    const showModal = (id,req_quantity) => {
-        setItemID(id)
-        setIsModalVisible(true);
-        setRequestedQuantity(req_quantity)
-    };
 
+    // ------------Drawer-------------
     const handleOk = () => {
-        if(itemQuantity > requestedQuantity) return message.error('Quantity Error');
-        if(itemQuantity < 0) return message.error('Quantity Error');
-        updateInventoryItem(itemID,itemQuantity)
-        setIsModalVisible(false); 
+        if (requestedQuantity < itemQuantity) return message.error('Retreive Quantity cannot be greator then Requested Quantity');
+        if (itemQuantity < 0) return message.error('Quantity cannot be less then zero');
+        if (!itemQuantity) return message.error('Quantity cannot be set empty');
+        updateInventoryItem(collectionId, parseFloat(itemQuantity))
+        setItemQuantity('')
     };
 
-    const handleCancel = () => {
-        setIsModalVisible(false);
+    const showDrawer = (itemId, req_quantity, docId) => {
+        setVisible(true);
+        setItemID(itemId)
+        setRequestedQuantity(req_quantity)
+        setCollectionId(docId)
     };
-
-    // -----------Modal--------------
-    // console.log({ POItemData });
+    const onClose = () => {
+        setVisible(false);
+    };
+    // -----------Drawer--------------
     const columns = [
         {
             title: 'Items ID',
@@ -81,19 +72,6 @@ const PurchaseOrderDetails = () => {
             title: 'Retrieve Quantity',
             dataIndex: 'retrieve',
             key: 'retrieve_quantity',
-            // render: (allPO) => (
-            //     <Space size="middle">
-            //         {/* <Button onClick={() =>
-            //             history.push(`/home/purchase-order-details/${allPO.compId}`)}
-            //         >Details</Button> */}
-            //         <Input
-            //         type='number' 
-            //         placeholder='Enter Retrieve Quantity'
-            //         // value={}
-            //         onChange={e => itemRetrieveValue(e.target.value)}
-            //         />
-            //     </Space>
-            // ),
         },
         {
             title: 'Remaining',
@@ -116,7 +94,9 @@ const PurchaseOrderDetails = () => {
             render: (allPO) => (
                 <Space size="middle">
                     <Button
-                        onClick={e => showModal(allPO.itemId, allPO.quantity)}
+                        onClick={
+                            e => showDrawer(allPO.itemId, allPO.quantity, allPO.itemCollectionId)
+                        }
                     >Update Inventory</Button>
                 </Space>
             ),
@@ -151,10 +131,36 @@ const PurchaseOrderDetails = () => {
                     <Table dataSource={itemsList} columns={columns} /> : <TableSkeleton />
                 }
             </div>
-            <Modal title="Update Item Quantity" visible={isModalVisible} onOk={handleOk} onCancel={handleCancel}>
+            <Drawer
+                title="Update item Inventory"
+                placement="bottom"
+                closable={false}
+                onClose={onClose}
+                visible={visible}
+                footer={
+                    <div
+                        style={{
+                            textAlign: 'right',
+                        }}
+                    >
+                        <Button onClick={onClose} style={{ marginRight: 8 }}>
+                            Cancel
+                      </Button>
+                        <Button onClick={handleOk} type="primary">
+                            Submit
+                      </Button>
+                    </div>
+                }
+            >
                 <label>Item ID: {itemID}</label>
-                <Input type='number' placeholder='Number of Quantity' onChange={e => setItemQuantity(e.target.value)}/>
-            </Modal>
+                <Input
+                    type='number'
+                    value={itemQuantity}
+                    placeholder='Number of Quantity'
+                    maxLength={3}
+                    onChange={e => setItemQuantity(e.target.value)}
+                />
+            </Drawer>
         </div>
     )
 }

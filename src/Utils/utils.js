@@ -260,7 +260,7 @@ const CreateRFQ = (newList, RFQiD, fullDate) => {
 }
 
 const CreatePurchaseOrder = (newList, POiD, createdDate, requriedDate, selectVendor, POStatus) => {
-  console.log('Purchase Order Data', newList, POiD, createdDate, requriedDate, selectVendor)
+  // console.log('Purchase Order Data', newList, POiD, createdDate, requriedDate, selectVendor)
   const PO_object = {
     newList,
     POiD,
@@ -321,7 +321,6 @@ const CreateInventory = (itemsObj) => {
       message.error(error.message)
     })
 }
-
 const getItemsId = (itemName) => {
   return firebase
     .firestore()
@@ -348,7 +347,6 @@ const getItemsId = (itemName) => {
       console.log("Error getting documents: ", error);
     });
 }
-
 const getInentoryDetails = (id) => {
 
   return firebase
@@ -424,9 +422,6 @@ const getInventoryItemData = (itemName) => {
               reject(message.info("No such document!"))
             }
           });
-          // setCompanyList(comlist);
-          // setInitialCompany(comlist);
-          // console.log('data-------->', comlist)
           resolve(comlist)
         })
         .catch(function (error) {
@@ -445,13 +440,16 @@ const getInventoryItemData = (itemName) => {
 //     });
 //   });
 // };
-const updateInventoryItem = (itemId, quantity) =>{
-console.log('itemID', itemId,quantity);
-firebase.firestore().collection("Item_Master")
-.where("itemId", "==", itemId)
-    .update({
-      quantity: status
-    })
+
+const updateInventoryItem = (docId, increaseBy) => {
+  console.log('utils fjasdfa itemID', docId, increaseBy);
+  const docRef = firebase.firestore().collection("Item_Master").doc(docId)
+  docRef.get().then(function (doc) {
+    let cT = doc.data().quantity + increaseBy
+    docRef.update({
+      quantity: cT,
+    });
+  });
 }
 function CapitalizeWords(str) {
   // return str[0].toUpperCase()+str.slice(1)

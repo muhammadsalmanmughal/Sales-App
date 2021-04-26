@@ -40,7 +40,7 @@ const Inventory = () => {
         unitOfMeassure,
         date: new Date().toJSON().slice(0, 10).replace(/-/g, '/'),
         itemsName: CapitalizeWords(itemName),
-        quantity: '0'
+        quantity: 0
     }
     const showModal = () => {
         setIsModalVisible(true);
@@ -55,7 +55,7 @@ const Inventory = () => {
         if (!itemName) return message.error('Items can not be left empty')
         if (!unitOfMeassure) return message.error('Select Unit of Meassure')
         if ( itemID < 0 ) return message.error('Items Id not acceptable')
-        // CreateInventory(itemDataObj)
+        CreateInventory(itemDataObj)
         setItemsName('')
     };
 
