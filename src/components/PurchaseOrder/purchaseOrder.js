@@ -6,8 +6,6 @@ import { CopyToClipboard } from 'react-copy-to-clipboard'
 import { CreatePurchaseOrder, UpdatePOStatus, getItemsId } from '../../Utils/utils'
 import { FaRegClipboard } from "react-icons/fa";
 import moment from 'moment'
-// import DatePicker from 'react-datepicker'
-// import 'react-datepicker/dist/react-datepicker.css'
 import {
     Divider,
     message,
@@ -34,7 +32,7 @@ const { TabPane } = Tabs;
 const PurchaseOrder = () => {
     const [selectedVendor, setSelectedVendor] = useState()
     const [items, setItems] = useState()
-    const [quantity, setQuantity] = useState()
+    const [requestedquantity, setQuantity] = useState()
     const [itemsList, setItemsList] = useState([])
     const [itemId, setItemId] = useState()
     const [radioValue, setRadioValue] = useState('A-class');
@@ -50,13 +48,15 @@ const PurchaseOrder = () => {
     const utc = new Date().toJSON().slice(0, 10).replace(/-/g, '/');
     const shortid = require('shortid')
     const POiD = shortid.generate()
-    console.log('all items from PO', allInventoryItems)
+    const retreiveQuantity = 0
+    const remainingQuantity = 0
 
     const history = useHistory()
 
     function selectVednor(value) {
         setSelectedVendor(value)
     }
+
     function selectInventoryItem(value) {
         getItemsId(value).then(data => {
             setItemId(data[0].itemId)
@@ -64,18 +64,17 @@ const PurchaseOrder = () => {
         })
         setItems(value)
     }
-    console.log('items ID------------->',itemId)
 
     const CreateList = () => {
         if (items == null) {
             message.error('Items can not left Empty')
         }
-        else if (isNaN(quantity) || quantity.length > 2) {
+        else if (isNaN(requestedquantity) || requestedquantity.length > 2) {
             message.error('Quantity amount not support')
         }
 
         else {
-            setItemsList([...itemsList, {itemCollectionId,itemId, items, quantity, radioValue, pricePerItem, discription }])
+            setItemsList([...itemsList, {itemCollectionId,itemId, items, requestedquantity,retreiveQuantity,remainingQuantity, radioValue, pricePerItem, discription }])
             setItems('')
             setQuantity('')
         }
@@ -123,10 +122,7 @@ const PurchaseOrder = () => {
     console.log('all PO', allPO);
 
     function disabledDate(current) {
- 
         return current && current < moment().endOf('day')
-
-
     }
 
     const disableWeekends = current => {
@@ -292,7 +288,7 @@ const PurchaseOrder = () => {
                             <Input
                                 type='number'
                                 placeholder='Enter item Quantity'
-                                value={quantity}
+                                value={requestedquantity}
                                 onChange={e => setQuantity(e.target.value)}
                                 maxLength={2}
                             />

@@ -7,7 +7,7 @@ import {
     Divider, Input, Button, Skeleton, Table, Space, message, Drawer
 } from 'antd'
 
-import { TableSkeleton, ParaSkeleton } from '../../Utils/skeleton'
+import { TableSkeleton } from '../../Utils/skeleton'
 const PurchaseOrderDetails = () => {
     const [POItemData, setPOItemData] = useState()
     const [visible, setVisible] = useState(false);
@@ -18,6 +18,8 @@ const PurchaseOrderDetails = () => {
     const [itemName, setItemName] = useState()
     const history = useHistory()
     const { slug } = useParams()
+
+    console.log({POItemData});
     useEffect(() => {
         getPODetails(slug).then(data => {
             setPOItemData(data)
@@ -26,10 +28,8 @@ const PurchaseOrderDetails = () => {
 
     const itemsList = POItemData?.flatMap(O => O.newList)
 
-
-
     // ------------Drawer-------------
-    
+
     const showDrawer = (itemId, req_quantity, docId, name) => {
         setVisible(true);
         setItemID(itemId)
@@ -37,6 +37,7 @@ const PurchaseOrderDetails = () => {
         setCollectionId(docId)
         setItemName(name)
     };
+
     const handleOk = () => {
         if (requestedQuantity < itemQuantity) return message.error('Retreive Quantity cannot be greator then Requested Quantity');
         if (itemQuantity < 0) return message.error('Quantity cannot be less then zero');
@@ -45,9 +46,11 @@ const PurchaseOrderDetails = () => {
         setVisible(false)
         setItemQuantity('')
     };
+
     const onClose = () => {
         setVisible(false);
     };
+
     // -----------Drawer--------------
     const columns = [
         {
@@ -67,17 +70,17 @@ const PurchaseOrderDetails = () => {
         },
         {
             title: 'Requested Quantity',
-            dataIndex: 'quantity',
+            dataIndex: 'requestedquantity',
             key: 'requested_quantity',
         },
         {
             title: 'Retrieve Quantity',
-            dataIndex: 'retrieve',
+            dataIndex: 'retreiveQuantity',
             key: 'retrieve_quantity',
         },
         {
             title: 'Remaining',
-            dataIndex: 'remaining',
+            dataIndex: 'remainingQuantity',
             key: 'remainingQuantity',
         },
         {
@@ -105,6 +108,7 @@ const PurchaseOrderDetails = () => {
         },
 
     ];
+
     return (
         <div>
             <Goback onClick={e => history.goBack()}>
