@@ -1,6 +1,6 @@
 import firebase from '../config/Firebase/firebase'
 import 'antd/dist/antd.css';
-import { message } from 'antd';
+import { message,notification } from 'antd';
 
 const createUser = async (email, password, name, img) => {
   console.log(email, password, name, img);
@@ -431,17 +431,8 @@ const getInventoryItemData = (itemName) => {
     )
   }
 }
-// update inventory code 
-// const getCurrentToken = () => {
-//   docRef.get().then(function (doc) {
-//     let cT = doc.data().currentToken + 1;
-//     docRef.update({
-//       currentToken: cT,
-//     });
-//   });
-// };
 
-const updateInventoryItem = (docId, increaseBy) => {
+const updateInventoryItem = (docId, increaseBy, itemName) => {
   console.log('utils fjasdfa itemID', docId, increaseBy);
   const docRef = firebase.firestore().collection("Item_Master").doc(docId)
   docRef.get().then(function (doc) {
@@ -449,6 +440,7 @@ const updateInventoryItem = (docId, increaseBy) => {
     docRef.update({
       quantity: cT,
     });
+    message.success(`Item ${itemName} is increase with quantity ${increaseBy}`)
   });
 }
 function CapitalizeWords(str) {

@@ -15,7 +15,7 @@ const PurchaseOrderDetails = () => {
     const [requestedQuantity, setRequestedQuantity] = useState()
     const [itemQuantity, setItemQuantity] = useState()
     const [collectionId, setCollectionId] = useState()
-
+    const [itemName, setItemName] = useState()
     const history = useHistory()
     const { slug } = useParams()
     useEffect(() => {
@@ -29,19 +29,21 @@ const PurchaseOrderDetails = () => {
 
 
     // ------------Drawer-------------
-    const handleOk = () => {
-        if (requestedQuantity < itemQuantity) return message.error('Retreive Quantity cannot be greator then Requested Quantity');
-        if (itemQuantity < 0) return message.error('Quantity cannot be less then zero');
-        if (!itemQuantity) return message.error('Quantity cannot be set empty');
-        updateInventoryItem(collectionId, parseFloat(itemQuantity))
-        setItemQuantity('')
-    };
-
-    const showDrawer = (itemId, req_quantity, docId) => {
+    
+    const showDrawer = (itemId, req_quantity, docId, name) => {
         setVisible(true);
         setItemID(itemId)
         setRequestedQuantity(req_quantity)
         setCollectionId(docId)
+        setItemName(name)
+    };
+    const handleOk = () => {
+        if (requestedQuantity < itemQuantity) return message.error('Retreive Quantity cannot be greator then Requested Quantity');
+        if (itemQuantity < 0) return message.error('Quantity cannot be less then zero');
+        if (!itemQuantity) return message.error('Quantity cannot be set empty');
+        updateInventoryItem(collectionId, parseFloat(itemQuantity), itemName)
+        setVisible(false)
+        setItemQuantity('')
     };
     const onClose = () => {
         setVisible(false);
@@ -95,7 +97,7 @@ const PurchaseOrderDetails = () => {
                 <Space size="middle">
                     <Button
                         onClick={
-                            e => showDrawer(allPO.itemId, allPO.quantity, allPO.itemCollectionId)
+                            e => showDrawer(allPO.itemId, allPO.quantity, allPO.itemCollectionId, allPO.items)
                         }
                     >Update Inventory</Button>
                 </Space>
