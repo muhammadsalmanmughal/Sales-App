@@ -440,12 +440,21 @@ const updateInventoryItem = (docId, increaseBy, itemName) => {
     docRef.update({
       quantity: cT,
     });
-    message.success(`Item ${itemName} is increase with quantity ${increaseBy}`)
+    message.success(`Item ${itemName} increased by ${increaseBy} quantity`)
   });
 }
 const createGoodReceipt = (GRdata) => {
 console.log('Good Receipt ', GRdata)
+firebase.firestore().collection('Goods_Receipts').add(GRdata)
+    .then((response) => {
+      firebase.firestore().collection("Goods_Receipts").doc(response.id).update({ 'collectioniD': response.id })
+      message.success('Goods Receipt created')
+    })
+    .catch((error) => {
+      message.error(error.message)
+    })
 }
+
 function CapitalizeWords(str) {
   // return str[0].toUpperCase()+str.slice(1)
   if (typeof str === 'string') {
