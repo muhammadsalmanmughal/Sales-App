@@ -443,6 +443,9 @@ const updateInventoryItem = (docId, increaseBy, itemName) => {
     message.success(`Item ${itemName} is increase with quantity ${increaseBy}`)
   });
 }
+const createGoodReceipt = (GRdata) => {
+console.log('Good Receipt ', GRdata)
+}
 function CapitalizeWords(str) {
   // return str[0].toUpperCase()+str.slice(1)
   if (typeof str === 'string') {
@@ -470,5 +473,6 @@ export {
   getPODetails,
   UpdatePOStatus,
   CreateInventory,
-  CapitalizeWords
+  CapitalizeWords,
+  createGoodReceipt
 }

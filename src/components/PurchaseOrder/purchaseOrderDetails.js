@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { useHistory, useParams } from 'react-router-dom'
 import { CaretLeftOutlined } from "@ant-design/icons";
 import { Goback } from '../Details/styles/index'
-import { getPODetails, updateInventoryItem } from '../../Utils/utils'
+import { getPODetails, updateInventoryItem,createGoodReceipt } from '../../Utils/utils'
 import {
     Divider, Input, Button, Skeleton, Table, Space, message, Drawer
 } from 'antd'
@@ -16,6 +16,8 @@ const PurchaseOrderDetails = () => {
     const [itemQuantity, setItemQuantity] = useState()
     const [collectionId, setCollectionId] = useState()
     const [itemName, setItemName] = useState()
+    const [grItemList, setGrItemList] = useState()
+
     const history = useHistory()
     const { slug } = useParams()
 
@@ -23,12 +25,15 @@ const PurchaseOrderDetails = () => {
     useEffect(() => {
         getPODetails(slug).then(data => {
             setPOItemData(data)
+            setGrItemList(data.flatMap(O => O.newList))
         })
+        
     }, [])
-
     const itemsList = POItemData?.flatMap(O => O.newList)
 
     // ------------Drawer-------------
+// console.log('itemsList',itemsList);
+// console.log('POItemData',POItemData);
 
     const showDrawer = (itemId, req_quantity, docId, name) => {
         setVisible(true);
@@ -42,11 +47,19 @@ const PurchaseOrderDetails = () => {
         if (requestedQuantity < itemQuantity) return message.error('Retreive Quantity cannot be greator then Requested Quantity');
         if (itemQuantity < 0) return message.error('Quantity cannot be less then zero');
         if (!itemQuantity) return message.error('Quantity cannot be set empty');
-        updateInventoryItem(collectionId, parseFloat(itemQuantity), itemName)
-        setVisible(false)
+        // updateInventoryItem(collectionId, parseFloat(itemQuantity))
+        createGR(itemID,itemQuantity)
         setItemQuantity('')
+
     };
 
+    const showDrawer = (itemId, req_quantity, docId) => {
+        setVisible(true);
+        setItemID(itemId)
+        setRequestedQuantity(req_quantity)
+        setCollectionId(docId)
+        
+    };
     const onClose = () => {
         setVisible(false);
     };
@@ -109,6 +122,31 @@ const PurchaseOrderDetails = () => {
 
     ];
 
+    const createGR = (itemId, inceaseBy) => {
+        const goodReceipt=
+            grItemList.map(item => {
+                if(item.itemId !== itemId) return item
+                if (requestedQuantity < inceaseBy) return message.error('Retreive Quantity cannot be greator then Requested Quantity');
+                if (inceaseBy < 0) return message.error('Quantity cannot be less then zero');
+                if (!inceaseBy) return message.error('Quantity cannot be set empty');
+                return{
+                    ...item,
+                    retreiveQuantity: parseFloat(item.retreiveQuantity + inceaseBy)
+                }
+            })
+        setGrItemList(goodReceipt)
+        return goodReceipt
+    }
+    const objGR ={
+        POid: POItemData&&POItemData[0].POiD,
+        Vendor: POItemData&&POItemData[0].selectVendor,
+        grItemList
+    }
+    const createGRDoc= () => {
+        createGoodReceipt(objGR)
+    }
+    console.log('gr list data',grItemList)
+
     return (
         <div>
             <Goback onClick={e => history.goBack()}>
@@ -137,6 +175,7 @@ const PurchaseOrderDetails = () => {
                     <Table dataSource={itemsList} columns={columns} /> : <TableSkeleton />
                 }
             </div>
+            <Button onClick={createGRDoc}>Create GR</Button>
             <Drawer
                 title="Update item Inventory"
                 placement="bottom"
