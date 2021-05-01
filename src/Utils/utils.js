@@ -1,6 +1,6 @@
 import firebase from '../config/Firebase/firebase'
 import 'antd/dist/antd.css';
-import { message,notification } from 'antd';
+import { message } from 'antd';
 
 const createUser = async (email, password, name, img) => {
   console.log(email, password, name, img);
@@ -443,9 +443,9 @@ const updateInventoryItem = (docId, increaseBy, itemName) => {
     message.success(`Item ${itemName} increased by ${increaseBy} quantity`)
   });
 }
-const createGoodReceipt = (GRdata) => {
-console.log('Good Receipt ', GRdata)
-firebase.firestore().collection('Goods_Receipts').add(GRdata)
+const CreateGoodReceipt = (GRdata) => {
+  console.log('Good Receipt ', GRdata)
+  firebase.firestore().collection('Goods_Receipts').add(GRdata)
     .then((response) => {
       firebase.firestore().collection("Goods_Receipts").doc(response.id).update({ 'collectioniD': response.id })
       message.success('Goods Receipt created')
@@ -455,6 +455,53 @@ firebase.firestore().collection('Goods_Receipts').add(GRdata)
     })
 }
 
+const GetAllGoodsReceipt = () => {
+  return firebase
+    .firestore()
+    .collection('Goods_Receipts')
+    .get()
+    .then(function (querySnapshot) {
+      // console.log('querySnapshot', querySnapshot)
+      const goodsReceipt = [];
+      querySnapshot.forEach(function (doc) {
+        if (doc.exists) {
+          const comp = doc.data();
+          goodsReceipt.push({ ...comp, compId: doc.id });
+        } else {
+          message.info("No such document!");
+        }
+      });
+      return goodsReceipt
+    })
+    .catch(function (error) {
+      message.error("Error!", error.message);
+    });
+}
+
+const GetGRbyId = async (id) => {
+  return firebase
+    .firestore()
+    .collection('Goods_Receipts')
+    .where("collectioniD", "==", id)
+    .get()
+    .then(function (querySnapshot) {
+      // console.log('querySnapshot', querySnapshot)
+      const goodsReceipt = [];
+      querySnapshot.forEach(function (doc) {
+        if (doc.exists) {
+          const comp = doc.data();
+          goodsReceipt.push({ ...comp, compId: doc.id });
+        } else {
+          message.info("No such document!");
+        }
+      });
+      return goodsReceipt
+    })
+    .catch(function (error) {
+      console.log("Error!", error.message);
+    });
+
+}
 function CapitalizeWords(str) {
   // return str[0].toUpperCase()+str.slice(1)
   if (typeof str === 'string') {
@@ -483,5 +530,7 @@ export {
   UpdatePOStatus,
   CreateInventory,
   CapitalizeWords,
-  createGoodReceipt
+  CreateGoodReceipt,
+  GetAllGoodsReceipt,
+  GetGRbyId
 }

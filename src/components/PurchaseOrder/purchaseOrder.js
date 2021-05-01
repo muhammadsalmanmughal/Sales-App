@@ -45,7 +45,9 @@ const PurchaseOrder = () => {
     const [allPO, setAllPO] = useState()
 
     const { RangePicker } = DatePicker;
-    const utc = new Date().toJSON().slice(0, 10).replace(/-/g, '/');
+    // const utc = new Date().toJSON().slice(0, 10).replace(/-/g, '/');
+    let current_datetime = new Date()
+    let utc = current_datetime.getDate() + "-" + (current_datetime.getMonth() + 1) + "-" + current_datetime.getFullYear()
     const shortid = require('shortid')
     const POiD = shortid.generate()
     const retreiveQuantity = 0
