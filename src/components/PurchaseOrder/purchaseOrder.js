@@ -3,7 +3,7 @@ import firebase from '../../config/Firebase/firebase';
 import { VendorCustomerContext } from '../../context/Random/random'
 import { useHistory } from 'react-router-dom'
 import { CopyToClipboard } from 'react-copy-to-clipboard'
-import { CreatePurchaseOrder, UpdatePOStatus, getItemsId } from '../../Utils/utils'
+import { CreatePurchaseOrder, UpdatePOStatus, getItemsId,getPODetails } from '../../Utils/utils'
 import { FaRegClipboard } from "react-icons/fa";
 import moment from 'moment'
 import {
@@ -18,7 +18,8 @@ import {
     DatePicker,
     Tabs,
     Table,
-    Space
+    Space,
+    Modal
 } from 'antd'
 import {
     ListItem,
@@ -38,11 +39,13 @@ const PurchaseOrder = () => {
     const [radioValue, setRadioValue] = useState('A-class');
     const [itemCollectionId, setItemCollectionId] = useState()
     const { vendors, allInventoryItems } = useContext(VendorCustomerContext)
-    const [startDate, setStartDate] = useState(new Date());
+    const [poId, setPOId] = useState();
     const [requriedDate, setRequriedDate] = useState();
     const [pricePerItem, setPricePerItem] = useState()
     const [discription, setDiscription] = useState()
     const [allPO, setAllPO] = useState()
+    const [showModal, setShowModal] = useState(false);
+
 
     const { RangePicker } = DatePicker;
     // const utc = new Date().toJSON().slice(0, 10).replace(/-/g, '/');
@@ -116,12 +119,20 @@ const PurchaseOrder = () => {
                 setAllPO(poList)
             });
     }
+    const getPO = (id) => {
+        setPOId(id)
+        console.log('aodsfdsafdsafdsafdsafa',id)
+        setShowModal(true)
+        // getPODetails(poId).then(data => {
+        //     console.log('POOOOOOOOOOOOOOOOOOO', data)
+        // })
+    }
     useEffect(() => {
         getPurchaseOrder()
     }, [])
 
     // console.log('all PO', allPO?.flatMap(O => O.newList));
-    console.log('all PO', allPO);
+    // console.log('all PO', allPO);
 
     function disabledDate(current) {
         return current && current < moment().endOf('day')
@@ -153,23 +164,6 @@ const PurchaseOrder = () => {
             dataIndex: 'requriedDate',
             key: 'requriedDate',
         },
-        // {
-        //     title: 'Quantity',
-        //     dataIndex: 'quantity',
-        //     key: 'quantity',
-        // },
-        {
-            title: 'Action',
-            key: 'action',
-            render: (allPO) => (
-                <Space size="middle">
-                    <Button onClick={() =>
-                        history.push(`/home/purchase-order-details/${allPO.compId}`)
-                    }
-                    >Details</Button>
-                </Space>
-            ),
-        },
         {
             title: 'Status',
             key: 'status',
@@ -186,6 +180,20 @@ const PurchaseOrder = () => {
                 </Space>
             ),
         },
+        {
+            title: 'Action',
+            key: 'action',
+            render: (allPO) => (
+                <Space size="middle">
+                    <Button onClick={e =>  getPO(allPO.compId)}
+                    >Details</Button>
+                     <Button onClick={() =>
+                        history.push(`/home/purchase-order-details/${allPO.compId}`)
+                    }
+                    >Create GR</Button>
+                </Space>
+            ),
+        }
     ];
     return (
         <div>
@@ -355,6 +363,19 @@ const PurchaseOrder = () => {
                             >Create Purchase Order</Button>
                         </Col>
                     </Row>
+                    <Modal
+                        title="Modal 1000px width"
+                        centered
+                        visible={showModal}
+                        onOk={() => setShowModal(false)}
+                        onCancel={() => setShowModal(false)}
+                        width={1000}
+                    >
+<p>
+    this is a modal-----------
+    {poId}
+</p>
+                    </Modal>
                 </TabPane>
 
                 <TabPane tab="All Purchase Orders" key="2">
