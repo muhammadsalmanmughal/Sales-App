@@ -20,13 +20,18 @@ const PurchaseOrderDetails = () => {
     const [allGoodsReceipt, setAllGoodsReceipt] = useState()
     const [showModal, setShowModal] = useState(false);
     const [gRData, setGRData] = useState()
+    const [disable, setDisable] = useState(false)
     const history = useHistory()
     const { slug } = useParams()
     const { TabPane } = Tabs
 
     const current_datetime = new Date()
     const formatted_date = current_datetime.getDate() + "-" + (current_datetime.getMonth() + 1) + "-" + current_datetime.getFullYear()
-
+    function DisableButton() {
+        if (POItemData && POItemData[0].POStatus !== 'approved') {
+            setDisable(true)
+        }
+    }
     useEffect(() => {
         getPODetails(slug).then(data => {
             setPOItemData(data)
@@ -35,6 +40,7 @@ const PurchaseOrderDetails = () => {
         GetAllGoodsReceipt().then(data => {
             setAllGoodsReceipt(data)
         })
+        DisableButton()
     }, [])
 
     const itemsList = POItemData?.flatMap(O => O.newList)
@@ -222,7 +228,7 @@ const PurchaseOrderDetails = () => {
                 <CaretLeftOutlined /> GoBack
             </Goback>
 
-            <h1>Purchase Order Details</h1>
+            <h1>Create Goods Receipt</h1>
 
             <Divider />
             <Tabs defaultActiveKey="1">
@@ -245,7 +251,7 @@ const PurchaseOrderDetails = () => {
                             <Table dataSource={itemsList} columns={columns} /> : <TableSkeleton />
                         }
                     </div>
-                    <Button onClick={createGRDoc}>Create GR</Button>
+                    <Button disabled={disable} onClick={createGRDoc}>Create GR</Button>
                     <Drawer
                         title="Update item Inventory"
                         placement="bottom"
