@@ -19,6 +19,7 @@ const PurchaseOrderDetails = () => {
     const [grItemList, setGrItemList] = useState()
     const [allGoodsReceipt, setAllGoodsReceipt] = useState()
     const [showModal, setShowModal] = useState(false);
+    const [showInvoiceModal, setShowInvoiceModal] = useState(false);
     const [gRData, setGRData] = useState()
     const [disable, setDisable] = useState(false)
     const history = useHistory()
@@ -45,7 +46,6 @@ const PurchaseOrderDetails = () => {
 
     const itemsList = POItemData?.flatMap(O => O.newList)
     const goods = gRData?.flatMap(goods => goods.grItemList)
-
     // ------------Drawer-------------
     const showDrawer = (itemId, req_quantity, docId, name) => {
         setVisible(true);
@@ -79,10 +79,27 @@ const PurchaseOrderDetails = () => {
         setShowModal(true)
 
         GetGRbyId(id).then(data => {
-            setGRData(data)
+            setGRData(data.map(gritem => {
+                return {
+                    ...gritem, grItemList: gritem.grItemList.map(grlistitem =>{
+                        return {
+                            ...grlistitem, 
+                            itemAmount: Number(grlistitem.pricePerItem) * grlistitem.retreiveQuantity
+                        }
+                    })
+                }
+            }))
+            
         })
     }
     //------------Modal---------------
+    //------------Invoice Modal---------------
+
+    const invoiceModal = (id) => {
+        setShowInvoiceModal(true)
+
+    }
+    //------------Invoice Modal---------------
 
     const columns = [
         {
@@ -159,6 +176,9 @@ const PurchaseOrderDetails = () => {
                             e => showGRDetails(good.collectioniD)
                         }
                     >Details</Button>
+                    <Button onClick={invoiceModal}>
+                        Create Invoice
+                    </Button>
                 </Space>
             ),
         },
@@ -196,6 +216,43 @@ const PurchaseOrderDetails = () => {
             key: 'remainingQuantity',
         }
     ]
+    const invoiceTable = [
+        {
+            title: 'Item ID',
+            dataIndex: 'itemId',
+            key: 'id',
+        },
+        {
+            title: 'Item Name',
+            dataIndex: 'items',
+            key: 'name',
+        },
+        {
+            title: 'Per Price',
+            dataIndex: 'pricePerItem',
+            key: 'perPrice',
+        },
+        {
+            title: 'Requested Quantity',
+            dataIndex: 'requestedquantity',
+            key: 'requestedQuantity',
+        },
+        {
+            title: 'Retreive Quantity',
+            dataIndex: 'retreiveQuantity',
+            key: 'retreiveQuantity',
+        },
+        {
+            title: 'Remaining Quanity',
+            dataIndex: 'remainingQuantity',
+            key: 'remainingQuantity',
+        },
+        {
+            title: 'Amount Price',
+            dataIndex: 'itemAmount',
+            key: 'amountPrice',
+        }
+    ]
 
     const createGR = (itemId, inceaseBy) => {
         const goodReceipt =
@@ -204,7 +261,7 @@ const PurchaseOrderDetails = () => {
                 return {
                     ...item,
                     remainingQuantity: item.requestedquantity - inceaseBy,
-                    retreiveQuantity: parseFloat(item.retreiveQuantity + inceaseBy)
+                    retreiveQuantity: parseFloat(item.retreiveQuantity + inceaseBy),
                 }
             })
         setGrItemList(goodReceipt)
@@ -221,7 +278,13 @@ const PurchaseOrderDetails = () => {
     const createGRDoc = () => {
         CreateGoodReceipt(objGR)
     }
-
+console.log('gritemlist', gRData);
+    const a = gRData&&gRData[0].grItemList&&gRData[0].grItemList.reduce((acc, current)=>{
+        console.log('ACC Current ----------->', acc, current)
+        return acc+current.itemAmount
+    },0);
+    
+    console.log('adfadsfadsdsaf',a);
     return (
         <div>
             <Goback onClick={e => history.goBack()}>
@@ -302,6 +365,32 @@ const PurchaseOrderDetails = () => {
                                 <Table dataSource={goods} columns={goodReceiptDetails} /> : <Skeleton />
                             }
                         </div>
+                    </Modal>
+                    <Modal
+                        title="CREATE INVOICE"
+                        centered
+                        visible={showInvoiceModal}
+                        width={1000}
+                        footer={
+                            <div
+                                style={{
+                                    textAlign: 'right',
+                                }}
+                            >
+                                <Button onClick={() => setShowInvoiceModal(false)} style={{ marginRight: 8 }}>
+                                    Cancel
+                      </Button>
+                                <Button onClick={handleOk} type="primary">
+                                    Create Invoice
+                      </Button>
+                            </div>
+                        }
+                    >
+                          <div>
+                        {itemsList ?
+                            <Table dataSource={goods} columns={invoiceTable} /> : <Skeleton />
+                        }
+                    </div>
                     </Modal>
 
                 </TabPane>
