@@ -3,7 +3,7 @@ import firebase from '../../config/Firebase/firebase';
 import { VendorCustomerContext } from '../../context/Random/random'
 import { useHistory } from 'react-router-dom'
 import { CopyToClipboard } from 'react-copy-to-clipboard'
-import { CreatePurchaseOrder, UpdatePOStatus, getItemsId,getPODetails } from '../../Utils/utils'
+import { CreatePurchaseOrder, UpdatePOStatus, getItemsId, getPODetails } from '../../Utils/utils'
 import { FaRegClipboard } from "react-icons/fa";
 import moment from 'moment'
 import {
@@ -19,7 +19,8 @@ import {
     Tabs,
     Table,
     Space,
-    Modal
+    Modal,
+    Skeleton
 } from 'antd'
 import {
     ListItem,
@@ -39,11 +40,11 @@ const PurchaseOrder = () => {
     const [radioValue, setRadioValue] = useState('A-class');
     const [itemCollectionId, setItemCollectionId] = useState()
     const { vendors, allInventoryItems } = useContext(VendorCustomerContext)
-    const [poId, setPOId] = useState();
     const [requriedDate, setRequriedDate] = useState();
     const [pricePerItem, setPricePerItem] = useState()
     const [discription, setDiscription] = useState()
     const [allPO, setAllPO] = useState()
+    const [poData, setPOData] = useState()
     const [showModal, setShowModal] = useState(false);
 
 
@@ -79,12 +80,11 @@ const PurchaseOrder = () => {
         }
 
         else {
-            setItemsList([...itemsList, {itemCollectionId,itemId, items, requestedquantity,retreiveQuantity,remainingQuantity, radioValue, pricePerItem, discription }])
+            setItemsList([...itemsList, { itemCollectionId, itemId, items, requestedquantity, retreiveQuantity, remainingQuantity, radioValue, pricePerItem, discription }])
             setItems('')
             setQuantity('')
         }
     }
-    // console.log(itemsList)
 
     const deleteItem = (id) => {
         const newList = [...itemsList]
@@ -95,6 +95,7 @@ const PurchaseOrder = () => {
     const selectQuality = e => {
         setRadioValue(e);
     };
+
     const changeStatus = (e, id) => {
         UpdatePOStatus(e, id)
     };
@@ -119,20 +120,19 @@ const PurchaseOrder = () => {
                 setAllPO(poList)
             });
     }
+
     const getPO = (id) => {
-        setPOId(id)
-        console.log('aodsfdsafdsafdsafdsafa',id)
         setShowModal(true)
-        // getPODetails(poId).then(data => {
-        //     console.log('POOOOOOOOOOOOOOOOOOO', data)
-        // })
+        getPODetails(id).then(data => {
+        setPOData(data)
+        })
     }
+
     useEffect(() => {
         getPurchaseOrder()
     }, [])
 
-    // console.log('all PO', allPO?.flatMap(O => O.newList));
-    // console.log('all PO', allPO);
+    const poItemList = poData?.flatMap(o => o.newList)
 
     function disabledDate(current) {
         return current && current < moment().endOf('day')
@@ -185,9 +185,9 @@ const PurchaseOrder = () => {
             key: 'action',
             render: (allPO) => (
                 <Space size="middle">
-                    <Button onClick={e =>  getPO(allPO.compId)}
+                    <Button onClick={e => getPO(allPO.compId)}
                     >Details</Button>
-                     <Button onClick={() =>
+                    <Button onClick={() =>
                         history.push(`/home/purchase-order-details/${allPO.compId}`)
                     }
                     >Create GR</Button>
@@ -195,6 +195,40 @@ const PurchaseOrder = () => {
             ),
         }
     ];
+
+    const poDetailsColumn = [
+        {
+            title: 'Item ID',
+            dataIndex: 'itemId',
+            key: 'id',
+        },
+        {
+            title: 'Item Name',
+            dataIndex: 'items',
+            key: 'name',
+        },
+        {
+            title: 'Per Price',
+            dataIndex: 'pricePerItem',
+            key: 'perPrice',
+        },
+        {
+            title: 'Requested Quantity',
+            dataIndex: 'requestedquantity',
+            key: 'requestedQuantity',
+        },
+        {
+            title: 'Retreive Quantity',
+            dataIndex: 'retreiveQuantity',
+            key: 'retreiveQuantity',
+        },
+        {
+            title: 'Remaining Quanity',
+            dataIndex: 'remainingQuantity',
+            key: 'remainingQuantity',
+        }
+    ]
+
     return (
         <div>
             <h1>Purchase Order</h1>
@@ -226,7 +260,6 @@ const PurchaseOrder = () => {
                     <Row gutter={[24, 10]}>
 
                         <Col>
-                            {/* <label>Select Vender: </label> */}
                             <Select
                                 style={{ width: 200 }}
                                 placeholder='Select Vendor'
@@ -241,7 +274,6 @@ const PurchaseOrder = () => {
                             </Select>
                         </Col>
                         <Col>
-                            {/* <label>Select Item: </label> */}
                             <Select
                                 style={{ width: 200 }}
                                 placeholder='Select Item'
@@ -256,11 +288,11 @@ const PurchaseOrder = () => {
                             </Select>
                         </Col>
                         <Col>
-                        <Input
-                        value={itemId}
-                        placeholder='Selected items id'
-                        disabled
-                        />
+                            <Input
+                                value={itemId}
+                                placeholder='Selected items id'
+                                disabled
+                            />
                         </Col>
                         <Col>
                             <Select placeholder='Select Quality type' style={{ width: 200 }} onChange={selectQuality}>
@@ -268,14 +300,8 @@ const PurchaseOrder = () => {
                                 <Select.Option value="b">B</Select.Option>
                                 <Select.Option value="c">C</Select.Option>
                             </Select>
-                            {/* <Radio.Group onChange={selectQuality} value={radioValue}>
-                        <Radio value={'A-class'}>A</Radio>
-                        <Radio value={'B-class'}>B</Radio>
-                        <Radio value={'C-class'}>C</Radio>
-                    </Radio.Group> */}
                         </Col>
                         <Col >
-                            {/* <label>Select Delivery Date: </label> */}
                             <DatePicker
                                 placeholder='Requried Date'
                                 format="DD-MM-YYYY"
@@ -364,22 +390,35 @@ const PurchaseOrder = () => {
                         </Col>
                     </Row>
                     <Modal
-                        title="Modal 1000px width"
+                        title="Purchase Order Details"
                         centered
                         visible={showModal}
                         onOk={() => setShowModal(false)}
                         onCancel={() => setShowModal(false)}
                         width={1000}
                     >
-<p>
-    this is a modal-----------
-    {poId}
-</p>
+                        {poData ?
+                            poData.map((item, key) => {
+                                return (
+                                    <div>
+                                        <p>{`PO-ID: ${item.POiD}`}</p>
+                                        <p>{`Requried Date: ${item.requriedDate}`}</p>
+                                        <p>{`created Date: ${item.createdDate}`}</p>
+                                        <p>{`Vendor Name: ${item.selectVendor}`}</p>
+                                        <p>{`Status: ${item.POStatus}`}</p>
+                                    </div>
+                                )
+                            }) : <Skeleton active />
+                        }
+                        <div>
+                            {itemsList ?
+                                <Table dataSource={poItemList} columns={poDetailsColumn} /> : <Skeleton />
+                            }
+                        </div>
                     </Modal>
                 </TabPane>
 
                 <TabPane tab="All Purchase Orders" key="2">
-                    <h1>hello world</h1>
                     <div>
                         <Table dataSource={allPO} columns={columns} />;
                      </div>
