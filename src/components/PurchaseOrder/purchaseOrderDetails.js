@@ -2,9 +2,9 @@ import React, { useState, useEffect } from 'react'
 import { useHistory, useParams } from 'react-router-dom'
 import { CaretLeftOutlined } from "@ant-design/icons";
 import { Goback } from '../Details/styles/index'
-import { getPODetails, updateInventoryItem, CreateGoodReceipt, GetGRbyId, GetAllGoodsReceipt } from '../../Utils/utils'
+import { getPODetails, updateInventoryItem, CreateGoodReceipt, GetGRbyId, GetAllGoodsReceipt,createInvoice } from '../../Utils/utils'
 import {
-    Divider, Input, Button, Skeleton, Table, Space, message, Drawer, Tabs, Modal
+    Divider, Input, Button, Skeleton, Table, Space, message, Drawer, Tabs, Modal, Tag
 } from 'antd'
 
 import { TableSkeleton } from '../../Utils/skeleton'
@@ -21,6 +21,7 @@ const PurchaseOrderDetails = () => {
     const [showModal, setShowModal] = useState(false);
     const [showInvoiceModal, setShowInvoiceModal] = useState(false);
     const [gRData, setGRData] = useState()
+    const [totalInvoiceAmount, setTotalInvoiceAmount] = useState()
     const [disable, setDisable] = useState(false)
     const history = useHistory()
     const { slug } = useParams()
@@ -29,6 +30,7 @@ const PurchaseOrderDetails = () => {
     const current_datetime = new Date()
     const formatted_date = current_datetime.getDate() + "-" + (current_datetime.getMonth() + 1) + "-" + current_datetime.getFullYear()
     function DisableButton() {
+
         if (POItemData && POItemData[0].POStatus !== 'approved') {
             setDisable(true)
         }
@@ -81,24 +83,26 @@ const PurchaseOrderDetails = () => {
         GetGRbyId(id).then(data => {
             setGRData(data.map(gritem => {
                 return {
-                    ...gritem, grItemList: gritem.grItemList.map(grlistitem =>{
+                    ...gritem, grItemList: gritem.grItemList.map(grlistitem => {
                         return {
-                            ...grlistitem, 
+                            ...grlistitem,
                             itemAmount: Number(grlistitem.pricePerItem) * grlistitem.retreiveQuantity
                         }
                     })
                 }
             }))
-            
+
         })
     }
     //------------Modal---------------
+
     //------------Invoice Modal---------------
 
-    const invoiceModal = (id) => {
+    const invoiceModal = () => {
         setShowInvoiceModal(true)
 
     }
+
     //------------Invoice Modal---------------
 
     const columns = [
@@ -216,6 +220,7 @@ const PurchaseOrderDetails = () => {
             key: 'remainingQuantity',
         }
     ]
+
     const invoiceTable = [
         {
             title: 'Item ID',
@@ -278,13 +283,31 @@ const PurchaseOrderDetails = () => {
     const createGRDoc = () => {
         CreateGoodReceipt(objGR)
     }
-console.log('gritemlist', gRData);
-    const a = gRData&&gRData[0].grItemList&&gRData[0].grItemList.reduce((acc, current)=>{
-        console.log('ACC Current ----------->', acc, current)
-        return acc+current.itemAmount
-    },0);
-    
-    console.log('adfadsfadsdsaf',a);
+
+    const totalInvoice = () => {
+        const a = gRData && gRData[0].grItemList && gRData[0].grItemList.reduce((acc, current) => {
+            return acc + current.itemAmount
+        }, 0);
+        setTotalInvoiceAmount(a)
+    }
+
+    useEffect(() => {
+        totalInvoice()
+    }, [gRData])
+    console.log('grItemList', gRData);
+    const invoiceList = gRData?.flatMap(invoice => invoice.grItemList)
+    const objInvoice={
+        createdDate:formatted_date,
+        PO_Id:gRData&&gRData[0].POid,
+        Vendor: gRData&&gRData[0].Vendor,
+        Invoice_Items: invoiceList,
+        Total_Amount:totalInvoiceAmount
+    }
+    console.log('objInvoice',objInvoice);
+
+    const generateInvoice = () => {
+        createInvoice(objInvoice)
+    }
     return (
         <div>
             <Goback onClick={e => history.goBack()}>
@@ -329,10 +352,10 @@ console.log('gritemlist', gRData);
                             >
                                 <Button onClick={onClose} style={{ marginRight: 8 }}>
                                     Cancel
-                      </Button>
+                                </Button>
                                 <Button onClick={handleOk} type="primary">
                                     Submit
-                      </Button>
+                                </Button>
                             </div>
                         }
                     >
@@ -379,18 +402,22 @@ console.log('gritemlist', gRData);
                             >
                                 <Button onClick={() => setShowInvoiceModal(false)} style={{ marginRight: 8 }}>
                                     Cancel
-                      </Button>
-                                <Button onClick={handleOk} type="primary">
+                                 </Button>
+                                <Button onClick={generateInvoice} type="primary">
                                     Create Invoice
-                      </Button>
+                                 </Button>
                             </div>
                         }
                     >
-                          <div>
-                        {itemsList ?
-                            <Table dataSource={goods} columns={invoiceTable} /> : <Skeleton />
-                        }
-                    </div>
+                        <div>
+                            {itemsList ?
+                                <Table dataSource={goods} columns={invoiceTable}  /> : <Skeleton />
+                            }
+                        </div>
+                        <p>Total Amount is: <b>
+                            <Tag color="red">{totalInvoiceAmount}</Tag>
+                        </b>
+                        </p>
                     </Modal>
 
                 </TabPane>

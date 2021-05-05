@@ -502,6 +502,17 @@ const GetGRbyId = async (id) => {
     });
 
 }
+const createInvoice = (invoice) => {
+  console.log('Invoice ',invoice)
+  firebase.firestore().collection('Invoices').add(invoice)
+  .then((response) => {
+    firebase.firestore().collection("Invoices").doc(response.id).update({ 'collectioniD': response.id })
+    message.success('Your Invoice has been created')
+  })
+  .catch((error) => {
+    message.error(error.message)
+  })
+}
 function CapitalizeWords(str) {
   // return str[0].toUpperCase()+str.slice(1)
   if (typeof str === 'string') {
@@ -532,5 +543,6 @@ export {
   CapitalizeWords,
   CreateGoodReceipt,
   GetAllGoodsReceipt,
-  GetGRbyId
+  GetGRbyId,
+  createInvoice
 }
