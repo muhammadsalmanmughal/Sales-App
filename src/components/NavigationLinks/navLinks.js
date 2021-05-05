@@ -12,6 +12,7 @@ import CustomerOrder from '../CustomerOrder/customerOrder'
 import UpdateCustomer from '../Cutomer/updateCustomer'
 import Inventory from '../Inventory/inventory'
 import PurchaseOrderDetails from '../PurchaseOrder/purchaseOrderDetails'
+import AllInvoices from '../Invoice/allInvoices'
 export {
     SideBar,Header,
     Dashboard,
@@ -25,5 +26,6 @@ export {
     CustomerOrder,
     UpdateCustomer,
     Inventory,
-    PurchaseOrderDetails
+    PurchaseOrderDetails,
+    AllInvoices
 }

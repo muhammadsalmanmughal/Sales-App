@@ -4,7 +4,8 @@ import Customer from '../../components/Cutomer/cutomer'
 import RequestForQuotation from '../../components/RequestForQuotation/requestForQuotation'
 import PurchaseOrder from '../../components/PurchaseOrder/purchaseOrder'
 import Inventory from '../../components/Inventory/inventory'
-import {FaChartPie,FaUsers,FaUsersCog, FaWarehouse, FaFileMedical, FaFileAlt } from "react-icons/fa"
+import Invoices from '../../components/Invoice/allInvoices'
+import {FaChartPie,FaUsers,FaUsersCog, FaWarehouse, FaFileMedical, FaFileAlt,FaFileInvoiceDollar } from "react-icons/fa"
 const routes = [
     {
         path: '/dashboard',
@@ -41,6 +42,12 @@ const routes = [
         name: 'Inventory',
         icon: <FaWarehouse/>,
         component: Inventory
+    },
+    {
+        path: '/invoices',
+        name: 'Invoices',
+        icon: <FaFileInvoiceDollar/>,
+        component: Invoices
     }
 
 
