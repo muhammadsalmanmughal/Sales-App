@@ -513,6 +513,52 @@ const createInvoice = (invoice) => {
     message.error(error.message)
   })
 }
+
+const getAllInvoices = () => {
+  return firebase
+  .firestore()
+  .collection('Invoices')
+  .get()
+  .then(function (querySnapshot) {
+    // console.log('querySnapshot', querySnapshot)
+    const allInvoices = [];
+    querySnapshot.forEach(function (doc) {
+      if (doc.exists) {
+        const comp = doc.data();
+        allInvoices.push({ ...comp, compId: doc.id });
+      } else {
+        message.info("No such document!");
+      }
+    });
+    return allInvoices
+  })
+  .catch(function (error) {
+    console.log("Error!", error.message);
+  });
+}
+const getInvoiceById = (id) => {
+  return firebase
+  .firestore()
+  .collection('Invoices')
+  .where("collectioniD", "==", id)
+  .get()
+  .then(function (querySnapshot) {
+    // console.log('querySnapshot', querySnapshot)
+    const allInvoices = [];
+    querySnapshot.forEach(function (doc) {
+      if (doc.exists) {
+        const comp = doc.data();
+        allInvoices.push({ ...comp, compId: doc.id });
+      } else {
+        message.info("No such document!");
+      }
+    });
+    return allInvoices
+  })
+  .catch(function (error) {
+    console.log("Error!", error.message);
+  });
+}
 function CapitalizeWords(str) {
   // return str[0].toUpperCase()+str.slice(1)
   if (typeof str === 'string') {
@@ -544,5 +590,7 @@ export {
   CreateGoodReceipt,
   GetAllGoodsReceipt,
   GetGRbyId,
-  createInvoice
+  createInvoice,
+  getAllInvoices,
+  getInvoiceById
 }
