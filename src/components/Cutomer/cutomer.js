@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from 'react'
 import { useFormik } from 'formik'
+import { Button } from 'antd';
 import { v4 as uuidv4 } from 'uuid';
 import { Label } from '../Textbox/style/index'
+import { SubmitButton } from './style/index'
 import { validationSchema } from './validationSchema'
 import { createNewCustomer } from '../../Utils/utils'
 import ErrorText from '../FormError/formError'
@@ -54,7 +56,6 @@ const CreateCustomer = () => {
     function callback(key) {
         console.log(key);
     }
-    console.log('Formik ', formik);
 
     return (
         <div>
@@ -216,7 +217,7 @@ const CreateCustomer = () => {
 
                                 </Row>
                                 <Col xs={24} sm={16}>
-                                    <button type='submit' disabled={!formik.isValid}>Create Customer</button>
+                                    <SubmitButton type='submit' disabled={!formik.isValid}>Create Customer</SubmitButton>
                                 </Col>
                             </FormDiv>
                         </form>

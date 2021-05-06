@@ -137,19 +137,17 @@ const createNewCustomer = (customerDetails) => {
   } = customerDetails
 
   const customerObj = {
-    businessName,
+    businessName:CapitalizeWords(businessName),
     billToAddress,
     phone,
     email,
     city,
-    responsibleName,
+    responsibleName:CapitalizeWords(responsibleName),
     responsiblePhone,
     secondaryPhone,
     postalCode,
     iD: ''
   }
-  // console.log(businessName, ownerFirstName, ownerLastName, billToAddress, phone, email, city, postalCode);
-
   firebase.firestore().collection("Customer").add(customerObj)
     .then((response) => {
       console.log('respnse', response.id)
