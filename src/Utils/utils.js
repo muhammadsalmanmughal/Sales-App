@@ -122,7 +122,7 @@ const getAllVendors = () => {
   })
 }
 
-const createNewCustomer = (customerDetails, customerId) => {
+const createNewCustomer = (customerDetails) => {
 
   const {
     businessName,
@@ -160,6 +160,29 @@ const createNewCustomer = (customerDetails, customerId) => {
     }).catch((error) => {
       console.log('Error', error.message)
       message.error(error.message)
+    })
+}
+
+const getAllCustomers = () => {
+  return new Promise((resolve, reject) => {
+  firebase
+      .firestore()
+      .collection("Customer")
+      .onSnapshot(function (querySnapshot) {
+          const customerList = [];
+          querySnapshot.forEach(function (doc) {
+              console.log('functions Doc', doc.data)
+              if (doc.exists) {
+                  const comp = doc.data();
+                  customerList.push({ ...comp, compId: doc.id });
+                  // setIsCustomer(true)
+              } 
+              else {
+                reject(alert('no data in customer'))
+              }
+          });
+          resolve(customerList)
+      })
     })
 }
 
@@ -578,6 +601,7 @@ export {
   createVendor,
   getAllVendors,
   createNewCustomer,
+  getAllCustomers,
   getSpecificData,
   UpdateCustomer,
   UpdateVendor,

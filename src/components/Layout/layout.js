@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext } from 'react'
-import {getAllVendors, getAllInventoryItems} from '../../Utils/utils'
+import {getAllVendors, getAllInventoryItems, getAllCustomers} from '../../Utils/utils'
 import { Switch, Route, useHistory } from "react-router-dom";
 import {
     SideBar, Header,
@@ -22,16 +22,20 @@ import { UserProvider } from '../../context/UserContext/UserContext'
 import './layout.css'
 
 function Layout() {
-    const { setVendors, setAllInventoryItems } = useContext(VendorCustomerContext)
+    const { setVendors, setAllInventoryItems, setCustomers } = useContext(VendorCustomerContext)
     useEffect(() => {
         getAllVendors().then(data => {
-            console.log('all vendors data in layout', data)
+            // console.log('all vendors data in layout', data)
             setVendors(data)
         })
         
         getAllInventoryItems().then(data => {
-            console.log('Inventory data in layout', data)
+            // console.log('Inventory data in layout', data)
             setAllInventoryItems(data)
+        })
+        getAllCustomers().then(data => {
+            console.log('customer data in layout', data)
+            setCustomers(data)
         })
     }, [])
 
