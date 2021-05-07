@@ -2,10 +2,16 @@ import React, { useState, useEffect } from 'react'
 import { useHistory, useParams } from 'react-router-dom'
 import { CaretLeftOutlined } from "@ant-design/icons";
 import { Goback } from '../Details/styles/index'
-import { getPODetails, updateInventoryItem, CreateGoodReceipt, GetGRbyId, GetAllGoodsReceipt,createInvoice } from '../../Utils/utils'
+import { getPODetails, updateInventoryItem, CreateGoodReceipt, GetGRbyId, GetAllGoodsReceipt, createInvoice } from '../../Utils/utils'
 import {
-    Divider, Input, Button, Skeleton, Table, Space, message, Drawer, Tabs, Modal, Tag
+    Divider, Input, Button, Skeleton, Table, Space, message, Drawer, Tabs, Modal, Tag,Empty
 } from 'antd'
+
+import {
+    ListItem, ItemDiv, QuantityAndButtonDiv, Quantity
+} from '../RequestForQuotation/style/index'
+
+import { H3, ItemsDiv } from './style/index'
 
 import { TableSkeleton } from '../../Utils/skeleton'
 const PurchaseOrderDetails = () => {
@@ -23,6 +29,7 @@ const PurchaseOrderDetails = () => {
     const [gRData, setGRData] = useState()
     const [totalInvoiceAmount, setTotalInvoiceAmount] = useState()
     const [disable, setDisable] = useState(false)
+    const [updatedItem, setUpdatedItem] = useState([])
     const history = useHistory()
     const { slug } = useParams()
     const { TabPane } = Tabs
@@ -64,6 +71,7 @@ const PurchaseOrderDetails = () => {
         if (!itemQuantity) return message.error('Quantity cannot be set empty');
         if (!itemQuantity.match(numbers)) return message.error('Error! number is in decimal')
         updateInventoryItem(collectionId, parseFloat(itemQuantity), itemName)
+        setUpdatedItem([...updatedItem, { itemName, itemQuantity }])
         createGR(itemID, itemQuantity)
         setItemQuantity('')
         setVisible(false)
@@ -73,7 +81,7 @@ const PurchaseOrderDetails = () => {
     const onClose = () => {
         setVisible(false);
     };
-
+    console.log('updatedItem------------->', updatedItem);
     // -----------Drawer--------------
     //------------Modal---------------
 
@@ -130,14 +138,7 @@ const PurchaseOrderDetails = () => {
             title: 'Class',
             dataIndex: 'radioValue',
             key: 'class',
-        }
-        ,
-        // {
-        //     title: 'Description',
-        //     dataIndex: 'discription',
-        //     key: 'discription',
-        // }
-        ,
+        },
         {
             title: 'Action',
             key: 'action',
@@ -282,6 +283,7 @@ const PurchaseOrderDetails = () => {
 
     const createGRDoc = () => {
         CreateGoodReceipt(objGR)
+        setUpdatedItem([])
     }
 
     const totalInvoice = () => {
@@ -294,16 +296,15 @@ const PurchaseOrderDetails = () => {
     useEffect(() => {
         totalInvoice()
     }, [gRData])
-    console.log('grItemList', gRData);
     const invoiceList = gRData?.flatMap(invoice => invoice.grItemList)
-    const objInvoice={
-        createdDate:formatted_date,
-        PO_Id:gRData&&gRData[0].POid,
-        Vendor: gRData&&gRData[0].Vendor,
+
+    const objInvoice = {
+        createdDate: formatted_date,
+        PO_Id: gRData && gRData[0].POid,
+        Vendor: gRData && gRData[0].Vendor,
         Invoice_Items: invoiceList,
-        Total_Amount:totalInvoiceAmount
+        Total_Amount: totalInvoiceAmount
     }
-    console.log('objInvoice',objInvoice);
 
     const generateInvoice = () => {
         createInvoice(objInvoice)
@@ -332,12 +333,38 @@ const PurchaseOrderDetails = () => {
                             )
                         }) : <Skeleton active />
                     }
-                    <div>
+                    <ItemsDiv>
                         {itemsList ?
                             <Table dataSource={itemsList} columns={columns} /> : <TableSkeleton />
                         }
-                    </div>
+                    </ItemsDiv>
                     <Button disabled={disable} onClick={createGRDoc}>Create GR</Button>
+                    <div style={{marginTop:'20px'}}>
+                        <H3 style={{textAlign:'center'}}>UPDATED ITEMS</H3>
+                        <ul>
+                            {updatedItem ?
+                                updatedItem.map((item, key) => {
+                                    return (
+                                        <>
+                                            <ListItem key={key} xs={24} sm={12}>
+                                                <ItemDiv>
+                                                    {item.itemName}
+                                                </ItemDiv>
+                                                <QuantityAndButtonDiv>
+                                                    <Quantity>
+                                                        {item.itemQuantity}/
+                      {item.radioValue}
+                                                    </Quantity>
+                                                </QuantityAndButtonDiv>
+
+                                            </ListItem>
+                                        </>
+                                    )
+                                })
+                                : <Empty/>
+                            }
+                        </ul>
+                    </div>
                     <Drawer
                         title="Update item Inventory"
                         placement="bottom"
@@ -376,7 +403,7 @@ const PurchaseOrderDetails = () => {
                         }
                     </div>
                     <Modal
-                        title="Modal 1000px width"
+                        title="GOODS RECEIPT DETAILS"
                         centered
                         visible={showModal}
                         onOk={() => setShowModal(false)}
@@ -411,7 +438,7 @@ const PurchaseOrderDetails = () => {
                     >
                         <div>
                             {itemsList ?
-                                <Table dataSource={goods} columns={invoiceTable}  /> : <Skeleton />
+                                <Table dataSource={goods} columns={invoiceTable} /> : <Skeleton />
                             }
                         </div>
                         <p>Total Amount is: <b>
