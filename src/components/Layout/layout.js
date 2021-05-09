@@ -15,7 +15,8 @@ import {
     UpdateCustomer,
     Inventory,
     PurchaseOrderDetails,
-    AllInvoices
+    AllInvoices,
+    PurchaseRequisition
 } from '../NavigationLinks/navLinks'
 import { VendorCustomerContext } from '../../context/Random/random'
 import { UserProvider } from '../../context/UserContext/UserContext'
@@ -70,6 +71,7 @@ function Layout() {
                                 <Route path="/home/update-customer/:data" component={UpdateCustomer} />
                                 <Route path="/home/inventory" component={Inventory} />
                                 <Route path="/home/invoices" component={AllInvoices} />
+                                <Route path="/home/purchase-requisition" component={PurchaseRequisition} />
                             </Switch>
                         </div>
                     </div>

@@ -5,7 +5,9 @@ import RequestForQuotation from '../../components/RequestForQuotation/requestFor
 import PurchaseOrder from '../../components/PurchaseOrder/purchaseOrder'
 import Inventory from '../../components/Inventory/inventory'
 import Invoices from '../../components/Invoice/allInvoices'
-import {FaChartPie,FaUsers,FaUsersCog, FaWarehouse, FaFileMedical, FaFileAlt,FaFileInvoiceDollar } from "react-icons/fa"
+import PurchaseRequisition from '../../components/PurchaseRequisition/purchaseRequisition'
+
+import {FaChartPie,FaUsers,FaUsersCog, FaWarehouse, FaFileMedical, FaFileAlt,FaFileInvoiceDollar, FaFileInvoice } from "react-icons/fa"
 const routes = [
     {
         path: '/dashboard',
@@ -26,11 +28,18 @@ const routes = [
         component: Customer
     },
     {
+        path: '/purchase-requisition',
+        name: 'Purchase Requisition',
+        icon: <FaFileInvoice />,
+        component: PurchaseRequisition
+    },
+    {
         path: '/request-for-quotation',
         name: 'Request For Quotation',
         icon: <FaFileAlt />,
         component: RequestForQuotation
     },
+    
     {
         path: '/purchase-order',
         name: 'Purchase Order',

@@ -13,6 +13,8 @@ import UpdateCustomer from '../Cutomer/updateCustomer'
 import Inventory from '../Inventory/inventory'
 import PurchaseOrderDetails from '../PurchaseOrder/purchaseOrderDetails'
 import AllInvoices from '../Invoice/allInvoices'
+import PurchaseRequisition from '../PurchaseRequisition/purchaseRequisition'
+
 export {
     SideBar,Header,
     Dashboard,
@@ -27,5 +29,6 @@ export {
     UpdateCustomer,
     Inventory,
     PurchaseOrderDetails,
-    AllInvoices
+    AllInvoices,
+    PurchaseRequisition
 }
