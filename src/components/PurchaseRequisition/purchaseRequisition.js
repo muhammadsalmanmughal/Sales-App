@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useContext } from 'react'
 import { VendorCustomerContext } from '../../context/Random/random'
-import { getItemsId } from '../../Utils/utils'
+import { CreatePurchaseRequisition } from '../../Utils/utils'
 import {
     ListItem,
     ItemDiv,
@@ -8,25 +8,12 @@ import {
     Quantity,
     DeleteButton
 } from '../RequestForQuotation/style/index'
-
 import { CopyToClipboard } from 'react-copy-to-clipboard'
 import moment from 'moment'
 import {
-    Divider,
-    message,
-    Row,
-    Col,
-    Input,
-    Button,
-    Tooltip,
-    Select,
-    DatePicker,
-    Tabs,
-    Table,
-    Space,
-    Modal,
-    Skeleton
+    Divider, message, Row, Col, Input, Button, Tooltip, Select, DatePicker, Tabs, Table, Space, Modal, Skeleton
 } from 'antd'
+
 import { FaRegClipboard } from "react-icons/fa";
 
 const PurchaseRequisition = () => {
@@ -60,13 +47,7 @@ const PurchaseRequisition = () => {
         setQualityValue(e);
     };
     function selectInventoryItem(value) {
-        console.log(value)
-        // getItemsId(value).then(data => {
-        //     setItemId(data[0].itemId)
-        //     setItemCollectionId(data[0].compId)
-        // })
         setItemName(value)
-
     }
     const ObjItemList = {
         PR_iD,
@@ -78,15 +59,15 @@ const PurchaseRequisition = () => {
         if (requesterName == null || !requriedDate) {
             message.error('Fill all the fields')
         }
-        else if(requestedquantity.length > 2){
+        else if (requestedquantity.length > 2) {
             message.error('Quantity out of range')
         }
 
         else {
             setItemsList([...itemsList, { itemName, qualityValue, Quanity }])
             setItemName('')
-            setRequesterName('')
             setQuantity('')
+            setQualityValue('')
         }
     }
     const deleteItem = (id) => {
@@ -94,7 +75,13 @@ const PurchaseRequisition = () => {
         newList.splice(id, 1)
         setItemsList(newList);
     }
-    console.log('itemsList',itemsList);
+
+    const generatePurchaseOrder = () => {
+        CreatePurchaseRequisition(PR_iD, requesterName, createdDate, requriedDate, itemsList)
+        setItemsList([])
+        setRequesterName('')
+    }
+    console.log('itemsList', itemsList);
 
     return (
         <div>
@@ -174,7 +161,7 @@ const PurchaseRequisition = () => {
                         placeholder='Enter item Quantity'
                         value={requestedquantity}
                         onChange={e => setQuantity(e.target.value)}
-                        max ={5}
+                        max={5}
 
                     />
                 </Col>
@@ -186,31 +173,38 @@ const PurchaseRequisition = () => {
             </Row>
             <Divider>ITEMS LIST</Divider>
 
-                    <ul>
-                        {
-                            itemsList.map((item, key) => {
-                                return (
-                                    <>
-                                        <ListItem key={key} xs={24} sm={12}>
-                                            <ItemDiv>
-                                                {item.itemName}
-                                            </ItemDiv>
-                                            <QuantityAndButtonDiv>
-                                                <Quantity>
-                                                    {item.Quanity}/
+            <ul>
+                {
+                    itemsList.map((item, key) => {
+                        return (
+                            <>
+                                <ListItem key={key} xs={24} sm={12}>
+                                    <ItemDiv>
+                                        {item.itemName}
+                                    </ItemDiv>
+                                    <QuantityAndButtonDiv>
+                                        <Quantity>
+                                            {item.Quanity}/
                       {item.qualityValue}
-                                                </Quantity>
-                                                <DeleteButton>
-                                                    <Button danger onClick={() => deleteItem(key)}>Delete</Button>
-                                                </DeleteButton>
-                                            </QuantityAndButtonDiv>
+                                        </Quantity>
+                                        <DeleteButton>
+                                            <Button danger onClick={() => deleteItem(key)}>Delete</Button>
+                                        </DeleteButton>
+                                    </QuantityAndButtonDiv>
 
-                                        </ListItem>
-                                    </>
-                                )
-                            })
-                        }
-                    </ul>
+                                </ListItem>
+                            </>
+                        )
+                    })
+                }
+            </ul>
+            <Row>
+                <Col xs={24} sm={12}>
+                    <Button
+                        onClick={generatePurchaseOrder}
+                    >Create Purchase Order</Button>
+                </Col>
+            </Row>
         </div>
     )
 }

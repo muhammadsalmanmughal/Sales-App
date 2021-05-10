@@ -258,6 +258,25 @@ const UpdateVendor = (vendorDetail, id) => {
     })
 }
 
+const CreatePurchaseRequisition = (PR_iD, requesterName, createdDate, requriedDate, itemsList) => {
+const object_PR={
+  PR_iD,
+  RequesterName: CapitalizeWords(requesterName),
+  createdDate,
+  requriedDate,
+  itemsList
+}
+  firebase.firestore().collection('PurchaseRequisitions').add(object_PR)
+    .then((response) => {
+      firebase.firestore().collection("PurchaseRequisitions").doc(response.id).update({ 'iD': response.id })
+      message.success('Purchase Requisition created')
+    })
+    .catch((error) => {
+      message.error(error.message)
+    })
+
+}
+
 const UpdatePOStatus = (status, id) => {
   firebase.firestore().collection("PurchaseOrder").doc(id)
     .update({
@@ -603,6 +622,7 @@ export {
   getSpecificData,
   UpdateCustomer,
   UpdateVendor,
+  CreatePurchaseRequisition,
   CreateRFQ,
   CreatePurchaseOrder,
   getPODetails,
