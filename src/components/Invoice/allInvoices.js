@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { getAllInvoices, getInvoiceById } from '../../Utils/utils'
+import { getAllInvoices, getDataById } from '../../Utils/utils'
 import {
     Divider, Button, Skeleton, Table, Space, Modal, Tag
 } from 'antd'
@@ -19,12 +19,12 @@ const AllInvoices = () => {
 
     const getInvoiceDetails = (id) => {
         setShowModal(true)
-        getInvoiceById(id).then(data => {
+        getDataById('Invoices',id).then(data => {
             setInvoiceDetails(data)
             setInvoiceItemList(data&&data.flatMap(i => i.Invoice_Items)) 
-            console.log('data------------>', data)
         })
     }
+    console.log('invoice data------------>', invoiceItemList)
 
     const invoicesTable = [
         {

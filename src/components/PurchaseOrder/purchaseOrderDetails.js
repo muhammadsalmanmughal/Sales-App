@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { useHistory, useParams } from 'react-router-dom'
 import { CaretLeftOutlined } from "@ant-design/icons";
 import { Goback } from '../Details/styles/index'
-import { getPODetails, updateInventoryItem, CreateGoodReceipt, GetGRbyId, GetAllGoodsReceipt, createInvoice } from '../../Utils/utils'
+import { getPODetails, updateInventoryItem, CreateGoodReceipt, GetAllGoodsReceipt, createInvoice,getDataById } from '../../Utils/utils'
 import {
     Divider, Input, Button, Skeleton, Table, Space, message, Drawer, Tabs, Modal, Tag,Empty
 } from 'antd'
@@ -87,8 +87,7 @@ const PurchaseOrderDetails = () => {
 
     const showGRDetails = (id) => {
         setShowModal(true)
-
-        GetGRbyId(id).then(data => {
+        getDataById('Goods_Receipts',id).then(data => {
             setGRData(data.map(gritem => {
                 return {
                     ...gritem, grItemList: gritem.grItemList.map(grlistitem => {
@@ -178,7 +177,7 @@ const PurchaseOrderDetails = () => {
                 <Space size="middle">
                     <Button
                         onClick={
-                            e => showGRDetails(good.collectioniD)
+                            e => showGRDetails(good.iD)
                         }
                     >Details</Button>
                     <Button onClick={invoiceModal}>
