@@ -487,7 +487,7 @@ const CreateGoodReceipt = (GRdata) => {
   console.log('Good Receipt ', GRdata)
   firebase.firestore().collection('Goods_Receipts').add(GRdata)
     .then((response) => {
-      firebase.firestore().collection("Goods_Receipts").doc(response.id).update({ 'collectioniD': response.id })
+      firebase.firestore().collection("Goods_Receipts").doc(response.id).update({ 'iD': response.id })
       message.success('Goods Receipt created')
     })
     .catch((error) => {
@@ -518,35 +518,11 @@ const GetAllGoodsReceipt = () => {
     });
 }
 
-const GetGRbyId = async (id) => {
-  return firebase
-    .firestore()
-    .collection('Goods_Receipts')
-    .where("collectioniD", "==", id)
-    .get()
-    .then(function (querySnapshot) {
-      // console.log('querySnapshot', querySnapshot)
-      const goodsReceipt = [];
-      querySnapshot.forEach(function (doc) {
-        if (doc.exists) {
-          const comp = doc.data();
-          goodsReceipt.push({ ...comp, compId: doc.id });
-        } else {
-          message.info("No such document!");
-        }
-      });
-      return goodsReceipt
-    })
-    .catch(function (error) {
-      console.log("Error!", error.message);
-    });
-
-}
 const createInvoice = (invoice) => {
   console.log('Invoice ',invoice)
   firebase.firestore().collection('Invoices').add(invoice)
   .then((response) => {
-    firebase.firestore().collection("Invoices").doc(response.id).update({ 'collectioniD': response.id })
+    firebase.firestore().collection("Invoices").doc(response.id).update({ 'iD': response.id })
     message.success('Your Invoice has been created')
   })
   .catch((error) => {
@@ -554,6 +530,50 @@ const createInvoice = (invoice) => {
   })
 }
 
+const getPR = () =>{
+  return firebase
+  .firestore()
+  .collection('PurchaseRequisitions')
+  .get()
+  .then(function (querySnapshot) {
+    const prData = [];
+    querySnapshot.forEach(function (doc) {
+      if (doc.exists) {
+        const comp = doc.data();
+        prData.push({ ...comp, compId: doc.id });
+      } else {
+        message.info("No such document!");
+      }
+    });
+    return prData
+  })
+  .catch(function (error) {
+    message.error("Error!", error.message);
+  });
+}
+
+const getDataById = (dbName, id) => {
+  return firebase
+  .firestore()
+  .collection(dbName)
+  .where("iD", "==", id)
+  .get()
+  .then(function (querySnapshot) {
+    const goodsReceipt = [];
+    querySnapshot.forEach(function (doc) {
+      if (doc.exists) {
+        const comp = doc.data();
+        goodsReceipt.push({ ...comp, compId: doc.id });
+      } else {
+        message.info("No such document!");
+      }
+    });
+    return goodsReceipt
+  })
+  .catch(function (error) {
+    console.log("Error!", error.message);
+  });
+}
 const getAllInvoices = () => {
   return firebase
   .firestore()
@@ -576,29 +596,7 @@ const getAllInvoices = () => {
     console.log("Error!", error.message);
   });
 }
-const getInvoiceById = (id) => {
-  return firebase
-  .firestore()
-  .collection('Invoices')
-  .where("collectioniD", "==", id)
-  .get()
-  .then(function (querySnapshot) {
-    // console.log('querySnapshot', querySnapshot)
-    const allInvoices = [];
-    querySnapshot.forEach(function (doc) {
-      if (doc.exists) {
-        const comp = doc.data();
-        allInvoices.push({ ...comp, compId: doc.id });
-      } else {
-        message.info("No such document!");
-      }
-    });
-    return allInvoices
-  })
-  .catch(function (error) {
-    console.log("Error!", error.message);
-  });
-}
+
 function CapitalizeWords(str) {
   // return str[0].toUpperCase()+str.slice(1)
   if (typeof str === 'string') {
@@ -631,8 +629,8 @@ export {
   CapitalizeWords,
   CreateGoodReceipt,
   GetAllGoodsReceipt,
-  GetGRbyId,
   createInvoice,
   getAllInvoices,
-  getInvoiceById
+  getDataById,
+  getPR
 }
