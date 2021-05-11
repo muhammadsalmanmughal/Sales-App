@@ -24,8 +24,7 @@ const AllInvoices = () => {
             setInvoiceItemList(data&&data.flatMap(i => i.Invoice_Items)) 
         })
     }
-    console.log('invoice data------------>', invoiceItemList)
-
+    
     const invoicesTable = [
         {
             title: 'Purchase Order Id',
