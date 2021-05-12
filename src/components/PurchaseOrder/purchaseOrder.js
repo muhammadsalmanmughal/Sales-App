@@ -28,7 +28,7 @@ import {
     QuantityAndButtonDiv,
     Quantity,
     DeleteButton
-} from '../RequestForQuotation/style/index'
+} from '../../Utils/styles'
 const { TabPane } = Tabs;
 
 const PurchaseOrder = () => {

@@ -7,7 +7,7 @@ import {
     QuantityAndButtonDiv,
     Quantity,
     DeleteButton
-} from '../RequestForQuotation/style/index'
+} from '../../Utils/styles'
 import { CopyToClipboard } from 'react-copy-to-clipboard'
 import moment from 'moment'
 import {

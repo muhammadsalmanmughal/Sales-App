@@ -3,7 +3,7 @@ import { useFormik } from 'formik'
 import { Button } from 'antd';
 import { v4 as uuidv4 } from 'uuid';
 import { Label } from '../Textbox/style/index'
-import { SubmitButton } from './style/index'
+import { SubmitButton } from '../../Utils/styles'
 import { validationSchema } from './validationSchema'
 import { createNewCustomer } from '../../Utils/utils'
 import ErrorText from '../FormError/formError'

@@ -8,7 +8,7 @@ import {
   QuantityAndButtonDiv,
   Quantity,
   DeleteButton
-} from './style/index'
+} from '../../Utils/styles'
 import {
   Divider,
   message,
