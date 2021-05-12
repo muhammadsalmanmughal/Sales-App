@@ -14,7 +14,7 @@ import Inventory from '../Inventory/inventory'
 import PurchaseOrderDetails from '../PurchaseOrder/purchaseOrderDetails'
 import AllInvoices from '../Invoice/allInvoices'
 import PurchaseRequisition from '../PurchaseRequisition/purchaseRequisition'
-
+import Delivery from '../Delivery/delivery'
 export {
     SideBar,Header,
     Dashboard,
@@ -30,5 +30,6 @@ export {
     Inventory,
     PurchaseOrderDetails,
     AllInvoices,
-    PurchaseRequisition
+    PurchaseRequisition,
+    Delivery
 }
