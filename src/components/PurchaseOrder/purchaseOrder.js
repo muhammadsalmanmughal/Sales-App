@@ -368,7 +368,7 @@ const PurchaseOrder = () => {
                                             </ItemDiv>
                                             <QuantityAndButtonDiv>
                                                 <Quantity>
-                                                    {item.quantity}/
+                                                    {item.pricePerItem}/
                       {item.radioValue}
                                                 </Quantity>
                                                 <DeleteButton>

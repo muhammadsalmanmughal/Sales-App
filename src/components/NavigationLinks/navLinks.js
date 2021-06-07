@@ -15,6 +15,9 @@ import PurchaseOrderDetails from '../PurchaseOrder/purchaseOrderDetails'
 import AllInvoices from '../Invoice/allInvoices'
 import PurchaseRequisition from '../PurchaseRequisition/purchaseRequisition'
 import Delivery from '../Delivery/delivery'
+import Production from '../Production/production'
+import BillOfMaterial from '../BOM/bom'
+import PageNotFound from '../404/pagenotfound'
 export {
     SideBar,Header,
     Dashboard,
@@ -31,5 +34,8 @@ export {
     PurchaseOrderDetails,
     AllInvoices,
     PurchaseRequisition,
-    Delivery
+    Production,
+    BillOfMaterial,
+    Delivery,
+    PageNotFound
 }

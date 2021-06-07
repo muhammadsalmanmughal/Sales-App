@@ -4,6 +4,7 @@ import {
   Switch,
   Route
 } from 'react-router-dom'
+import PageNotFound from '../../components/404/pagenotfound'
 
 import Layout from '../../components/Layout/layout'
 import Login from '../../components/Login/Login'
@@ -14,12 +15,13 @@ const MainRouter = () => {
   return (
     <Router>
       <Switch>
-        <Route path="/" exact component={Login} />
-        <Route path="/signup" component={Signup} />
-        <Route path="/home" component={Layout} />
+        <Route path='/' exact component={Login} />
+        <Route path='/signup' component={Signup} />
+        <Route path='/home' component={Layout} />
+        <Route component={PageNotFound} />
         {/* <Route render={() => <Redirect to="/home" />} /> */}
       </Switch>
     </Router>
-  );
+  )
 }
-export default MainRouter;
+export default MainRouter

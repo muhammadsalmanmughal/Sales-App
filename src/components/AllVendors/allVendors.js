@@ -1,57 +1,15 @@
 import React, { useState, useEffect, useContext } from 'react'
-import firebase from '../../config/Firebase/firebase';
-import {getAllVendors} from '../../Utils/utils'
+import { getAllVendors } from '../../Utils/utils'
 import { useHistory } from 'react-router-dom'
-import { EmptyDiv } from './style/index'
-import { Empty, Table, Space, Button } from 'antd';
-import loader from '../../assets/loader.gif'
+import { Skeleton, Table, Space, Button } from 'antd';
 
 import { VendorCustomerContext } from '../../context/Random/random'
-import { TableDiv, LoaderDiv } from './style/index'
 
 const AllVendors = () => {
-    const [isVendor, setIsVendor] = useState(false)
-    const [isLoading, setIsLoading] = useState(false)
     const history = useHistory()
     const [allVendors, setAllVendors] = useState()
 
-    const value = useContext(VendorCustomerContext)
-    const { vendors, setVendors } = useContext(VendorCustomerContext)
-    console.log('vendors',vendors);
-
-    // const getAllVendors = () => {
-    //     setIsLoading(true)
-    //     firebase
-    //         .firestore()
-    //         .collection("Vendor")
-    //         .onSnapshot(function (querySnapshot) {
-    //             const vendorList = [];
-    //             querySnapshot.forEach(function (doc) {
-    //                 console.log('functions Doc', doc.data)
-    //                 if (doc.exists) {
-    //                     const comp = doc.data();
-    //                     vendorList.push({ ...comp, compId: doc.id });
-    //                     setIsVendor(true)
-    //                 } else {
-    //                     // alert("No such document!");
-    //                     // <EmptyDiv>
-    //                     //     <Empty/>
-    //                     // </EmptyDiv>
-    //                     setIsVendor(false)
-                        
-    //                 }
-    //             });
-    //             setAllVendors(vendorList)
-    //             setVendors(vendorList)
-    //             setIsLoading(false)
-    //             // setIsVendor(true)
-    //         });
-    // }
- 
-console.log('All Vendors from context-------->', vendors);
-    const updateVendor = (e) => {
-        console.log('update E', e)
-    }
+    const { vendors } = useContext(VendorCustomerContext)
 
     const columns = [
         {
@@ -92,22 +50,8 @@ console.log('All Vendors from context-------->', vendors);
             ),
         },
     ];
-    const checkVendor = () => {
-        if (isVendor) {
-            return <TableDiv>
-                <Table dataSource={allVendors} columns={columns} />;
-            </TableDiv>
-        }
-        // else if (!isVendor || isLoading) {
-        //     return <LoaderDiv><img src={loader} /></LoaderDiv>
-        // }
-        // return <EmptyDiv> <Empty /> </EmptyDiv>
-
-
-    }
     useEffect(() => {
         getAllVendors().then(data => {
-            console.log('then all vendors', data);
             setAllVendors(data)
         })
     }, [])
@@ -116,8 +60,9 @@ console.log('All Vendors from context-------->', vendors);
     return (
         <div>
 
-            {checkVendor()}
-
+            {allVendors?
+                <Table dataSource={allVendors} columns={columns} />
+            :<Skeleton/>}
 
         </div>
     )

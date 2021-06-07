@@ -1,20 +1,28 @@
 import React, { useState, useEffect } from 'react'
 import { useFormik } from 'formik'
-import { Button } from 'antd';
 import { v4 as uuidv4 } from 'uuid';
 import { Label } from '../Textbox/style/index'
 import { SubmitButton } from '../../Utils/styles'
 import { validationSchema } from './validationSchema'
-import { createNewCustomer } from '../../Utils/utils'
+import { createNewCustomer, getCustomerOrder } from '../../Utils/utils'
+import { Title } from '../../Utils/styles'
 import ErrorText from '../FormError/formError'
 import AllCustomers from '../AllCustomers/allCustomers';
 import { VendorMainDiv, FormDiv } from '../Vendor/style/index'
+import moment from 'moment'
+
 import {
     Divider,
     Tabs,
     Row,
     Col,
-    Input
+    Input,
+    Space,
+    Table,
+    Button,
+    Skeleton,
+    Modal,
+    Tag
 } from 'antd';
 
 const { TabPane } = Tabs;
@@ -22,20 +30,23 @@ const { TabPane } = Tabs;
 
 const CreateCustomer = () => {
 
-    const [customerId, setCustomerId] = useState('')
+    const [allOrders, setAllOrders] = useState([])
+    console.log('allOrders: ', allOrders);
+    const [showModal, setShowModal] = useState(false);
 
-    const cusId = () => {
-        setCustomerId(uuidv4())
-    }
-    useEffect(() => {
-        cusId()
-    }, [])
+    const shortid = require('shortid')
+    const orderID = shortid.generate()
+
+    const orderItems = allOrders?.flatMap(item => item.itemsList)
+
     const onSubmit = (values, onSubmitProps) => {
-        createNewCustomer(values, customerId)
+        createNewCustomer(values,orderID)
         onSubmitProps.resetForm()
     }
+
     const initialValues = {
-        businessName: '',
+        customerName: '',
+        companyName:'',
         billToAddress: '',
         city: '',
         state: '',
@@ -50,18 +61,72 @@ const CreateCustomer = () => {
         initialValues,
         onSubmit,
         validationSchema,
-        cusId
     })
-    
-    function callback(key) {
-        console.log(key);
-    }
+    useEffect(() => {
+        getCustomerOrder().then(data => {
+            setAllOrders(data)
+        })
+    }, [])
 
+   
+    const ShowOrderDetails = (id) => {
+        setShowModal(true)
+        console.log('order id: ', id);
+
+    }
+    const allOrderTable = [
+        {
+            title: 'Order ID',
+            dataIndex: 'orderID',
+            key: 'order_id',
+        },
+        {
+            title: 'Customer Name',
+            dataIndex: 'CustomerName',
+            key: 'customer_Name',
+        },
+        {
+            title: 'Company',
+            dataIndex: 'CompanyName',
+            key: 'company_Name',
+        },
+        {
+            title: 'Due Date',
+            dataIndex: 'requiredDate',
+            key: 'due_Date',
+        },
+        {
+            title: 'Action',
+            key: 'action',
+            render: (order) => (
+                <Space size="middle">
+                    <Button
+                        onClick={
+                            e => ShowOrderDetails(order.iD)
+                        }
+                    >Details</Button>
+                </Space>
+            ),
+        },
+    ]
+    const orderItemList = [
+        {
+            title: 'Item Name',
+            dataIndex: 'item',
+            key: 'name',
+        },
+        {
+            title: 'Quantity',
+            dataIndex: 'quantity',
+            key: 'quantity',
+        }
+    ]
     return (
         <div>
-            <h1>Customer</h1>
+            <Title>Customer</Title>
             <Divider />
-            <Tabs defaultActiveKey="1" onChange={callback}>
+
+            <Tabs defaultActiveKey="1" >
 
                 <TabPane tab="Create Customer" key="1">
                     <VendorMainDiv>
@@ -71,20 +136,36 @@ const CreateCustomer = () => {
                             <FormDiv>
 
                                 <Row gutter={[10, 10]}>
-                                    <Col xs={24} sm={24}>
+                                    <Col xs={24} sm={12}>
                                         <Label>
-                                            Business Name:
+                                            Customer Name:
                                          <Input
                                                 type='text'
-                                                name='businessName'
+                                                name='customerName'
                                                 // value={formik.values.companyName}
                                                 // onBlur={formik.handleBlur}
                                                 // onChange={formik.handleChange}
-                                                {...formik.getFieldProps('businessName')}
+                                                {...formik.getFieldProps('customerName')}
                                             />
                                         </Label>
-                                        {formik.touched.businessName && formik.errors.businessName
-                                            ? <ErrorText text={formik.errors.businessName} />
+                                        {formik.touched.customerName && formik.errors.customerName
+                                            ? <ErrorText text={formik.errors.customerName} />
+                                            : null}
+                                    </Col>
+                                    <Col xs={24} sm={12}>
+                                        <Label>
+                                            Company Name:
+                                         <Input
+                                                type='text'
+                                                name='companyName'
+                                                // value={formik.values.companyName}
+                                                // onBlur={formik.handleBlur}
+                                                // onChange={formik.handleChange}
+                                                {...formik.getFieldProps('companyName')}
+                                            />
+                                        </Label>
+                                        {formik.touched.companyName && formik.errors.companyName
+                                            ? <ErrorText text={formik.errors.companyName} />
                                             : null}
                                     </Col>
                                     <Col xs={24} sm={24}>
@@ -227,6 +308,61 @@ const CreateCustomer = () => {
 
                 <TabPane tab="All Customer" key="2">
                     <AllCustomers />
+                </TabPane>
+                <TabPane tab="All Customer Orders" key="3">
+                    <div>
+                        {allOrders ?
+                            <Table dataSource={allOrders} columns={allOrderTable} /> : <Skeleton />
+                        }
+                    </div>
+                    <Modal
+                        title="Customer Order Details"
+                        centered
+                        visible={showModal}
+                        width={1000}
+                        footer={
+                            <div
+                                style={{
+                                    textAlign: 'right'
+                                }}
+                            >
+                                <Button onClick={() => setShowModal(false)} style={{ marginRight: 8 }}>
+                                    Close
+                              </Button>
+                            </div>
+                        }
+                    >
+                        {allOrders ?
+                            allOrders.map((item, key) => {
+                                return (
+                                    <div>
+                                        <p>{`Customer Name: ${item.CustomerName}`}</p>
+                                        <p>{`Company Name: ${item.companyName}`}</p>
+                                        <p>{`State: ${item.state}`}</p>
+                                        <p>{`City: ${item.city}`}</p>
+                                        <p>{`Address: ${item.billToAddress}`}</p>
+                                        <p>{`Postal Code: ${item.postalCode}`}</p>
+                                        <p>{`Phone: ${item.phone}`}</p>
+                                        <p>Order Placed:
+                                            <Tag color='green'>
+                                                {item.currentDate}
+                                            </Tag>
+                                        </p>
+                                        <p>Due Date:
+                                            <Tag color='red'>
+                                                {item.requiredDate}
+                                            </Tag>
+                                        </p>
+                                    </div>
+                                )
+                            }) : <Skeleton active />
+                        }
+                        <div>
+                            {orderItems ?
+                                <Table dataSource={orderItems} columns={orderItemList} /> : <Skeleton />
+                            }
+                        </div>
+                    </Modal>
                 </TabPane>
 
             </Tabs>

@@ -7,11 +7,14 @@ import Inventory from '../../components/Inventory/inventory'
 import Invoices from '../../components/Invoice/allInvoices'
 import PurchaseRequisition from '../../components/PurchaseRequisition/purchaseRequisition'
 import Delivery from '../../components/Delivery/delivery'
+import Production from '../../components/Production/production'
 
 import { 
     FaChartPie,FaUsers,FaUsersCog, FaWarehouse, FaFileMedical,
     FaFileAlt,FaFileInvoiceDollar, FaFileInvoice,FaTruckMoving
  } from "react-icons/fa"
+ import { BsGearFill } from "react-icons/bs";
+
 const routes = [
     {
         path: '/dashboard',
@@ -61,6 +64,12 @@ const routes = [
         name: 'Invoices',
         icon: <FaFileInvoiceDollar/>,
         component: Invoices
+    },
+    {
+        path: '/production',
+        name: 'Production',
+        icon: <BsGearFill/>,
+        component: Production
     },
     {
         path: '/delivery',

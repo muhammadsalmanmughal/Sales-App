@@ -32,7 +32,6 @@ const PurchaseRequisition = () => {
 
     useEffect(() => {
         getPR().then(data => {
-            console.log('all PRs ', data)
             setAllPRData(data)
         })
     }, [])
@@ -42,10 +41,9 @@ const PurchaseRequisition = () => {
     const Quanity = Number(requestedquantity)
     const shortid = require('shortid')
     const PR_iD = shortid.generate()
-    const details = prDetails&&prDetails.flatMap(d => d.itemsList)
+    const details = prDetails && prDetails.flatMap(d => d.itemsList)
 
     const selectRequriedDate = (date, dateString) => {
-        console.log(dateString);
         setRequriedDate(dateString)
     }
 
@@ -62,15 +60,16 @@ const PurchaseRequisition = () => {
     }
 
     const CreateList = () => {
-        if (requesterName == null || !requriedDate) {
-            message.error('Fill all the fields')
-        }
-        else if (requestedquantity.length > 2) {
-            message.error('Quantity out of range')
+        if (requesterName == null || !requesterName) return message.error('Error! Requester Name cannot be left empty.')
+        if (!itemName) return message.error('Error! Select Item Name.')
+        if (!requriedDate) return message.error('Error! Select required date.')
+        if (!qualityValue) return message.error('Error! Select quality type.')
+        if (!requestedquantity || requestedquantity.length > 2 || requestedquantity <= 0) {
+            message.error('Error! Quantity not support')
         }
         else {
             setItemsList([...itemsList, { itemName, qualityValue, Quanity }])
-            setItemName('')
+            setRequesterName('')
             setQuantity('')
             setQualityValue('')
         }
@@ -91,7 +90,6 @@ const PurchaseRequisition = () => {
     const getPRDetails = (id) => {
         setShowModal(true)
         getDataById('PurchaseRequisitions', id).then(data => {
-            console.log('data', data)
             setPRDetails(data)
         })
     }
@@ -149,7 +147,6 @@ const PurchaseRequisition = () => {
             key: 'quality_Value',
         }
     ]
-    console.log('itemsList', itemsList);
 
     return (
         <div>
@@ -231,15 +228,14 @@ const PurchaseRequisition = () => {
                                 placeholder='Enter item Quantity'
                                 value={requestedquantity}
                                 onChange={e => setQuantity(e.target.value)}
-                                max={5}
-
+                                max={2}
                             />
                         </Col>
-                    </Row>
-                    <Row>
-                        <Button
-                            onClick={CreateList}
-                        >Add</Button>
+                        <Col>
+                            <Button
+                                onClick={CreateList}
+                            >Add</Button>
+                        </Col>
                     </Row>
                     <Divider>ITEMS LIST</Divider>
 
@@ -255,7 +251,7 @@ const PurchaseRequisition = () => {
                                             <QuantityAndButtonDiv>
                                                 <Quantity>
                                                     {item.Quanity}/
-                      {item.qualityValue}
+                                                    {item.qualityValue}
                                                 </Quantity>
                                                 <DeleteButton>
                                                     <Button danger onClick={() => deleteItem(key)}>Delete</Button>
@@ -271,6 +267,7 @@ const PurchaseRequisition = () => {
                     <Row>
                         <Col xs={24} sm={12}>
                             <Button
+                                disabled={!itemsList.length ? true : false}
                                 onClick={generatePurchaseOrder}
                             >Create Purchase Order</Button>
                         </Col>

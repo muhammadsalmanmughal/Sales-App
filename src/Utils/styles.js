@@ -25,20 +25,24 @@ transition: .5s;
 
 // For List Items
 
+export const H3 = styled.div`
+text-align: center;
+color: #0aa3fc;
+font-weight: bold;
+text-transform: uppercase
+`
+
 export const ListItem = styled.div`
 display: flex;
 align-items:baseline;
 justify-content: space-between;
 padding:5px;
 border: 1px solid #ebe8e1;
-// background-color: red; 
 ${media.tablet`
 flex-direction: column;
 `}
 `
 export const ItemDiv = styled.div`
-// width:70%;
-// background-color: orange;
 font-weight: bold;
 align-item:baseline;
 ${media.tablet`
@@ -49,16 +53,59 @@ text-align: center;
 export const QuantityAndButtonDiv = styled.div`
 display:flex;
 justify-content: space-between;
-// background-color: blue; 
 align-items:baseline;
-width:200px;
+width:150px;
 ${media.tablet`
 width: 100%;
+text-align: center;
 `}
 `
 export const Quantity = styled.div`
 font-weight: bold;
+${media.tablet`
+width:100%;
+text-align: center;
+`}
 `
 export const DeleteButton = styled.div`
 
+`
+// GO BACK
+export const Goback = styled.div`
+cursor: pointer;
+`
+
+export const ItemsDiv = styled.div`
+height: 350px;
+overflow: scroll;
+margin-bottom: 15px;
+margin-top:15px;
+`
+export const ItemsListMainDiv = styled.div`
+display: flex;
+flex-direction: row;
+width:100%;
+${media.tablet`
+display: flex;
+width: 100%;
+text-align: center;
+flex-direction: column;
+transition: 1.5s;
+`}
+`
+export const ItemsListOne = styled.div`
+// display:flex;
+flex-direction: column;
+width:50%;
+${media.tablet`
+width: 100%;
+text-align: center;
+`}
+`
+export const ItemsListTwo = styled.div`
+width:50%;
+${media.tablet`
+width: 100%;
+text-align: center;
+`}
 `

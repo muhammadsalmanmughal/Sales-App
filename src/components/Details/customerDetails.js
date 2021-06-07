@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { useParams, useHistory } from 'react-router-dom'
 import { getSpecificData, UpdateCustomer } from '../../Utils/utils'
 import { CaretLeftOutlined } from "@ant-design/icons";
-import { Goback } from './styles/index'
+import { Goback } from '../../Utils/styles'
 import {
     Divider,
     Row,
@@ -11,11 +11,12 @@ import {
     Button,
     Switch
 } from 'antd';
-const VendorDetails = () => {
-    const [detailsdData, setDetailsData] = useState(
+const CustomerDetails = () => {
+    const [detailsData, setDetailsData] = useState(
         {
             billToAddress: "",
-            businessName: "",
+            CustomerName: "",
+            companyName:"",
             city: "",
             compId: "",
             email: "",
@@ -25,7 +26,8 @@ const VendorDetails = () => {
             postalCode: '',
             responsibleName: "",
             responsiblePhone: "",
-            secondaryPhone: ""
+            secondaryPhone: "",
+            state:''
         }
     )
     const [isDisable, setisDisable] = useState(true)
@@ -38,19 +40,16 @@ const VendorDetails = () => {
         DisableFields(false)
     }, [])
 
-    const changeHandler = (key, value) => {
-        setDetailsData({ ...detailsdData, [value]: key.target.value })
-    }
-
-    const updateCustomer = () => {
-        UpdateCustomer(detailsdData, detailsdData.compId)
-    }
-
     function DisableFields(checked) {
-        console.log(`switch to ${checked}`);
         setisDisable(checked)
     }
-    // console.log('customerDetails------->', detailsdData, detailsdData.compId)
+    const changeHandler = (key, value) => {
+        setDetailsData({ ...detailsData, [value]: key.target.value })
+    }
+    const updateCustomer = () => {
+        UpdateCustomer(detailsData, detailsData.compId)
+    }
+
     return (
         <div>
             <Goback onClick={e => history.goBack()}>
@@ -71,8 +70,8 @@ const VendorDetails = () => {
                     <Col xs={24} sm={16}>
                         <h2>Name:</h2>
                         {
-                            <Input type='text' value={detailsdData.businessName}
-                                onChange={(e) => changeHandler(e, 'businessName')}
+                            <Input type='text' value={detailsData.CustomerName}
+                                onChange={(e) => changeHandler(e, 'CustomerName')}
                                 disabled={!isDisable}
                             />
                         }
@@ -80,28 +79,29 @@ const VendorDetails = () => {
 
                     <Col xs={24} sm={8}>
                         <h2>Company:</h2>
-                        <Input type='text' value={detailsdData.companyName}
-                            onChange={(e) => changeHandler(e, 'companyName')}
+                        <Input type='text' value={detailsData.CompanyName}
+                            onChange={(e) => changeHandler(e, 'CompanyName')}
                             disabled={!isDisable}
                         />
                     </Col>
 
                 </Row>
+               
                 <Divider orientation="left">
                     <h2>Address</h2>
                 </Divider>
                 <Row gutter={[10, 10]}>
                     <Col xs={24} sm={16}>
                         <h2>State:</h2>
-                        <Input type='text' value={detailsdData.state}
-                            onChange={(e) => changeHandler(e, 'state')}
+                        <Input type='text' value={detailsData.State}
+                            onChange={(e) => changeHandler(e, 'State')}
                             disabled={!isDisable}
                         />
                     </Col>
                     <Col xs={24} sm={8}>
                         <h2>City:</h2>
-                        <Input type='text' value={detailsdData.city}
-                            onChange={(e) => changeHandler(e, 'city')}
+                        <Input type='text' value={detailsData.City}
+                            onChange={(e) => changeHandler(e, 'City')}
                             disabled={!isDisable}
                         />
                     </Col>
@@ -109,60 +109,63 @@ const VendorDetails = () => {
                 <Row gutter={[10, 10]}>
                     <Col xs={24} sm={16}>
                         <h2>Address:</h2>
-                        <Input type='text' value={detailsdData.billToAddress}
-                            onChange={(e) => changeHandler(e, 'billToAddress')}
+                        <Input type='text' value={detailsData.BillToAddress}
+                            onChange={(e) => changeHandler(e, 'BillToAddress')}
                             disabled={!isDisable}
                         />
                     </Col>
                     <Col xs={24} sm={8}>
                         <h2>PostalCode:</h2>
-                        <Input type='text' value={detailsdData.postalCode}
-                            onChange={(e) => changeHandler(e, 'postalCode')}
+                        <Input type='text' value={detailsData.PostalCode}
+                            onChange={(e) => changeHandler(e, 'PostalCode')}
                             disabled={!isDisable}
                         />
                     </Col>
                 </Row>
+                
                 <Divider orientation='left'>
                     <h2>Contact</h2>
                 </Divider>
+                
                 <Row gutter={[10, 10]}>
                     <Col xs={24} sm={16}>
                         <h2>Email:</h2>
-                        <Input type='text' value={detailsdData.email}
-                            onChange={(e) => changeHandler(e, 'email')}
+                        <Input type='text' value={detailsData.Email}
+                            onChange={(e) => changeHandler(e, 'Email')}
                             disabled={!isDisable}
                         />
                     </Col>
                     <Col xs={24} sm={8}>
                         <h2>Phone Number:</h2>
-                        <Input type='text' value={detailsdData.phone}
-                            onChange={(e) => changeHandler(e, 'phone')}
+                        <Input type='text' value={detailsData.Phone}
+                            onChange={(e) => changeHandler(e, 'Phone')}
                             disabled={!isDisable}
                         />
                     </Col>
                     <Col xs={24} sm={8}>
                         <h2>Secondary Phone Number:</h2>
-                        <Input type='text' value={detailsdData.secondaryPhone}
-                            onChange={(e) => changeHandler(e, 'secondaryPhone')}
+                        <Input type='text' value={detailsData.SecondaryPhone}
+                            onChange={(e) => changeHandler(e, 'SecondaryPhone')}
                             disabled={!isDisable}
                         />
                     </Col>
                 </Row>
+                
                 <Divider orientation='left'>
                     <h2>Responsible Details</h2>
                 </Divider>
                 <Row gutter={[10, 10]}>
                     <Col xs={24} sm={16}>
                         <h2>Name:</h2>
-                        <Input type='text' value={detailsdData.responsibleName}
-                            onChange={(e) => changeHandler(e, 'responsibleName')}
+                        <Input type='text' value={detailsData.ResponsibleName}
+                            onChange={(e) => changeHandler(e, 'ResponsibleName')}
                             disabled={!isDisable}
                         />
                     </Col>
                     <Col xs={24} sm={8}>
                         <h2>Phone Number:</h2>
-                        <Input type='text' value={detailsdData.responsiblePhone}
-                            onChange={(e) => changeHandler(e, 'responsiblePhone')}
+                        <Input type='text' value={detailsData.ResponsiblePhone}
+                            onChange={(e) => changeHandler(e, 'ResponsiblePhone')}
                             disabled={!isDisable}
                         />
                     </Col>
@@ -178,4 +181,4 @@ const VendorDetails = () => {
         </div>
     )
 }
-export default VendorDetails
+export default CustomerDetails

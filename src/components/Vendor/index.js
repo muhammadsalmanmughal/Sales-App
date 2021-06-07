@@ -1,8 +1,7 @@
-import React, { useState, useEffect } from 'react'
+import React from 'react'
 import { useFormik } from 'formik'
-import { v4 as uuidv4 } from 'uuid';
 import { validationSchema } from './schema'
-import { createVendor, updateVendor } from '../../Utils/utils'
+import { createVendor } from '../../Utils/utils'
 import { Label } from '../Textbox/style/index'
 import { VendorMainDiv, FormDiv} from './style/index'
 import ErrorText from '../FormError/formError'
@@ -12,9 +11,11 @@ import {
     Tabs,
     Row,
     Col,
-    // Form,
     Input
 } from 'antd';
+import {
+    Title
+  } from '../../Utils/styles'
 const initialValues = {
     companyName: '',
     ownerFirstName: '',
@@ -26,67 +27,12 @@ const initialValues = {
     city: '',
     postalCode: ''
 }
-// const validate = values => {
-//     const errors = {}
-//     if (!values.companyName) {
-//         errors.companyName = 'Field Required'
-//     }
-//     else if (values.companyName.length < 4) {
-//         errors.companyName = 'Company name is too short'
-//     }
-//     if (!values.ownerFirstName || values.ownerFirstName < 5) {
-//         errors.ownerFirstName = 'Invalid Name'
-//     }
-//     if (!values.ownerLastName || values.ownerLastName < 5) {
-//         errors.ownerLastName = 'Invalid Name'
-//     }
-//     if (!values.address) {
-//         errors.address = 'Field Required'
-//     }
-//     else if(values.address. length < 15){
-//         errors.address = 'Enter valid address'
-//     }
-//     if (!values.phone) {
-//         errors.phone = 'Field Required'
-//     }
-//     else if(values.phone.length < 11){
-//         errors.phone = 'Invalid phone number'
-//     }
-//     if (!values.email) {
-//         errors.email = 'Field Required'
-//     }
-//     else if (/^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/.test(values.email)) {
-//         errors.email = 'Invalid email format'
-//     }
-//     // if(!values.country){
-//     //     errors.country = 'Required'
-//     // }else if(values.country  )
-//     if (!values.city) {
-//         errors.city = 'Field Required'
-//     }
-//     else if (values.city.length < 7 || values.city.length > 15) {
-//         errors.city = 'Invalid city name'
-//     }
-//     if (!values.postalCode || values.postalCode.length < 5) {
-//         errors.postalCode = 'Enter valid postal code'
-//     }
-//     return errors
-// }
+
 const Vendor = () => {
-
-    const [vendorId, setVendorId] = useState('')
-
-    // const venId = () => {
-    //     setVendorId(uuidv4())
-    // }
     const onSubmit = (values,onSubmitProps) => {
-        createVendor(values, vendorId)
+        createVendor(values)
         onSubmitProps.resetForm()
     }
-    // useEffect(() => {
-    //     venId()
-    //     updateVendor()
-    // }, [])
 
     const formik = useFormik({
         initialValues,
@@ -94,17 +40,13 @@ const Vendor = () => {
         validationSchema
     })
 
-
     const { TabPane } = Tabs;
-    function callback(key) {
-        console.log(key);
-    }
-    // console.log('Formik visited fiedls', formik.touched);
+
     return (
         <div>
-            <h1>Vendor</h1>
+            <Title>Vendor</Title>
             <Divider />
-            <Tabs defaultActiveKey="1" onChange={callback}>
+            <Tabs defaultActiveKey="1">
                 <TabPane tab="Create Vendor" key="1">
                     <VendorMainDiv>
                         <form

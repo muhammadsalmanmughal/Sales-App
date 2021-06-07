@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { useHistory, useParams } from 'react-router-dom'
 import { CaretLeftOutlined } from "@ant-design/icons";
-import { Goback } from '../Details/styles/index'
+import { Goback } from '../../Utils/styles'
 import { getPODetails, updateInventoryItem, CreateGoodReceipt, GetAllGoodsReceipt, createInvoice,getDataById } from '../../Utils/utils'
 import {
     Divider, Input, Button, Skeleton, Table, Space, message, Drawer, Tabs, Modal, Tag,Empty
@@ -11,7 +11,8 @@ import {
     ListItem, ItemDiv, QuantityAndButtonDiv, Quantity
 } from '../RequestForQuotation/style/index'
 
-import { H3, ItemsDiv } from './style/index'
+import { H3 } from './style/index'
+import {ItemsDiv} from '../../Utils/styles'
 
 import { TableSkeleton } from '../../Utils/skeleton'
 const PurchaseOrderDetails = () => {
@@ -57,6 +58,7 @@ const PurchaseOrderDetails = () => {
     const goods = gRData?.flatMap(goods => goods.grItemList)
     // ------------Drawer-------------
     const showDrawer = (itemId, req_quantity, docId, name) => {
+        console.log('updated item id-->',itemId, req_quantity, docId, name)
         setVisible(true);
         setItemID(itemId)
         setRequestedQuantity(req_quantity)
@@ -66,7 +68,8 @@ const PurchaseOrderDetails = () => {
 
     const handleOk = () => {
         var numbers = /^[0-9]+$/;
-        if (requestedQuantity < itemQuantity) return message.error('Retreive Quantity cannot be greator then Requested Quantity');
+        // if (requestedQuantity < itemQuantity) return message.error('Retreive Quantity cannot be greator then Requested Quantity');
+       console.log('chala');
         if (itemQuantity < 0) return message.error('Quantity cannot be less then zero');
         if (!itemQuantity) return message.error('Quantity cannot be set empty');
         if (!itemQuantity.match(numbers)) return message.error('Error! number is in decimal')

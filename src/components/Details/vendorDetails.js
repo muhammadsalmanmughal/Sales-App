@@ -2,7 +2,8 @@ import React, { useEffect, useState } from 'react'
 import { useParams, useHistory } from 'react-router-dom'
 import { getSpecificData, UpdateVendor } from '../../Utils/utils'
 import { CaretLeftOutlined } from "@ant-design/icons";
-import { Goback, DetailsDiv } from './styles/index'
+import { DetailsDiv } from './styles/index'
+import { Goback } from '../../Utils/styles'
 import {
     Divider,
     Row,

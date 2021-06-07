@@ -1,36 +1,45 @@
-import React, { useContext } from 'react'
+import React, { useState,useEffect } from 'react'
 import { useHistory } from 'react-router-dom'
 import { Button, Table, Skeleton, Space } from 'antd';
 import { VendorCustomerContext } from '../../context/Random/random'
+import { getAllCustomers } from '../../Utils/utils'
 
 const AllCustomers = () => {
     const history = useHistory()
-    const { customers } = useContext(VendorCustomerContext)
+    const [customers, setCustomers] = useState()
+
+    useEffect(()=>{
+        getAllCustomers().then(data => {
+            setCustomers(data)
+          })
+    },[])
+    // const { customers } = useContext(VendorCustomerContext)
+
 
     const customerTable = [
         {
-            title: 'BusinessName',
-            dataIndex: 'businessName',
-            key: 'business_Name',
+            title: 'Customer Name',
+            dataIndex: 'CustomerName',
+            key: 'customer_Name',
         },
         {
-            title: 'BillToAddress',
-            dataIndex: 'billToAddress',
+            title: 'Address',
+            dataIndex: 'BillToAddress',
             key: 'billtoaddress',
         },
         {
             title: 'Phone',
-            dataIndex: 'phone',
+            dataIndex: 'Phone',
             key: 'phone',
         },
         {
             title: 'Email',
-            dataIndex: 'email',
+            dataIndex: 'Email',
             key: 'email',
         },
         {
             title: 'City',
-            dataIndex: 'city',
+            dataIndex: 'City',
             key: 'city',
         },
         {
