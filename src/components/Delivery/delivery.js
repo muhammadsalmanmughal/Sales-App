@@ -4,10 +4,10 @@ import { Label } from '../Textbox/style/index'
 import { validationSchema } from './validationSchema'
 import { SubmitButton, H3 } from '../../Utils/styles'
 import { FormDiv } from '../Vendor/style/index'
-import { createDelivery, getCustomerOrder, getOrdersById } from '../../Utils/utils'
+import { createDelivery, getCustomerOrder, getOrdersById, getAllDeliveries,getDataById } from '../../Utils/utils'
 import ErrorText from '../FormError/formError'
 import {
-    Divider, Input, Tabs, Row, Col, Select, List,message
+    Divider, Input, Tabs, Row, Col, Select, List, message, Table, Skeleton, Modal, Space, Button
 } from 'antd'
 import { Title } from '../../Utils/styles'
 
@@ -16,6 +16,9 @@ const Delivery = () => {
 
     const [allOrders, setAllOrders] = useState()
     const [orderList, setOrderList] = useState()
+    const [deliveries, setDeliveries] = useState()
+    const [deliveryDetails,setDeliveryDetails] =useState()
+    const [showModal, setShowModal] = useState(false);
 
     const current_datetime = new Date()
     const utc = current_datetime.getDate() + '-' + (current_datetime.getMonth() + 1) + '-' + current_datetime.getFullYear()
@@ -34,22 +37,23 @@ const Delivery = () => {
         email: ''
     }
     const onSubmit = (values, onSubmitProps) => {
-        console.log('values: ', values);
-        
-        if(!orderItems) return message.error('Error! Select customer Order')
-        createDelivery(values, deliveryId,orderItems)
+        if (!orderItems) return message.error('Error! Select customer Order')
+        createDelivery(values, deliveryId, orderItems)
         onSubmitProps.resetForm()
     }
+
     const formik = useFormik({
         initialValues,
         onSubmit,
         validationSchema,
-        // deliveryId
     })
 
     useEffect(() => {
         getCustomerOrder().then(data => {
             setAllOrders(data)
+        })
+        getAllDeliveries().then(data => {
+            setDeliveries(data)
         })
     }, [])
 
@@ -58,15 +62,75 @@ const Delivery = () => {
             setOrderList(data)
         })
     }
+    const Items = deliveryDetails?.flatMap(d => d.DeliveryItems)
     const orderItems = orderList?.flatMap(list => list.itemsList)
 
-   
+    const DeliveryDetails = (id) => {
+        getDataById('Delivery',id).then(data => {
+            setDeliveryDetails(data)
+        })
+        setShowModal(true)
+    }
+
+    const customerDetails = [
+        {
+            title: 'Delivery Id',
+            dataIndex: 'DeliveryId',
+            key: 'delivery_id',
+        },
+        {
+            title: 'Customer Name',
+            dataIndex: 'CustomerName',
+            key: 'customer_name',
+        },
+        {
+            title: 'Organization',
+            dataIndex: 'Organization',
+            key: 'organization',
+        },
+        {
+            title: 'Address',
+            dataIndex: 'Address',
+            key: 'address',
+        },
+        {
+            title: 'Phone',
+            dataIndex: 'Phone',
+            key: 'phone',
+        },
+        {
+            title: 'ItemStatus',
+            key: 'itemstatus',
+            render: (delivery) => (
+                <Space size="middle">
+                    <Button
+                        onClick={e => DeliveryDetails(delivery.iD)}
+                    >
+                        Details
+                    </Button>
+                </Space>
+            ),
+        },
+    ]
+    const itemDetails = [
+        {
+            title: 'Item',
+            dataIndex: 'item',
+            key: 'item_name',
+        },
+        {
+            title: 'Quantity',
+            dataIndex: 'quantity',
+            key: 'quantity',
+        }
+    ]
+
     return (
         <div>
             <Title>DELIVERY DOCUMENT:</Title>
             <Divider />
             <Tabs defaultActiveKey="1">
-                <TabPane tab="Delivey Document" key="1">
+                <TabPane tab="Delivery Document" key="1">
                     <form
                         onSubmit={formik.handleSubmit}
                     >
@@ -125,7 +189,6 @@ const Delivery = () => {
                                 </Col>
                                 <Col xs={24} sm={24}>
                                     <Label>
-                                            maxLength={25}
                                         Address:
                                  <Input
                                             type='text'
@@ -241,6 +304,48 @@ const Delivery = () => {
                             </List.Item>
                         )}
                     />
+                </TabPane>
+                <TabPane tab="All Deliveries" key="2">
+                    <div>
+                        {deliveries ?
+                            <Table dataSource={deliveries} columns={customerDetails} /> : <Skeleton />
+                        }
+                    </div>
+                    <Modal
+                        title="Production Order Details"
+                        centered
+                        visible={showModal}
+                        width={1000}
+                        footer={
+                            <div
+                                style={{
+                                    textAlign: 'right'
+                                }}
+                            >
+                                <Button onClick={() => setShowModal(false)} style={{ marginRight: 8 }}>
+                                    Close
+                              </Button>
+                            </div>
+                        }
+                    >
+                        {deliveryDetails ?
+                            deliveryDetails.map((item, key) => {
+                                return (
+                                    <div>
+                                        <p>{`Customer Name: ${item.CustomerName}`}</p>
+                                        <p>{`Organization Name: ${item.Organization}`}</p>
+                                        <p>{`Email: ${item.Email}`}</p>
+                                        <p>{`Alternate Phone: ${item.Alternate_Phone}`}</p>
+                                    </div>
+                                )
+                            }) : <Skeleton active />
+                        }
+                        <div>
+                            {deliveryDetails ?
+                                <Table dataSource={Items} columns={itemDetails} /> : <Skeleton />
+                            }
+                        </div>
+                    </Modal>
                 </TabPane>
             </Tabs>
         </div>

@@ -554,11 +554,19 @@ const getAllInvoices = () => {
       console.log('Error!', error.message)
     })
 }
-const createDelivery = (deliveryData, id,orderItems) => {
+const createDelivery = (deliveryData,id,orderItems) => {
   const objDelivery = {
-    deliveryData,
-    id,
-    orderItems
+    CustomerName:CapitalizeWords(deliveryData.name),
+    Organization:CapitalizeWords(deliveryData.organization),
+    State:CapitalizeWords(deliveryData.state),
+    City:CapitalizeWords(deliveryData.city),
+    Address:CapitalizeWords(deliveryData.address),
+    Phone:deliveryData.phone,
+    Alternate_Phone:deliveryData.alternatePhone,
+    Email:deliveryData.email,
+    PostalCode:deliveryData.postalCode,
+    DeliveryId:id,
+    DeliveryItems:orderItems
   }
   firebase.firestore().collection('Delivery').add(objDelivery)
     .then((response) => {
@@ -569,6 +577,29 @@ const createDelivery = (deliveryData, id,orderItems) => {
       message.error(error.message)
     })
 }
+
+const getAllDeliveries = () => {
+  return firebase
+  .firestore()
+  .collection('Delivery')
+  .get()
+  .then(function (querySnapshot) {
+    const deliveryData = []
+    querySnapshot.forEach(function (doc) {
+      if (doc.exists) {
+        const comp = doc.data()
+        deliveryData.push({ ...comp, compId: doc.id })
+      } else {
+        message.info('No such document!')
+      }
+    })
+    return deliveryData
+  })
+  .catch(function (error) {
+    console.log('Error!', error.message)
+  })
+}
+
 const CreateBom = (Id, Name, Type, Date, List) => {
   const objectBOM = {
     BomId: Id,
@@ -736,6 +767,7 @@ export {
   createInvoice,
   getAllInvoices,
   createDelivery,
+  getAllDeliveries,
   getDataById,
   getPR,
   CreateBom,
