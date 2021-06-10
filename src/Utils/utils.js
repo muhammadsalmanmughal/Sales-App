@@ -201,16 +201,30 @@ const UpdateCustomer = (customerDetail, id) => {
     })
 }
 
-const CreateCustomerOrder = (customerObeject) => {
-  firebase.firestore().collection('Customer_Order').add(customerObeject)
-    .then((response) => {
-      firebase.firestore().collection('Customer_Order').doc(response.id).update({ iD: response.id })
-      message.success('Customers order has been placed')
-    })
-    .catch((error) => {
-      message.error(error.message)
-    })
+
+
+
+
+
+
+
+
+const CreateRecord = (dataObject , collectionName,textMessage) => {
+  firebase.firestore().collection(collectionName).add(dataObject)
+  .then((response) => {
+    firebase.firestore().collection(collectionName).doc(response.id).update({ iD: response.id })
+    message.success(textMessage)
+  })
+  .catch((error) => {
+    message.error(error.message)
+  })
 }
+
+
+
+
+
+
 
 const getCustomerOrder = () => {
   return firebase
@@ -337,17 +351,6 @@ const getPODetails = (id) => {
     })
 }
 
-const CreateInventory = (itemsObj) => {
-  firebase.firestore().collection('Item_Master').add(itemsObj)
-    .then((response) => {
-      firebase.firestore().collection('Item_Master').doc(response.id).update({ iD: response.id })
-
-      message.success('Items added succesfully')
-    })
-    .catch((error) => {
-      message.error(error.message)
-    })
-}
 const getItemsId = (itemName) => {
   return firebase
     .firestore()
@@ -445,16 +448,6 @@ const updateInventoryItem = (docId, increaseBy, itemName) => {
     message.success(`Item ${itemName} increased by ${increaseBy} quantity`)
   })
 }
-const CreateGoodReceipt = (GRdata) => {
-  firebase.firestore().collection('Goods_Receipts').add(GRdata)
-    .then((response) => {
-      firebase.firestore().collection('Goods_Receipts').doc(response.id).update({ iD: response.id })
-      message.success('Goods Receipt created')
-    })
-    .catch((error) => {
-      message.error(error.message)
-    })
-}
 
 const GetAllGoodsReceipt = () => {
   return firebase
@@ -475,17 +468,6 @@ const GetAllGoodsReceipt = () => {
     })
     .catch(function (error) {
       message.error('Error!', error.message)
-    })
-}
-
-const createInvoice = (invoice) => {
-  firebase.firestore().collection('Invoices').add(invoice)
-    .then((response) => {
-      firebase.firestore().collection('Invoices').doc(response.id).update({ iD: response.id })
-      message.success('Your Invoice has been created')
-    })
-    .catch((error) => {
-      message.error(error.message)
     })
 }
 
@@ -662,17 +644,6 @@ const getOrdersById = (id) => {
     })
 }
 
-const CreateProductionOrder = (ProductionData) => {
-  firebase.firestore().collection('Production_Orders').add(ProductionData)
-    .then((response) => {
-      firebase.firestore().collection('Production_Orders').doc(response.id).update({ iD: response.id })
-      message.success('Production Order created, Inventory Updated')
-    })
-    .catch((error) => {
-      message.error(error.message)
-    })
-}
-
 const getProductionOrders = () => {
   return firebase
     .firestore()
@@ -749,7 +720,6 @@ export {
   createVendor,
   getAllVendors,
   createNewCustomer,
-  CreateCustomerOrder,
   getCustomerOrder,
   getAllCustomers,
   getSpecificData,
@@ -760,11 +730,8 @@ export {
   CreatePurchaseOrder,
   getPODetails,
   UpdatePOStatus,
-  CreateInventory,
   CapitalizeWords,
-  CreateGoodReceipt,
   GetAllGoodsReceipt,
-  createInvoice,
   getAllInvoices,
   createDelivery,
   getAllDeliveries,
@@ -773,9 +740,9 @@ export {
   CreateBom,
   GetAllBom,
   getOrdersById,
-  CreateProductionOrder,
   getProductionOrders,
   UpdateProductionStatus,
   getProductionDetails,
-  UpdateItemStatus
+  UpdateItemStatus,
+  CreateRecord
 }

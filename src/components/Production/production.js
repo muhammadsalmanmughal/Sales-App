@@ -8,7 +8,7 @@ import {
     getCustomerOrder,
     getOrdersById,
     getAllInventoryItems,
-    CreateProductionOrder,
+    CreateRecord,
     CapitalizeWords,
     getProductionOrders,
     UpdateProductionStatus,
@@ -143,7 +143,7 @@ const Production = () => {
             ItemsList: newBomList,
             Discription: CapitalizeWords(discription)
         }
-        CreateProductionOrder(PO_Object)
+        CreateRecord(PO_Object,'Production_Orders','Production Order created, Inventory Updated')
         setItemQuantity('')
         setNewBomList([])
         setDiscription('')

@@ -1,10 +1,9 @@
 import React, { useState, useEffect, useContext } from 'react'
-import firebase from '../../config/Firebase/firebase';
 import {
-    CreateInventory,
     getInentoryDetails,
     getAllInventoryItems,
     CapitalizeWords,
+    CreateRecord
 } from '../../Utils/utils'
 import { UserContext } from '../../context/UserContext/UserContext'
 import { PlusSquareOutlined } from "@ant-design/icons";
@@ -46,7 +45,7 @@ const Inventory = () => {
         if (!itemName) return message.error('Items can not be left empty')
         if (!unitOfMeassure) return message.error('Select Unit of Meassure')
         if (itemID < 0) return message.error('Items Id not acceptable')
-        CreateInventory(itemDataObj)
+        CreateRecord(itemDataObj,'Item_Master','Items added succesfully')
         setItemsName('')
     }
 
@@ -84,6 +83,11 @@ const Inventory = () => {
     }
 
     const columns = [
+        {
+            title: 'Items Id',
+            dataIndex: 'itemId',
+            key: 'id',
+        }, 
         {
             title: 'Items Name',
             dataIndex: 'itemsName',

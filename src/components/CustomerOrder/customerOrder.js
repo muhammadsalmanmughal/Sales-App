@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { useParams, useHistory } from 'react-router-dom'
-import { getSpecificData, CreateCustomerOrder, CapitalizeWords } from '../../Utils/utils'
+import { getSpecificData, CapitalizeWords,CreateRecord } from '../../Utils/utils'
 import { CaretLeftOutlined } from "@ant-design/icons";
 import { Goback } from '../../Utils/styles'
 import { CopyToClipboard } from 'react-copy-to-clipboard'
@@ -74,7 +74,7 @@ const CustomerOrder = () => {
             CustomerName, CompanyName, Phone, BillToAddress, State, City, PostalCode,
             itemsList, orderID, currentDate,requiredDate
         }
-        CreateCustomerOrder(customerObeject)
+        CreateRecord(customerObeject,'Customer_Order','Customers order has been placed')
         setItemsList([])
         setOrderDetails('')
     }

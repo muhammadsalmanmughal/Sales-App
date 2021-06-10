@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { useHistory, useParams } from 'react-router-dom'
 import { CaretLeftOutlined } from "@ant-design/icons";
 import { Goback } from '../../Utils/styles'
-import { getPODetails, updateInventoryItem, CreateGoodReceipt, GetAllGoodsReceipt, createInvoice,getDataById } from '../../Utils/utils'
+import { getPODetails, updateInventoryItem, CreateRecord, GetAllGoodsReceipt,getDataById } from '../../Utils/utils'
 import {
     Divider, Input, Button, Skeleton, Table, Space, message, Drawer, Tabs, Modal, Tag,Empty
 } from 'antd'
@@ -284,7 +284,7 @@ const PurchaseOrderDetails = () => {
     }
 
     const createGRDoc = () => {
-        CreateGoodReceipt(objGR)
+        CreateRecord(objGR,'Goods_Receipts','Goods Receipt created')
         setUpdatedItem([])
     }
 
@@ -309,7 +309,7 @@ const PurchaseOrderDetails = () => {
     }
 
     const generateInvoice = () => {
-        createInvoice(objInvoice)
+        CreateRecord(objInvoice,'Invoices','Your Invoice has been created')
     }
     return (
         <div>
