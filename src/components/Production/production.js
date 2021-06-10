@@ -6,13 +6,12 @@ import { VendorCustomerContext } from '../../context/Random/random'
 import { UserContext } from '../../context/UserContext/UserContext'
 import {
     getCustomerOrder,
-    getOrdersById,
+    getDataById,
     getAllInventoryItems,
     CreateRecord,
     CapitalizeWords,
     getProductionOrders,
     UpdateProductionStatus,
-    getProductionDetails,
     UpdateItemStatus
 } from '../../Utils/utils'
 import { CopyToClipboard } from 'react-copy-to-clipboard'
@@ -50,8 +49,6 @@ const Production = () => {
     const [orderDetails, setOrderDetails] = useState()
     const [showModal, setShowModal] = useState(false);
     const [orderItemslist, setOrderItemslist] = useState()
-    console.log('orderItemslist: ', orderItemslist);
-    console.log('customerOrder: ', customerOrder);
 
     useEffect(() => {
         getCustomerOrder().then(data => {
@@ -78,7 +75,7 @@ const Production = () => {
     const orderItems = orderDetails?.flatMap(i => i.ItemsList)
 
     const getOrderData = (id) => {
-        getOrdersById(id).then(data => {
+        getDataById('Customer_Order',id).then(data => {
             setCustomerName(data[0].businessName)
             setOrderDate(data[0].requriedDate)
             setCustomerId(id)
@@ -159,7 +156,7 @@ const Production = () => {
 
     const ShowOrderDetails = (id) => {
         setShowModal(true)
-        getProductionDetails(id).then(data => {
+        getDataById('Production_Orders',id).then(data => {
             setOrderDetails(data)
         })
     }

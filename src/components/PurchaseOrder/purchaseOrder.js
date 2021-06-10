@@ -3,7 +3,7 @@ import firebase from '../../config/Firebase/firebase';
 import { VendorCustomerContext } from '../../context/Random/random'
 import { useHistory } from 'react-router-dom'
 import { CopyToClipboard } from 'react-copy-to-clipboard'
-import { CreatePurchaseOrder, UpdatePOStatus, getItemsId, getPODetails } from '../../Utils/utils'
+import { CreatePurchaseOrder, UpdatePOStatus, getItemsId, getPODetails, getDataById} from '../../Utils/utils'
 import { FaRegClipboard } from "react-icons/fa";
 import moment from 'moment'
 import {
@@ -123,7 +123,7 @@ const PurchaseOrder = () => {
 
     const getPO = (id) => {
         setShowModal(true)
-        getPODetails(id).then(data => {
+        getDataById('PurchaseOrder',id).then(data => {
         setPOData(data)
         })
     }

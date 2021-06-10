@@ -4,7 +4,7 @@ import { Label } from '../Textbox/style/index'
 import { validationSchema } from './validationSchema'
 import { SubmitButton, H3 } from '../../Utils/styles'
 import { FormDiv } from '../Vendor/style/index'
-import { createDelivery, getCustomerOrder, getOrdersById, getAllDeliveries,getDataById } from '../../Utils/utils'
+import { createDelivery, getCustomerOrder, getAllDeliveries,getDataById } from '../../Utils/utils'
 import ErrorText from '../FormError/formError'
 import {
     Divider, Input, Tabs, Row, Col, Select, List, message, Table, Skeleton, Modal, Space, Button
@@ -58,7 +58,7 @@ const Delivery = () => {
     }, [])
 
     const getCustomerName = (id) => {
-        getOrdersById(id).then(data => {
+        getDataById('Customer_Order',id).then(data => {
             setOrderList(data)
         })
     }

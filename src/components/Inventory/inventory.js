@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useContext } from 'react'
 import {
-    getInentoryDetails,
+    getDataById,
     getAllInventoryItems,
     CapitalizeWords,
     CreateRecord
@@ -57,7 +57,7 @@ const Inventory = () => {
 
     const [isInventoryModalVisible, setIsInventoryModalVisible] = useState(false);
     const showInventoryModal = (id) => {
-        getInentoryDetails(id).then(data => {
+        getDataById('Item_Master',id).then(data => {
             setItemDetails(data)
         })
         setIsInventoryModalVisible(true)

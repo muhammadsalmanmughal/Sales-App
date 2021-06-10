@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { useHistory, useParams } from 'react-router-dom'
 import { CaretLeftOutlined } from "@ant-design/icons";
 import { Goback } from '../../Utils/styles'
-import { getPODetails, updateInventoryItem, CreateRecord, GetAllGoodsReceipt,getDataById } from '../../Utils/utils'
+import { updateInventoryItem, CreateRecord, GetAllGoodsReceipt,getDataById } from '../../Utils/utils'
 import {
     Divider, Input, Button, Skeleton, Table, Space, message, Drawer, Tabs, Modal, Tag,Empty
 } from 'antd'
@@ -44,7 +44,7 @@ const PurchaseOrderDetails = () => {
         }
     }
     useEffect(() => {
-        getPODetails(slug).then(data => {
+        getDataById(slug).then(data => {
             setPOItemData(data)
             setGrItemList(data.flatMap(O => O.newList))
         })

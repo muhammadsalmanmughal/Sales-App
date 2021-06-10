@@ -201,14 +201,6 @@ const UpdateCustomer = (customerDetail, id) => {
     })
 }
 
-
-
-
-
-
-
-
-
 const CreateRecord = (dataObject , collectionName,textMessage) => {
   firebase.firestore().collection(collectionName).add(dataObject)
   .then((response) => {
@@ -219,12 +211,6 @@ const CreateRecord = (dataObject , collectionName,textMessage) => {
     message.error(error.message)
   })
 }
-
-
-
-
-
-
 
 const getCustomerOrder = () => {
   return firebase
@@ -328,29 +314,6 @@ const CreatePurchaseOrder = (newList, POiD, createdDate, requriedDate, selectVen
     })
 }
 
-const getPODetails = (id) => {
-  return firebase
-    .firestore()
-    .collection('PurchaseOrder')
-    .where('iD', '==', id)
-    .get()
-    .then(function (querySnapshot) {
-      const PODetails = []
-      querySnapshot.forEach(function (doc) {
-        if (doc.exists) {
-          const comp = doc.data()
-          PODetails.push({ ...comp, compId: doc.id })
-        } else {
-          message.info('No such document!')
-        }
-      })
-      return PODetails
-    })
-    .catch(function (error) {
-      console.log('Error getting documents: ', error)
-    })
-}
-
 const getItemsId = (itemName) => {
   return firebase
     .firestore()
@@ -368,28 +331,6 @@ const getItemsId = (itemName) => {
         }
       })
       return itemID
-    })
-    .catch(function (error) {
-      console.log('Error getting documents: ', error)
-    })
-}
-const getInentoryDetails = (id) => {
-  return firebase
-    .firestore()
-    .collection('Item_Master')
-    .where('iD', '==', id)
-    .get()
-    .then(function (querySnapshot) {
-      const inventoryItem = []
-      querySnapshot.forEach(function (doc) {
-        if (doc.exists) {
-          const comp = doc.data()
-          inventoryItem.push({ ...comp, compId: doc.id })
-        } else {
-          message.info('No such document!')
-        }
-      })
-      return inventoryItem
     })
     .catch(function (error) {
       console.log('Error getting documents: ', error)
@@ -620,29 +561,6 @@ const GetAllBom = () => {
       console.log('Error!', error.message)
     })
 }
-const getOrdersById = (id) => {
-  console.log('get orders function id: ', id);
-  return firebase
-    .firestore()
-    .collection('Customer_Order')
-    .where('orderID', '==', id)
-    .get()
-    .then(function (querySnapshot) {
-      const orderData = []
-      querySnapshot.forEach(function (doc) {
-        if (doc.exists) {
-          const comp = doc.data()
-          orderData.push({ ...comp, compId: doc.id })
-        } else {
-          message.info('No such document!')
-        }
-      })
-      return orderData
-    })
-    .catch(function (error) {
-      console.log('Error getting documents: ', error)
-    })
-}
 
 const getProductionOrders = () => {
   return firebase
@@ -678,28 +596,6 @@ const UpdateItemStatus = (status, id) => {
       ItemStatus: status
     })
 }
-const getProductionDetails = (id) => {
-  return firebase
-    .firestore()
-    .collection('Production_Orders')
-    .where('iD', '==', id)
-    .get()
-    .then(function (querySnapshot) {
-      const PODetails = []
-      querySnapshot.forEach(function (doc) {
-        if (doc.exists) {
-          const comp = doc.data()
-          PODetails.push({ ...comp, compId: doc.id })
-        } else {
-          message.info('No such document!')
-        }
-      })
-      return PODetails
-    })
-    .catch(function (error) {
-      console.log('Error getting documents: ', error)
-    })
-}
 
 function CapitalizeWords(str) {
   // return str[0].toUpperCase()+str.slice(1)
@@ -712,7 +608,6 @@ function CapitalizeWords(str) {
 export {
   createUser,
   loginUser,
-  getInentoryDetails,
   getAllInventoryItems,
   getItemsId,
   getItemByName,
@@ -728,7 +623,6 @@ export {
   CreatePurchaseRequisition,
   CreateRFQ,
   CreatePurchaseOrder,
-  getPODetails,
   UpdatePOStatus,
   CapitalizeWords,
   GetAllGoodsReceipt,
@@ -739,10 +633,8 @@ export {
   getPR,
   CreateBom,
   GetAllBom,
-  getOrdersById,
   getProductionOrders,
   UpdateProductionStatus,
-  getProductionDetails,
   UpdateItemStatus,
   CreateRecord
 }
