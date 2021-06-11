@@ -17,6 +17,7 @@ import PurchaseRequisition from '../PurchaseRequisition/purchaseRequisition'
 import Delivery from '../Delivery/delivery'
 import Production from '../Production/production'
 import BillOfMaterial from '../BOM/bom'
+import CustomerInvoice from '../CustomerInvoice/customerInvoice'
 import PageNotFound from '../404/pagenotfound'
 export {
     SideBar,Header,
@@ -37,5 +38,6 @@ export {
     Production,
     BillOfMaterial,
     Delivery,
+    CustomerInvoice,
     PageNotFound
 }

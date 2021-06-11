@@ -20,6 +20,7 @@ import {
   Delivery,
   BillOfMaterial,
   Production,
+  CustomerInvoice,
   PageNotFound
 } from '../NavigationLinks/navLinks'
 import { VendorCustomerContext } from '../../context/Random/random'
@@ -79,6 +80,7 @@ function Layout () {
                     <Route path='/home/purchase-requisition' component={PurchaseRequisition} />
                     <Route path='/home/production' component={Production} />
                     <Route path='/home/bill-of-material' component={BillOfMaterial} />
+                    <Route path='/home/customer-invoice' component={CustomerInvoice} />
                     <Route path='/home/delivery' component={Delivery} />
                     <Route component={PageNotFound} />
 

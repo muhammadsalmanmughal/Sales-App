@@ -8,6 +8,7 @@ import Invoices from '../../components/Invoice/allInvoices'
 import PurchaseRequisition from '../../components/PurchaseRequisition/purchaseRequisition'
 import Delivery from '../../components/Delivery/delivery'
 import Production from '../../components/Production/production'
+import CustomerInvoice from '../../components/CustomerInvoice/customerInvoice'
 
 import { 
     FaChartPie,FaUsers,FaUsersCog, FaWarehouse, FaFileMedical,
@@ -61,7 +62,7 @@ const routes = [
     },
     {
         path: '/invoices',
-        name: 'Invoices',
+        name: 'Vendor Invoices',
         icon: <FaFileInvoiceDollar/>,
         component: Invoices
     },
@@ -76,6 +77,12 @@ const routes = [
         name: 'Delivery',
         icon: <FaTruckMoving/>,
         component: Delivery
+    },
+    {
+        path: '/customer-invoice',
+        name: 'Customer Invoices',
+        icon: <FaFileInvoiceDollar/>,
+        component: CustomerInvoice
     }
 
 
