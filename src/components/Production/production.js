@@ -246,12 +246,7 @@ const Production = () => {
     ]
     return (
         <div>
-            <Title>
-                Production
-      </Title>
-
-            <Divider />
-
+            <Title>Production</Title>
             <Row gutter={[10, 10]}>
                 <Col xs={24} sm={14}>
                     <h4>Date: {utc}</h4>

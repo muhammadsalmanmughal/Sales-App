@@ -2,10 +2,22 @@ import styled from 'styled-components'
 import media from '../components/MediaQuery/media'
 
 
-export const Title = styled.h1`
-letter-spacing: 2px;
-text-transform: uppercase;
+export const Title = styled.p`
+font-size: 35px;
+letter-spacing: 1.5px;
+color:  #5E6161;
+text-align:right;
+text-transform: capitalize;
+font-family: 'DM Serif Text', serif;
+${media.tablet`
+text-align: center;
+`}
 `
+export const Name = styled.p`
+font-family: 'Assistant', sans-serif;
+`
+
+
 //Submit Button
 
 export const SubmitButton = styled.button`

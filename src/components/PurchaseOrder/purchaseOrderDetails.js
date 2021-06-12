@@ -33,6 +33,7 @@ const PurchaseOrderDetails = () => {
     const [updatedItem, setUpdatedItem] = useState([])
     const history = useHistory()
     const { slug } = useParams()
+    console.log('slug: ', slug);
     const { TabPane } = Tabs
 
     const current_datetime = new Date()
@@ -44,7 +45,7 @@ const PurchaseOrderDetails = () => {
         }
     }
     useEffect(() => {
-        getDataById(slug).then(data => {
+        getDataById('PurchaseOrder',slug).then(data => {
             setPOItemData(data)
             setGrItemList(data.flatMap(O => O.newList))
         })

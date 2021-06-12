@@ -2,6 +2,7 @@ import React, { useState, useEffect, useContext } from 'react'
 import { VendorCustomerContext } from '../../context/Random/random'
 import { CreatePurchaseRequisition, getPR, getDataById } from '../../Utils/utils'
 import {
+    Title,
     ListItem,
     ItemDiv,
     QuantityAndButtonDiv,
@@ -150,8 +151,7 @@ const PurchaseRequisition = () => {
 
     return (
         <div>
-            <h1>Purchase Requisition </h1>
-            <Divider />
+            <Title>Purchase Requisition </Title>
             <Tabs defaultActiveKey="1" >
                 <TabPane tab="Create New" key="1">
                     <Row gutter={[10, 10]}>

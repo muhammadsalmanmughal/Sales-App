@@ -3,7 +3,7 @@ import firebase from '../../config/Firebase/firebase';
 import { VendorCustomerContext } from '../../context/Random/random'
 import { useHistory } from 'react-router-dom'
 import { CopyToClipboard } from 'react-copy-to-clipboard'
-import { CreatePurchaseOrder, UpdatePOStatus, getItemsId, getPODetails, getDataById} from '../../Utils/utils'
+import { CreatePurchaseOrder, UpdatePOStatus, getItemsId, getDataById} from '../../Utils/utils'
 import { FaRegClipboard } from "react-icons/fa";
 import moment from 'moment'
 import {
@@ -23,6 +23,7 @@ import {
     Skeleton
 } from 'antd'
 import {
+    Title,
     ListItem,
     ItemDiv,
     QuantityAndButtonDiv,
@@ -231,8 +232,7 @@ const PurchaseOrder = () => {
 
     return (
         <div>
-            <h1>Purchase Order</h1>
-            <Divider />
+            <Title>Purchase Order</Title>
             <Tabs defaultActiveKey="1">
                 <TabPane tab="New Purchase Order" key="1">
                     <Row gutter={[10, 10]}>

@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react'
 import { useFormik } from 'formik'
-import { v4 as uuidv4 } from 'uuid';
 import { Label } from '../Textbox/style/index'
 import { SubmitButton } from '../../Utils/styles'
 import { validationSchema } from './validationSchema'
@@ -9,10 +8,8 @@ import { Title } from '../../Utils/styles'
 import ErrorText from '../FormError/formError'
 import AllCustomers from '../AllCustomers/allCustomers';
 import { VendorMainDiv, FormDiv } from '../Vendor/style/index'
-import moment from 'moment'
 
 import {
-    Divider,
     Tabs,
     Row,
     Col,
@@ -124,8 +121,6 @@ const CreateCustomer = () => {
     return (
         <div>
             <Title>Customer</Title>
-            <Divider />
-
             <Tabs defaultActiveKey="1" >
 
                 <TabPane tab="Create Customer" key="1">

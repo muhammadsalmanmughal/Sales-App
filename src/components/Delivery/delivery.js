@@ -4,10 +4,10 @@ import { Label } from '../Textbox/style/index'
 import { validationSchema } from './validationSchema'
 import { SubmitButton, H3 } from '../../Utils/styles'
 import { FormDiv } from '../Vendor/style/index'
-import { createDelivery, getCustomerOrder, getAllDeliveries,getDataById } from '../../Utils/utils'
+import { createDelivery, getCustomerOrder, getAllDeliveries, getDataById } from '../../Utils/utils'
 import ErrorText from '../FormError/formError'
 import {
-    Divider, Input, Tabs, Row, Col, Select, List, message, Table, Skeleton, Modal, Space, Button
+    Input, Tabs, Row, Col, Select, List, message, Table, Skeleton, Modal, Space, Button
 } from 'antd'
 import { Title } from '../../Utils/styles'
 
@@ -17,7 +17,7 @@ const Delivery = () => {
     const [allOrders, setAllOrders] = useState()
     const [orderList, setOrderList] = useState()
     const [deliveries, setDeliveries] = useState()
-    const [deliveryDetails,setDeliveryDetails] =useState()
+    const [deliveryDetails, setDeliveryDetails] = useState()
     const [showModal, setShowModal] = useState(false);
 
     const current_datetime = new Date()
@@ -58,7 +58,7 @@ const Delivery = () => {
     }, [])
 
     const getCustomerName = (id) => {
-        getDataById('Customer_Order',id).then(data => {
+        getDataById('Customer_Order', id).then(data => {
             setOrderList(data)
         })
     }
@@ -66,7 +66,7 @@ const Delivery = () => {
     const orderItems = orderList?.flatMap(list => list.itemsList)
 
     const DeliveryDetails = (id) => {
-        getDataById('Delivery',id).then(data => {
+        getDataById('Delivery', id).then(data => {
             setDeliveryDetails(data)
         })
         setShowModal(true)
@@ -127,8 +127,7 @@ const Delivery = () => {
 
     return (
         <div>
-            <Title>DELIVERY DOCUMENT:</Title>
-            <Divider />
+            <Title>Delivery Document</Title>
             <Tabs defaultActiveKey="1">
                 <TabPane tab="Delivery Document" key="1">
                     <form

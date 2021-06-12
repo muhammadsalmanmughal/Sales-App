@@ -9,8 +9,9 @@ import { UserContext } from '../../context/UserContext/UserContext'
 import { PlusSquareOutlined } from "@ant-design/icons";
 
 import {
-    Divider, message, Row, Col, Input, Button, Select, Modal, Table, Space, Alert, Tabs
+    message, Row, Col, Input, Button, Select, Modal, Table, Space
 } from 'antd'
+import { Title } from '../../Utils/styles'
 
 const Inventory = () => {
     const { user } = useContext(UserContext)
@@ -45,7 +46,7 @@ const Inventory = () => {
         if (!itemName) return message.error('Items can not be left empty')
         if (!unitOfMeassure) return message.error('Select Unit of Meassure')
         if (itemID < 0) return message.error('Items Id not acceptable')
-        CreateRecord(itemDataObj,'Item_Master','Items added succesfully')
+        CreateRecord(itemDataObj, 'Item_Master', 'Items added succesfully')
         setItemsName('')
     }
 
@@ -57,7 +58,7 @@ const Inventory = () => {
 
     const [isInventoryModalVisible, setIsInventoryModalVisible] = useState(false);
     const showInventoryModal = (id) => {
-        getDataById('Item_Master',id).then(data => {
+        getDataById('Item_Master', id).then(data => {
             setItemDetails(data)
         })
         setIsInventoryModalVisible(true)
@@ -75,7 +76,7 @@ const Inventory = () => {
         })
         getAllInventoryItems().then(data => {
             setInventoryItems(data)
-          })
+        })
     }, [])
 
     function UOM(value) {
@@ -87,7 +88,7 @@ const Inventory = () => {
             title: 'Items Id',
             dataIndex: 'itemId',
             key: 'id',
-        }, 
+        },
         {
             title: 'Items Name',
             dataIndex: 'itemsName',
@@ -118,8 +119,7 @@ const Inventory = () => {
 
     return (
         <div>
-            <h1>INVENTORY</h1>
-            <Divider />
+            <Title>INVENTORY</Title>
             <Button onClick={showModal}>
                 <PlusSquareOutlined />
                 Add New Items

@@ -7,7 +7,6 @@ import { VendorMainDiv, FormDiv} from './style/index'
 import ErrorText from '../FormError/formError'
 import AllVendors from '../AllVendors/allVendors';
 import {
-    Divider,
     Tabs,
     Row,
     Col,
@@ -45,7 +44,6 @@ const Vendor = () => {
     return (
         <div>
             <Title>Vendor</Title>
-            <Divider />
             <Tabs defaultActiveKey="1">
                 <TabPane tab="Create Vendor" key="1">
                     <VendorMainDiv>

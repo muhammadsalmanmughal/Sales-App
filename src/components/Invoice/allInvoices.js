@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react'
 import { getAllInvoices, getDataById } from '../../Utils/utils'
 import {
-    Divider, Button, Skeleton, Table, Space, Modal, Tag
+    Button, Skeleton, Table, Space, Modal, Tag
 } from 'antd'
-
+import { Title } from '../../Utils/styles'
 
 const AllInvoices = () => {
     const [allInvoices, setAllInvoices] = useState()
@@ -19,12 +19,12 @@ const AllInvoices = () => {
 
     const getInvoiceDetails = (id) => {
         setShowModal(true)
-        getDataById('Invoices',id).then(data => {
+        getDataById('Invoices', id).then(data => {
             setInvoiceDetails(data)
-            setInvoiceItemList(data&&data.flatMap(i => i.Invoice_Items)) 
+            setInvoiceItemList(data && data.flatMap(i => i.Invoice_Items))
         })
     }
-    
+
     const invoicesTable = [
         {
             title: 'Purchase Order Id',
@@ -47,9 +47,9 @@ const AllInvoices = () => {
             render: (allPO) => (
                 <Space size="middle">
                     <Button
-                    onClick={
-                        e => getInvoiceDetails(allPO.compId)
-                    }
+                        onClick={
+                            e => getInvoiceDetails(allPO.compId)
+                        }
                     >Details</Button>
                 </Space>
             ),
@@ -98,40 +98,39 @@ const AllInvoices = () => {
 
     return (
         <div>
-            <h1>ALL INVOICES</h1>
-            <Divider />
+            <Title>Vendor Invoices</Title>
             <div>
                 {allInvoices ?
                     <Table dataSource={allInvoices} columns={invoicesTable} /> : <Skeleton />
                 }
             </div>
             <Modal
-                        title="INVOICE DETAILS"
-                        centered
-                        visible={showModal}
-                        width={1000}
-                        footer={
-                            <div
-                                style={{
-                                    textAlign: 'right',
-                                }}
-                            >
-                                <Button onClick={() => setShowModal(false)} style={{ marginRight: 8 }}>
-                                    Close
-                                 </Button>
-                            </div>
-                        }
+                title="INVOICE DETAILS"
+                centered
+                visible={showModal}
+                width={1000}
+                footer={
+                    <div
+                        style={{
+                            textAlign: 'right',
+                        }}
                     >
-                        <div>
-                            {invoiceItemList ?
-                                <Table dataSource={invoiceItemList} columns={columns}  /> : <Skeleton />
-                            }
-                        </div>
-                        <p>Total Amount : <b>
-                            <Tag color="blue">{invoiceDetails&&invoiceDetails[0].Total_Amount}</Tag>
-                        </b>
-                        </p>
-                    </Modal>
+                        <Button onClick={() => setShowModal(false)} style={{ marginRight: 8 }}>
+                            Close
+                                 </Button>
+                    </div>
+                }
+            >
+                <div>
+                    {invoiceItemList ?
+                        <Table dataSource={invoiceItemList} columns={columns} /> : <Skeleton />
+                    }
+                </div>
+                <p>Total Amount : <b>
+                    <Tag color="blue">{invoiceDetails && invoiceDetails[0].Total_Amount}</Tag>
+                </b>
+                </p>
+            </Modal>
         </div>
     )
 }

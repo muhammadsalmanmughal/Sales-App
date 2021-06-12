@@ -3,6 +3,7 @@ import { Label } from '../Textbox/style/index'
 import { VendorCustomerContext } from '../../context/Random/random'
 import { CreateRFQ } from '../../Utils/utils'
 import {
+  Title,
   ListItem,
   ItemDiv,
   QuantityAndButtonDiv,
@@ -65,8 +66,7 @@ const utc = new Date().toJSON().slice(0, 10).replace(/-/g, '/');
   console.log('itemList', itemsList);
   return (
     <div>
-      <h1>Request For Quotation</h1>
-      <Divider />
+      <Title>Request For Quotation</Title>
       <Row gutter={[10, 10]}>
         <Col xs={24} sm={8}>
           <h4>
