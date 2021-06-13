@@ -9,10 +9,12 @@ import {
     Quantity,
     DeleteButton
 } from '../../Utils/styles'
+import { IdDate } from './style'
 import { CopyToClipboard } from 'react-copy-to-clipboard'
 import moment from 'moment'
 import {
-    Divider, message, Row, Col, Input, Button, Tooltip, Select, DatePicker, Tabs, Table, Space, Modal, Skeleton
+    Divider, message, Row, Col, Input, Button, Tooltip, Select,
+    DatePicker, Tabs, Table, Space, Modal, Skeleton
 } from 'antd'
 
 import { FaRegClipboard } from "react-icons/fa";
@@ -98,6 +100,7 @@ const PurchaseRequisition = () => {
     const changeStatus = (status, id) => {
         UpdateStatus('PurchaseRequisitions', status, id)
     };
+
     const PR_Table = [
         {
             title: 'PR ID',
@@ -125,13 +128,13 @@ const PurchaseRequisition = () => {
             render: (allPO) => (
                 <Space size="middle">
                     <Select
-                        defaultValue={allPO.POStatus}
+                        defaultValue={allPO.Status}
                         placeholder='Select Status'
                         style={{ width: 200 }}
-                        value={allPO.Status}
                         onChange={e => changeStatus(e, allPO.iD)}>
                         <Select.Option value="approved">Approved</Select.Option>
                         <Select.Option value="rejected">Rejected</Select.Option>
+                        <Select.Option value="cancle">Cancle</Select.Option>
                     </Select>
                 </Space>
             ),
@@ -175,12 +178,12 @@ const PurchaseRequisition = () => {
             <Title>Purchase Requisition </Title>
             <Tabs defaultActiveKey="1" >
                 <TabPane tab="Create New" key="1">
-                    <Row gutter={[10, 10]}>
+                    <IdDate >
                         <Col>
                             <div style={{ marginBottom: 16 }}>
                                 <label>
                                     Purchase Requisition Id:
-                        </label>
+                               </label>
                                 <Input addonAfter={
                                     <Tooltip placement="topRight" title='Click to Copy'>
                                         <CopyToClipboard text={PR_iD}>
@@ -196,14 +199,14 @@ const PurchaseRequisition = () => {
                             </div>
                         </Col>
 
-                        <Col xs={24} sm={12}>
+                        <Col>
                             <lable>
                                 Posting Date:
                     </lable>
-                            <h4>{createdDate}</h4>
+                    <Input value={createdDate} disabled/>
                         </Col>
 
-                    </Row>
+                    </IdDate>
                     <Row gutter={[10, 10]}>
                         <Col xs={24} sm={6}>
                             <Input
@@ -285,8 +288,8 @@ const PurchaseRequisition = () => {
                             })
                         }
                     </ul>
-                    <Row>
-                        <Col xs={24} sm={12}>
+                    <Row gutter={[10, 10]}>
+                        <Col >
                             <Button
                                 disabled={!itemsList.length ? true : false}
                                 onClick={generatePurchaseRequisition}

@@ -68,7 +68,8 @@ function Layout () {
                     <Route path='/home/user-profile' component={UserProfile} />
                     <Route path='/home/vendor' component={Vendor} />
                     <Route path='/home/customer' component={Customer} />
-                    <Route path='/home/request-for-quotation' component={RequestForQuotation} />
+                    <Route path='/home/request-for-quotation/' component={RequestForQuotation} />
+                    <Route path='/home/request-for-quotation/:slug/:Cname' component={RequestForQuotation} />
                     <Route path='/home/purchase-order' component={PurchaseOrder} />
                     <Route path='/home/purchase-order-details/:slug/' component={PurchaseOrderDetails} />
                     <Route path='/home/vendor-details/:slug/:Cname' component={VendorDetails} />

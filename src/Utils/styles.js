@@ -5,6 +5,7 @@ import media from '../components/MediaQuery/media'
 export const Title = styled.p`
 font-size: 35px;
 letter-spacing: 1.5px;
+margin: 0px!important;
 color:  #5E6161;
 text-align:right;
 text-transform: capitalize;
