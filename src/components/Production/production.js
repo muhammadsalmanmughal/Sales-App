@@ -7,6 +7,7 @@ import { UserContext } from '../../context/UserContext/UserContext'
 import {
     getCustomerOrder,
     getDataById,
+    getOrdersById,
     getAllInventoryItems,
     CreateRecord,
     CapitalizeWords,
@@ -75,9 +76,9 @@ const Production = () => {
     const orderItems = orderDetails?.flatMap(i => i.ItemsList)
 
     const getOrderData = (id) => {
-        getDataById('Customer_Order',id).then(data => {
-            setCustomerName(data[0].businessName)
-            setOrderDate(data[0].requriedDate)
+        getOrdersById(id).then(data => {
+            setCustomerName(data[0].CustomerName)
+            setOrderDate(data[0].requiredDate)
             setCustomerId(id)
         })
         const orderList = customerOrder?.filter(item => {

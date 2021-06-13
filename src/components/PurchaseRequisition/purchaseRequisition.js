@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useContext } from 'react'
 import { VendorCustomerContext } from '../../context/Random/random'
-import { CreatePurchaseRequisition, getPR, getDataById } from '../../Utils/utils'
+import { CreatePurchaseRequisition, getPR, getDataById, UpdateStatus } from '../../Utils/utils'
 import {
     Title,
     ListItem,
@@ -33,6 +33,7 @@ const PurchaseRequisition = () => {
 
     useEffect(() => {
         getPR().then(data => {
+            console.log('all Pr data: ', data);
             setAllPRData(data)
         })
     }, [])
@@ -82,7 +83,7 @@ const PurchaseRequisition = () => {
         setItemsList(newList);
     }
 
-    const generatePurchaseOrder = () => {
+    const generatePurchaseRequisition = () => {
         CreatePurchaseRequisition(PR_iD, requesterName, createdDate, requriedDate, itemsList)
         setItemsList([])
         setRequesterName('')
@@ -94,6 +95,9 @@ const PurchaseRequisition = () => {
             setPRDetails(data)
         })
     }
+    const changeStatus = (status, id) => {
+        UpdateStatus('PurchaseRequisitions', status, id)
+    };
     const PR_Table = [
         {
             title: 'PR ID',
@@ -114,6 +118,23 @@ const PurchaseRequisition = () => {
             title: 'Requried Date',
             dataIndex: 'requriedDate',
             key: 'requried_date',
+        },
+        {
+            title: 'Status',
+            key: 'status',
+            render: (allPO) => (
+                <Space size="middle">
+                    <Select
+                        defaultValue={allPO.POStatus}
+                        placeholder='Select Status'
+                        style={{ width: 200 }}
+                        value={allPO.Status}
+                        onChange={e => changeStatus(e, allPO.iD)}>
+                        <Select.Option value="approved">Approved</Select.Option>
+                        <Select.Option value="rejected">Rejected</Select.Option>
+                    </Select>
+                </Space>
+            ),
         },
         {
             title: 'Action',
@@ -268,8 +289,8 @@ const PurchaseRequisition = () => {
                         <Col xs={24} sm={12}>
                             <Button
                                 disabled={!itemsList.length ? true : false}
-                                onClick={generatePurchaseOrder}
-                            >Create Purchase Order</Button>
+                                onClick={generatePurchaseRequisition}
+                            >Create Requisition</Button>
                         </Col>
                     </Row>
                 </TabPane>

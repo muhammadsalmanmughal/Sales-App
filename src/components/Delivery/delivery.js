@@ -2,14 +2,14 @@ import React, { useState, useEffect } from 'react'
 import { useFormik } from 'formik'
 import { Label } from '../Textbox/style/index'
 import { validationSchema } from './validationSchema'
-import { SubmitButton, H3 } from '../../Utils/styles'
+import { SubmitButton, H3, Title } from '../../Utils/styles'
 import { FormDiv } from '../Vendor/style/index'
 import { createDelivery, getCustomerOrder, getAllDeliveries, getDataById } from '../../Utils/utils'
 import ErrorText from '../FormError/formError'
 import {
     Input, Tabs, Row, Col, Select, List, message, Table, Skeleton, Modal, Space, Button
 } from 'antd'
-import { Title } from '../../Utils/styles'
+import { getOrdersById } from '../../Utils/utils'
 
 const Delivery = () => {
     const { TabPane } = Tabs
@@ -58,7 +58,7 @@ const Delivery = () => {
     }, [])
 
     const getCustomerName = (id) => {
-        getDataById('Customer_Order', id).then(data => {
+        getOrdersById(id).then(data => {
             setOrderList(data)
         })
     }

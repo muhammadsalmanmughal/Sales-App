@@ -261,7 +261,8 @@ const CreatePurchaseRequisition = (PR_iD, requesterName, createdDate, requriedDa
     RequesterName: CapitalizeWords(requesterName),
     createdDate,
     requriedDate,
-    itemsList
+    itemsList,
+    status:'Not-Defined'
   }
   firebase.firestore().collection('PurchaseRequisitions').add(object_PR)
     .then((response) => {
@@ -278,6 +279,13 @@ const UpdatePOStatus = (status, id) => {
     .update({
       POStatus: status
     })
+}
+const UpdateStatus = (collectionName,status, id) => {
+  firebase.firestore().collection(collectionName).doc(id)
+    .update({
+      Status: status
+    })
+    message.success (`Status updated to ${status}`)
 }
 const CreateRFQ = (newList, RFQiD, fullDate) => {
   const RfqObj = {
@@ -596,6 +604,29 @@ const UpdateItemStatus = (status, id) => {
       ItemStatus: status
     })
 }
+const getOrdersById = (id) => {
+  console.log('get orders function id: ', id);
+  return firebase
+    .firestore()
+    .collection('Customer_Order')
+    .where('orderID', '==', id)
+    .get()
+    .then(function (querySnapshot) {
+      const orderData = []
+      querySnapshot.forEach(function (doc) {
+        if (doc.exists) {
+          const comp = doc.data()
+          orderData.push({ ...comp, compId: doc.id })
+        } else {
+          message.info('No such document!')
+        }
+      })
+      return orderData
+    })
+    .catch(function (error) {
+      console.log('Error getting documents: ', error)
+    })
+}
 
 function CapitalizeWords(str) {
   // return str[0].toUpperCase()+str.slice(1)
@@ -636,5 +667,7 @@ export {
   getProductionOrders,
   UpdateProductionStatus,
   UpdateItemStatus,
-  CreateRecord
+  CreateRecord,
+  getOrdersById,
+  UpdateStatus
 }

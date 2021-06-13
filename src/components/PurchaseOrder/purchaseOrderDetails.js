@@ -33,7 +33,6 @@ const PurchaseOrderDetails = () => {
     const [updatedItem, setUpdatedItem] = useState([])
     const history = useHistory()
     const { slug } = useParams()
-    console.log('slug: ', slug);
     const { TabPane } = Tabs
 
     const current_datetime = new Date()
@@ -59,7 +58,6 @@ const PurchaseOrderDetails = () => {
     const goods = gRData?.flatMap(goods => goods.grItemList)
     // ------------Drawer-------------
     const showDrawer = (itemId, req_quantity, docId, name) => {
-        console.log('updated item id-->',itemId, req_quantity, docId, name)
         setVisible(true);
         setItemID(itemId)
         setRequestedQuantity(req_quantity)
@@ -69,11 +67,10 @@ const PurchaseOrderDetails = () => {
 
     const handleOk = () => {
         var numbers = /^[0-9]+$/;
-        // if (requestedQuantity < itemQuantity) return message.error('Retreive Quantity cannot be greator then Requested Quantity');
-       console.log('chala');
-        if (itemQuantity < 0) return message.error('Quantity cannot be less then zero');
-        if (!itemQuantity) return message.error('Quantity cannot be set empty');
-        if (!itemQuantity.match(numbers)) return message.error('Error! number is in decimal')
+        if (requestedQuantity < itemQuantity) return message.error('Error! Retreive Quantity cannot be greator then Requested Quantity');
+        if (itemQuantity <= 0) return message.error('Error! Quantity cannot be less then or equal to zero');
+        if (!itemQuantity) return message.error('Error! Quantity cannot be set empty');
+        if (!itemQuantity.match(numbers)) return message.error('Error! Number is in decimal')
         updateInventoryItem(collectionId, parseFloat(itemQuantity), itemName)
         setUpdatedItem([...updatedItem, { itemName, itemQuantity }])
         createGR(itemID, itemQuantity)
@@ -85,7 +82,6 @@ const PurchaseOrderDetails = () => {
     const onClose = () => {
         setVisible(false);
     };
-    console.log('updatedItem------------->', updatedItem);
     // -----------Drawer--------------
     //------------Modal---------------
 
