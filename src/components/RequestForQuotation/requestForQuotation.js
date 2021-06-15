@@ -1,162 +1,332 @@
-import React, { useState, useContext } from 'react'
-import { Label } from '../Textbox/style/index'
+import React, { useState, useContext, useEffect } from 'react'
 import { VendorCustomerContext } from '../../context/Random/random'
-import { CreateRFQ } from '../../Utils/utils'
+import { CreateRFQ, getPR, getPrById, getAllRFQ, getRFQById } from '../../Utils/utils'
 import {
-  Title,
-  ListItem,
-  ItemDiv,
-  QuantityAndButtonDiv,
-  Quantity,
-  DeleteButton
+  Title, Paragraph, CName, CompanyDetails, Location,
+  Contact, H3
 } from '../../Utils/styles'
 import {
-  Divider,
+  Tabs,
   message,
   Row,
   Col,
-  Input,
   Button,
-  Radio,
-  Select
+  Select,
+  List,
+  Tag,
+  Space,
+  Table,
+  Skeleton,
+  Modal
 } from 'antd'
 
 const RequestForQuatation = () => {
-  const [items, setItems] = useState()
-  const [quantity, setQuantity] = useState()
-  const [itemsList, setItemsList] = useState([])
-  const [radioValue, setRadioValue] = useState('A-class');
-  // const { vendors } = useContext(VendorCustomerContext)
+  const { vendors } = useContext(VendorCustomerContext)
+  const [selectedVendor, setSelectedVendor] = useState()
+  const [allPRData, setAllPRData] = useState()
+  const [prData, setPRData] = useState()
+  const [prItems, setPRItems] = useState()
+  const [prStatus, setPrStatus] = useState()
+  const [allRFQ, setAllRFQ] = useState()
+  const [rfqDetails, setRfqDetails] = useState()
+  const [showModal, setShowModal] = useState(false);
+
 
   const shortid = require('shortid')
   const RFQiD = shortid.generate()
 
-  const selectQuality = e => {
-    setRadioValue(e.target.value);
-  };
-console.log('items',items);
-console.log('quantity',quantity);
+  const { TabPane } = Tabs;
 
-const utc = new Date().toJSON().slice(0, 10).replace(/-/g, '/');
+  useEffect(() => {
+    getPR().then(data => {
+      setAllPRData(data)
+    })
+    getAllRFQ().then(data => {
+      setAllRFQ(data)
+    })
+  }, [])
 
-  const CreateList = () => {
-    if (items == null) {
-      message.error('Items can not left Empty')
-    }
-    else if (isNaN(quantity) || quantity.length > 2) {
-      message.error('Quantity amount not support')
-    }
+  const utc = new Date().toJSON().slice(0, 10).replace(/-/g, '/');
 
-    else {
-      setItemsList([...itemsList, { items, quantity, radioValue }])
-      setItems('')
-      setQuantity('')
-    }
+  const selectRequisition = (id) => {
+    getPrById(id).then(data => {
+      setPRData(data)
+      const itemsList = data?.flatMap(items => items.ItemsList)
+      setPRItems(itemsList)
+      setPrStatus(data[0].Status)
+    })
   }
-  const deleteItem = (id) => {
-    const newList = [...itemsList]
-    newList.splice(id, 1)
-    setItemsList(newList);
+
+  function selectVednor(value) {
+    setSelectedVendor(value)
   }
 
   const generateRFQ = () => {
-      CreateRFQ(itemsList, RFQiD, utc)
-      setItemsList([])
+    if (!selectedVendor) return message.error('Error! Vendor is not selected')
+    if (!prData.length) return message.error('Error! Invalid items list')
+    const QuoationData = {
+      RFQ_Id: RFQiD,
+      Requisition_Id: prData[0].RequisitionId,
+      CreationDate: utc,
+      Vendor: selectedVendor,
+      Items: prItems,
+      PR_RequesterName: prData[0].RequesterName,
+      PR_RequesterEmail: prData[0].RequesterEmail,
+      PR_Status: prData[0].Status,
+      PR_Created: prData[0].CreatedDate,
+      PR_RequiredDate: prData[0].RequriedDate,
+      CompanyName: 'Sams Star',
+      Address: 'abcdefghijkl',
+      City: 'Karachi',
+      State: 'Sindh',
+      PostalCode: '123456',
+      Phone: '1234-1234-123'
+    }
+    CreateRFQ(QuoationData)
+    setPRItems([])
+    setPRData([])
   }
-  console.log('itemList', itemsList);
+  const getRFQDetails = (id) => {
+    setShowModal(true)
+    getRFQById(id).then(data => {
+      setRfqDetails(data)
+    })
+  }
+  const itemsList = rfqDetails?.flatMap(list => list.Items)
+
+  const tbl_RFQ = [
+    {
+      title: 'RFQ Id',
+      dataIndex: 'Id',
+      key: 'id',
+    },
+    {
+      title: 'Vendor Name',
+      dataIndex: 'Vendor',
+      key: 'vendorName',
+    },
+    {
+      title: 'Requester Name',
+      dataIndex: 'PR_RequesterName',
+      key: 'requesterName',
+    },
+    ,
+    {
+      title: 'Requester Email',
+      dataIndex: 'RequesterEmail',
+      key: 'requesterEmail',
+    },
+    {
+      title: 'Created Date',
+      dataIndex: 'CreationDate',
+      key: 'created_date',
+    },
+    // {
+    //     title: 'Status',
+    //     key: 'status',
+    //     render: (allPO) => (
+    //         <Space size="middle">
+    //             <Select
+    //                 defaultValue={allPO.Status}
+    //                 placeholder='Select Status'
+    //                 style={{ width: 200 }}
+    //                 onChange={e => changeStatus(e, allPO.iD)}>
+    //                 <Select.Option value="approved">Approved</Select.Option>
+    //                 <Select.Option value="rejected">Rejected</Select.Option>
+    //                 <Select.Option value="cancle">Cancle</Select.Option>
+    //             </Select>
+    //         </Space>
+    //     ),
+    // },
+    {
+      title: 'Action',
+      key: 'action',
+      render: (rfq) => (
+        <Space size="middle">
+
+          <Button
+            onClick={() =>
+              getRFQDetails(rfq.Id)
+            }
+          >Details</Button>
+        </Space>
+      ),
+    }
+  ]
+
+  const tbl_RFQDetails = [
+    {
+      title: 'Item Name',
+      dataIndex: 'itemName',
+      key: 'itm_name',
+    },
+    {
+      title: 'Quantity',
+      dataIndex: 'itemQuantity',
+      key: 'quantity',
+    },
+    {
+      title: 'Unit of Measure',
+      dataIndex: 'uom',
+      key: 'unit_of_measure',
+    },
+    {
+      title: 'Total Price',
+      dataIndex: 'price',
+      key: 'price',
+    }
+  ]
+
   return (
     <div>
       <Title>Request For Quotation</Title>
       <Row gutter={[10, 10]}>
         <Col xs={24} sm={8}>
-          <h4>
-            RFQ-ID:{RFQiD}
-          </h4>
+          <Paragraph>
+            RFQ-ID: {RFQiD}
+          </Paragraph>
         </Col>
         <Col xs={24} sm={12}>
-          <h4>Date: {utc}</h4>
+          <Paragraph>Date: {utc}</Paragraph>
         </Col>
       </Row>
-      <Row gutter={[10, 10]}>
-        
-        <Col xs={24} sm={12}>
-          {/* <h4>RFQ-ID: <Id /></h4> */}
-        </Col>
-      </Row>
-      <Row gutter={[10, 10]}>
-        <Col xs={24} sm={24}>
-          <Label> Compnay Address:
-            <Input
-              type='text'
-              disabled
-            />
-          </Label>
-        </Col>
-      </Row>
-      <Divider>Add Items with quantity</Divider>
-      <Row gutter={[10, 10]}>
-        <Col xs={24} sm={8}>
-          <Input
-            type='text'
-            placeholder='Enter item name'
-            value={items}
-            onChange={e => setItems(e.target.value)}
-            maxLength={20}
-          />
-        </Col>
-        <Col xs={24} sm={4}>
-          <Input
-            type='number'
-            placeholder='Enter number of Quantity'
-            value={quantity}
-            onChange={e => setQuantity(e.target.value)}
-            maxLength={2}
-          />
-        </Col>
-        <Col xs={24} sm={6}>
-          <Radio.Group onChange={selectQuality} value={radioValue}>
-            <Radio value={'A-class'}>A</Radio>
-            <Radio value={'B-class'}>B</Radio>
-            <Radio value={'C-class'}>C</Radio>
-          </Radio.Group>
-        </Col>
-        <Col xs={24} sm={4}>
-
-          <Button onClick={CreateList}>Add</Button>
-        </Col>
-
-      </Row>
-
-      <ul>
-        {
-          itemsList.map((item, key) => {
+      <CName>SAM's Star</CName>
+      <Paragraph>
+        Address:
+       </Paragraph>
+      <CompanyDetails>
+        <Location>
+          <h3>Karachi, </h3>
+          <h3>Sindh, </h3>
+          <h3>123456</h3>
+        </Location>
+        <Contact>
+          <h3><b>Phone#</b> 1234-1234-123</h3>
+          <h3><b>Email</b> abc@gmail.com</h3>
+          <h3><b>Website</b> www.company.pk</h3>
+        </Contact>
+      </CompanyDetails>
+      <Tabs defaultActiveKey="1" >
+        <TabPane tab="Create RFQ" key="1">
+          <Row gutter={[10, 10]}>
+            <Col>
+              <Select
+                style={{ width: 200 }}
+                placeholder='Select Requisition ID'
+                onChange={selectRequisition}
+              >
+                {allPRData && allPRData.map((name) => <Select.Option
+                  value={name.RequisitionId}
+                >
+                  {name.RequisitionId}
+                </Select.Option>
+                )}
+              </Select>
+            </Col>
+            <Col>
+              <Select
+                style={{ width: 200 }}
+                placeholder='Select Vendor'
+                onChange={selectVednor}
+              >
+                {vendors && vendors.map((name) => <Select.Option
+                  value={name.companyName}
+                >
+                  {name.companyName}
+                </Select.Option>
+                )}
+              </Select>
+            </Col>
+          </Row>
+          {prData && prData.map((item, key) => {
             return (
-              <>
-                <ListItem key={key} xs={24} sm={12}>
-                  <ItemDiv>
-                    {item.items}
-                  </ItemDiv>
-                  <QuantityAndButtonDiv>
-                    <Quantity>
-                      {item.quantity}/
-                      {item.radioValue}
-                    </Quantity>
-                    <DeleteButton>
-                      <Button danger onClick={() => deleteItem(key)}>Delete</Button>
-                    </DeleteButton>
-                  </QuantityAndButtonDiv>
-
-                </ListItem>
-              </>
+              <div>
+                {/* <p>{`PO-ID: ${item.POiD}`}</p> */}
+                <p>{`Requisition Id: ${item.RequisitionId}`}</p>
+                <p>{`Requester Name: ${item.RequesterName}`}</p>
+                <p>{`Requester Email: ${item.RequesterEmail}`}</p>
+                <p>Status: <Tag color={item.Status == 'approved' ? 'green' : 'red'}>{item.Status}</Tag></p>
+                <p>{`Created Date: ${item.CreatedDate}`}</p>
+                <p>{`Required Date: ${item.RequriedDate}`}</p>
+              </div>
             )
           })
-        }
-      </ul>
-      <Row>
-        <Col xs={24} sm={12}>
-          <Button onClick={generateRFQ}>Create RFQ</Button>
-        </Col>
-      </Row>
+          }
+          <List
+            size='small'
+            itemLayout="horizontal"
+            bordered
+            header={<H3>Order ITem</H3>}
+            dataSource={prItems}
+            style={{ marginTop: '15px', transistion: '1s' }}
+            renderItem={items => (
+              <List.Item>
+                <List.Item>
+                  <Paragraph>Item Name: <Tag color='geekblue' style={{ marginLeft: '5px', marginRight: '5px' }}>{items.itemName}</Tag> </Paragraph>
+                  <Paragraph>Item Quantity: <Tag color='green' style={{ marginLeft: '5px', marginRight: '5px' }}>{items.itemQuantity}-{items.uom}</Tag> </Paragraph>
+                  <Paragraph>Item Quality: <Tag color='blue' style={{ marginLeft: '5px', marginRight: '5px' }}>{items.qualityValue}</Tag></Paragraph>
+                </List.Item>
+              </List.Item>
+            )}
+          />
+          <Row>
+            <Col>
+              <Button disabled={prStatus !== 'approved' ? true : false} onClick={generateRFQ}>Create RFQ</Button>
+            </Col>
+          </Row>
+        </TabPane>
+        <TabPane tab="All RFQ" key="2">
+          <div>
+            {allRFQ ?
+              <Table dataSource={allRFQ} columns={tbl_RFQ} /> : <Skeleton />
+            }
+          </div>
+          <Modal
+            title="Request for Quotation Detials"
+            centered
+            visible={showModal}
+            width={1000}
+            footer={
+              <div
+                style={{
+                  textAlign: 'right'
+                }}
+              >
+                <Button onClick={() => setShowModal(false)} style={{ marginRight: 8 }}>
+                  Close
+                            </Button>
+              </div>
+            }
+          >
+            {rfqDetails ?
+              rfqDetails.map((item, key) => {
+                return (
+                  <div>
+                    <p>{`Company Name: ${item.CompanyName}`}</p>
+                    <p>{`Address: ${item.Address}`}</p>
+                    <p>{`City: ${item.City}`}</p>
+                    <p>{`State: ${item.State}`}</p>
+                    <p>{`Postal Code: ${item.PostalCode}`}</p>
+                    <p>{`Phone: ${item.Phone}`}</p>
+                    <p>Requisition Id: <Tag color='blue'>{item.RequisitionId}</Tag></p>
+                    <p>{`Requisition Created: ${item.PR_Created}`}</p>
+                    <p>{`Requisation Required: ${item.PR_RequiredDate}`}</p>
+                    <p>{`Status: ${item.PR_Status}`}</p>
+
+
+
+                  </div>
+                )
+              }) : <Skeleton active />
+            }
+            <div>
+              {itemsList ?
+                <Table dataSource={itemsList} columns={tbl_RFQDetails} /> : <Skeleton />
+              }
+            </div>
+          </Modal>
+        </TabPane>
+      </Tabs>
     </div>
   )
 }

@@ -255,13 +255,15 @@ const UpdateVendor = (vendorDetail, id) => {
     })
 }
 
-const CreatePurchaseRequisition = (PR_iD, requesterName, createdDate, requriedDate, itemsList) => {
+const CreatePR = (prData) => {
   const object_PR = {
-    PR_iD,
-    RequesterName: CapitalizeWords(requesterName),
-    createdDate,
-    requriedDate,
-    itemsList,
+    RequisitionId:prData.PR_iD,
+    RequesterName: CapitalizeWords(prData.requesterName),
+    RequesterEmail:prData.requesterEmail,
+    RequesterPosition:CapitalizeWords(prData.position),
+    CreatedDate:prData.createdDate,
+    RequriedDate:prData.requriedDate,
+    ItemsList:prData.itemsList,
     status:'Not-Defined'
   }
   firebase.firestore().collection('PurchaseRequisitions').add(object_PR)
@@ -272,6 +274,29 @@ const CreatePurchaseRequisition = (PR_iD, requesterName, createdDate, requriedDa
     .catch((error) => {
       message.error(error.message)
     })
+}
+
+const getPrById = (id) => {
+  return firebase
+  .firestore()
+  .collection('PurchaseRequisitions')
+  .where('RequisitionId', '==', id)
+  .get()
+  .then(function (querySnapshot) {
+    const comlist = []
+    querySnapshot.forEach(function (doc) {
+      if (doc.exists) {
+        const comp = doc.data()
+        comlist.push({ ...comp, compId: doc.id })
+      } else {
+        message.info('No such document!')
+      }
+    })
+    return comlist
+  })
+  .catch(function (error) {
+    console.log('Error getting documents: ', error)
+  })
 }
 
 const UpdatePOStatus = (status, id) => {
@@ -287,13 +312,10 @@ const UpdateStatus = (collectionName,status, id) => {
     })
     message.success (`Status updated to ${status}`)
 }
-const CreateRFQ = (newList, RFQiD, fullDate) => {
-  const RfqObj = {
-    newList,
-    RFQiD,
-    fullDate
-  }
-  firebase.firestore().collection('RFQ').add(RfqObj)
+
+const CreateRFQ = (QuoationData) => {
+
+  firebase.firestore().collection('RFQ').add(QuoationData)
     .then((response) => {
       message.success('RFQ created')
     })
@@ -302,6 +324,49 @@ const CreateRFQ = (newList, RFQiD, fullDate) => {
     })
 }
 
+const getRFQById = (id) => {
+  return firebase
+    .firestore()
+    .collection('RFQ')
+    .where('Id', '==', id)
+    .get()
+    .then(function (querySnapshot) {
+      const goodsReceipt = []
+      querySnapshot.forEach(function (doc) {
+        if (doc.exists) {
+          const comp = doc.data()
+          goodsReceipt.push({ ...comp, compId: doc.id })
+        } else {
+          message.info('No such document!')
+        }
+      })
+      return goodsReceipt
+    })
+    .catch(function (error) {
+      console.log('Error!', error.message)
+    })
+}
+
+
+const getAllRFQ = () => {
+  return new Promise((resolve, reject) => {
+    firebase
+      .firestore()
+      .collection('RFQ')
+      .onSnapshot(function (querySnapshot) {
+        const allInventoryItems = []
+        querySnapshot.forEach(function (doc) {
+          if (doc.exists) {
+            const comp = doc.data()
+            allInventoryItems.push({ ...comp, compId: doc.id })
+          } else {
+            reject(message.info('No data to show.'))
+          }
+        })
+        resolve(allInventoryItems)
+      })
+  })
+}
 const CreatePurchaseOrder = (newList, POiD, createdDate, requriedDate, selectVendor, POStatus) => {
   const PO_object = {
     newList,
@@ -651,8 +716,11 @@ export {
   getSpecificData,
   UpdateCustomer,
   UpdateVendor,
-  CreatePurchaseRequisition,
+  CreatePR,
+  getPrById,
   CreateRFQ,
+  getAllRFQ,
+  getRFQById,
   CreatePurchaseOrder,
   UpdatePOStatus,
   CapitalizeWords,

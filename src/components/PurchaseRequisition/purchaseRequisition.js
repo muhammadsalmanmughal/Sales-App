@@ -1,13 +1,14 @@
 import React, { useState, useEffect, useContext } from 'react'
 import { VendorCustomerContext } from '../../context/Random/random'
-import { CreatePurchaseRequisition, getPR, getDataById, UpdateStatus } from '../../Utils/utils'
+import { CreatePR, getPR, getDataById, UpdateStatus } from '../../Utils/utils'
 import {
     Title,
     ListItem,
     ItemDiv,
     QuantityAndButtonDiv,
     Quantity,
-    DeleteButton
+    DeleteButton,
+    Paragraph
 } from '../../Utils/styles'
 import { IdDate } from './style'
 import { CopyToClipboard } from 'react-copy-to-clipboard'
@@ -23,9 +24,13 @@ const PurchaseRequisition = () => {
     const { allInventoryItems } = useContext(VendorCustomerContext)
     const [itemName, setItemName] = useState()
     const [requesterName, setRequesterName] = useState()
+    const [requesterEmail, setRequesterEmail] = useState()
+    const [position, setPosition] = useState()
     const [requriedDate, setRequriedDate] = useState();
     const [qualityValue, setQualityValue] = useState('A-class');
     const [requestedquantity, setQuantity] = useState()
+    const [uom , setUom] = useState()
+    const [itemPrice, setItemPrice] = useState()
     const [itemsList, setItemsList] = useState([])
     const [allPRData, setAllPRData] = useState()
     const [prDetails, setPRDetails] = useState()
@@ -35,17 +40,17 @@ const PurchaseRequisition = () => {
 
     useEffect(() => {
         getPR().then(data => {
-            console.log('all Pr data: ', data);
             setAllPRData(data)
         })
     }, [])
 
     let current_datetime = new Date()
     let createdDate = current_datetime.getDate() + "-" + (current_datetime.getMonth() + 1) + "-" + current_datetime.getFullYear()
-    const Quanity = Number(requestedquantity)
+    const itemQuantity = Number(requestedquantity)
+    const price = Number(itemPrice)
     const shortid = require('shortid')
     const PR_iD = shortid.generate()
-    const details = prDetails && prDetails.flatMap(d => d.itemsList)
+    const details = prDetails && prDetails.flatMap(d => d.ItemsList)
 
     const selectRequriedDate = (date, dateString) => {
         setRequriedDate(dateString)
@@ -59,22 +64,30 @@ const PurchaseRequisition = () => {
         setQualityValue(e);
     };
 
+    const selectUOM = e => {
+        setUom(e);
+    };
+
+    const selectPosition = e => {
+        setPosition(e);
+    };
+
     function selectInventoryItem(value) {
         setItemName(value)
     }
 
     const CreateList = () => {
-        if (requesterName == null || !requesterName) return message.error('Error! Requester Name cannot be left empty.')
-        if (!itemName) return message.error('Error! Select Item Name.')
         if (!requriedDate) return message.error('Error! Select required date.')
+        if (!itemName) return message.error('Error! Select Item Name.')
+        if (isNaN(requestedquantity)) return message.error('Error! Invalid Quantity.')
+        if (!requestedquantity || requestedquantity.length > 2 || requestedquantity <= 0) return message.error('Error! Quantity not support')
+        if (!uom) return message.error('Error! Select unit of meassure.')
+        if (isNaN(price) || !price || price <= 0) return message.error('Error! Invaid price per item.')
         if (!qualityValue) return message.error('Error! Select quality type.')
-        if (!requestedquantity || requestedquantity.length > 2 || requestedquantity <= 0) {
-            message.error('Error! Quantity not support')
-        }
         else {
-            setItemsList([...itemsList, { itemName, qualityValue, Quanity }])
-            setRequesterName('')
+            setItemsList([...itemsList, { itemName, qualityValue, itemQuantity,price, uom }])
             setQuantity('')
+            setItemPrice('')
             setQualityValue('')
         }
     }
@@ -86,8 +99,25 @@ const PurchaseRequisition = () => {
     }
 
     const generatePurchaseRequisition = () => {
-        CreatePurchaseRequisition(PR_iD, requesterName, createdDate, requriedDate, itemsList)
+        var pattern = /^[A-Za-z._]{3,}@[A_Za-z]{3,}[.]{1}[A-Za-z.]{2,6}$/
+        if (!requesterName) return message.error('Error! Invalid requester name.')
+        if (!position) return message.error('Error! Select requester position.')
+        if(!requesterEmail) return message.error('Error! Invalid email')
+        if(pattern.test(requesterEmail )){
+            const PRData={
+                PR_iD,
+                requesterName,
+                requesterEmail,
+                position,
+                createdDate,
+                requriedDate,
+                itemsList
+            }
+            CreatePR(PRData)
+        }
+        else return  message.error('Error! Invalid email')
         setItemsList([])
+        setRequesterEmail('')
         setRequesterName('')
     }
 
@@ -101,10 +131,11 @@ const PurchaseRequisition = () => {
         UpdateStatus('PurchaseRequisitions', status, id)
     };
 
+
     const PR_Table = [
         {
             title: 'PR ID',
-            dataIndex: 'PR_iD',
+            dataIndex: 'RequisitionId',
             key: 'id',
         },
         {
@@ -112,14 +143,20 @@ const PurchaseRequisition = () => {
             dataIndex: 'RequesterName',
             key: 'requesterName',
         },
+        ,
+        {
+            title: 'Requester Email',
+            dataIndex: 'RequesterEmail',
+            key: 'requesterEmail',
+        },
         {
             title: 'Created Date',
-            dataIndex: 'createdDate',
+            dataIndex: 'CreatedDate',
             key: 'created_date',
         },
         {
             title: 'Requried Date',
-            dataIndex: 'requriedDate',
+            dataIndex: 'RequriedDate',
             key: 'requried_date',
         },
         {
@@ -163,12 +200,17 @@ const PurchaseRequisition = () => {
         },
         {
             title: 'Quanity',
-            dataIndex: 'Quanity',
+            dataIndex: 'itemQuantity',
             key: 'quanity',
         },
         {
             title: 'Quality',
             dataIndex: 'qualityValue',
+            key: 'quality_Value',
+        },
+        {
+            title: 'Unit of Measure',
+            dataIndex: 'uom',
             key: 'quality_Value',
         }
     ]
@@ -181,9 +223,9 @@ const PurchaseRequisition = () => {
                     <IdDate >
                         <Col>
                             <div style={{ marginBottom: 16 }}>
-                                <label>
-                                    Purchase Requisition Id:
-                               </label>
+                                <Paragraph>
+                                    PR Id:
+                               </Paragraph>
                                 <Input addonAfter={
                                     <Tooltip placement="topRight" title='Click to Copy'>
                                         <CopyToClipboard text={PR_iD}>
@@ -200,22 +242,39 @@ const PurchaseRequisition = () => {
                         </Col>
 
                         <Col>
-                            <lable>
+                            <Paragraph>
                                 Posting Date:
-                    </lable>
-                    <Input value={createdDate} disabled/>
+                             </Paragraph>
+                            <Input value={createdDate} disabled />
                         </Col>
 
                     </IdDate>
                     <Row gutter={[10, 10]}>
                         <Col xs={24} sm={6}>
                             <Input
+                                type='text'
                                 value={requesterName}
                                 placeholder='Requester Name'
                                 onChange={e => setRequesterName(e.target.value)}
                                 maxLength={25}
                             />
                         </Col>
+                        <Col xs={24} sm={11}>
+                            <Input
+                                type='email'
+                                value={requesterEmail}
+                                placeholder='Requester Email'
+                                onChange={e => setRequesterEmail(e.target.value)}
+                                maxLength={25}
+                            />
+                        </Col>
+                        <Col>
+                            <Select placeholder='Requister Position' style={{ width: 200 }} onChange={selectPosition}>
+                                <Select.Option value="manager">Manager</Select.Option>
+                            </Select>
+                        </Col>
+                    </Row>
+                    <Row gutter={[10, 10]}>
                         <Col >
                             <DatePicker
                                 placeholder='Requried Date'
@@ -239,21 +298,38 @@ const PurchaseRequisition = () => {
                                 )}
                             </Select>
                         </Col>
-                        <Col>
-                            <Select placeholder='Select Quality type' style={{ width: 200 }} onChange={selectQuality}>
-                                <Select.Option value="a">A</Select.Option>
-                                <Select.Option value="b">B</Select.Option>
-                                <Select.Option value="c">C</Select.Option>
-                            </Select>
-                        </Col>
-                        <Col xs={24} sm={6}>
+                        <Col xs={24} sm={5}>
                             <Input
-                                type='number'
+                                type='text'
                                 placeholder='Enter item Quantity'
                                 value={requestedquantity}
                                 onChange={e => setQuantity(e.target.value)}
-                                max={2}
+                                maxLength={2}
                             />
+                        </Col>
+                        <Col>
+                            <Select placeholder='Unit of Measure' style={{ width: 200 }} onChange={selectUOM}>
+                            <Select.Option value="packet">Packet</Select.Option>
+                            <Select.Option value="dozen">Dozen</Select.Option>
+                            <Select.Option value="single">Single</Select.Option>
+                            <Select.Option value="sheet">Sheet</Select.Option>
+                            </Select>
+                        </Col>
+                        <Col xs={24} sm={4}>
+                            <Input
+                                type='text'
+                                placeholder='Enter price per item '
+                                value={itemPrice}
+                                onChange={e => setItemPrice(e.target.value)}
+                                maxLength={4}
+                            />
+                        </Col>
+                        <Col>
+                            <Select placeholder='Select Quality type' style={{ width: 200 }} onChange={selectQuality}>
+                                <Select.Option value="A-class">A</Select.Option>
+                                <Select.Option value="B-class">B</Select.Option>
+                                <Select.Option value="C-class">C</Select.Option>
+                            </Select>
                         </Col>
                         <Col>
                             <Button
@@ -262,7 +338,6 @@ const PurchaseRequisition = () => {
                         </Col>
                     </Row>
                     <Divider>ITEMS LIST</Divider>
-
                     <ul>
                         {
                             itemsList.map((item, key) => {
@@ -274,8 +349,13 @@ const PurchaseRequisition = () => {
                                             </ItemDiv>
                                             <QuantityAndButtonDiv>
                                                 <Quantity>
-                                                    {item.Quanity}/
-                                                    {item.qualityValue}
+                                                 {item.itemQuantity}{item.uom}
+                                                </Quantity>
+                                                <Quantity>
+                                                   Per Price: {item.price}
+                                                </Quantity>
+                                                <Quantity>
+                                                   Total: {item.itemQuantity*item.price}Rs/
                                                 </Quantity>
                                                 <DeleteButton>
                                                     <Button danger onClick={() => deleteItem(key)}>Delete</Button>

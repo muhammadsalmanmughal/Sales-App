@@ -14,10 +14,54 @@ ${media.tablet`
 text-align: center;
 `}
 `
+
+export const CName = styled.p`
+font-family: 'DM Serif Text', serif;
+font-weight: bold;
+font-size: 22px;
+`
+export const CompanyDetails =styled.div`
+display: flex;
+`
+export const Location = styled.div`
+display: flex;
+flex-direction: row;
+h3:nth-child(even){
+  margin:0 10px 0 10px;
+}
+${media.tablet`
+text-align: center;
+flex-direction: column;
+`}
+`
+
+export const Contact =styled.div`
+margin-left:40px;
+display: flex;
+flex-direction: row;
+h3:nth-child(even){
+  margin:0 10px 0 10px;
+}
+${media.tablet`
+text-align: center;
+flex-direction: column;
+`}
+`
 export const Name = styled.p`
 font-family: 'Assistant', sans-serif;
 `
-
+export const Details = styled.div`
+display: flex;
+flex-direction: row;
+justify-content:space-around;
+background-color: #f1f1f1;
+border-radius: 5px;
+padding:15px;
+`
+export const Paragraph = styled.div`
+font-size:14px;
+font-weight: bold;
+`
 
 //Submit Button
 
@@ -67,7 +111,7 @@ export const QuantityAndButtonDiv = styled.div`
 display:flex;
 justify-content: space-between;
 align-items:baseline;
-width:150px;
+width:50%;
 ${media.tablet`
 width: 100%;
 text-align: center;
