@@ -3,7 +3,7 @@ import { useFormik } from 'formik'
 import { Label } from '../Textbox/style/index'
 import { SubmitButton } from '../../Utils/styles'
 import { validationSchema } from './validationSchema'
-import { createNewCustomer, getCustomerOrder } from '../../Utils/utils'
+import { createNewCustomer, getCustomerOrder,getDataById } from '../../Utils/utils'
 import { Title } from '../../Utils/styles'
 import ErrorText from '../FormError/formError'
 import AllCustomers from '../AllCustomers/allCustomers';
@@ -28,13 +28,13 @@ const { TabPane } = Tabs;
 const CreateCustomer = () => {
 
     const [allOrders, setAllOrders] = useState([])
-    console.log('allOrders: ', allOrders);
+    const [orderDetails, setOrderDetails] = useState()
     const [showModal, setShowModal] = useState(false);
 
     const shortid = require('shortid')
     const orderID = shortid.generate()
 
-    const orderItems = allOrders?.flatMap(item => item.itemsList)
+    const orderItems = orderDetails?.flatMap(item => item.itemsList)
 
     const onSubmit = (values, onSubmitProps) => {
         createNewCustomer(values,orderID)
@@ -67,6 +67,10 @@ const CreateCustomer = () => {
 
    
     const ShowOrderDetails = (id) => {
+        getDataById('Customer_Order',id).then(data => {
+            console.log('data: ', data);
+            setOrderDetails(data)
+        })
         setShowModal(true)
         console.log('order id: ', id);
 
@@ -116,6 +120,11 @@ const CreateCustomer = () => {
             title: 'Quantity',
             dataIndex: 'quantity',
             key: 'quantity',
+        },
+        {
+            title: 'Item Quantity',
+            dataIndex: 'itemPrice',
+            key: 'price',
         }
     ]
     return (
@@ -327,17 +336,17 @@ const CreateCustomer = () => {
                             </div>
                         }
                     >
-                        {allOrders ?
-                            allOrders.map((item, key) => {
+                        {orderDetails ?
+                            orderDetails.map((item, key) => {
                                 return (
                                     <div>
                                         <p>{`Customer Name: ${item.CustomerName}`}</p>
-                                        <p>{`Company Name: ${item.companyName}`}</p>
-                                        <p>{`State: ${item.state}`}</p>
-                                        <p>{`City: ${item.city}`}</p>
-                                        <p>{`Address: ${item.billToAddress}`}</p>
-                                        <p>{`Postal Code: ${item.postalCode}`}</p>
-                                        <p>{`Phone: ${item.phone}`}</p>
+                                        <p>{`Company Name: ${item.CompanyName}`}</p>
+                                        <p>{`State: ${item.State}`}</p>
+                                        <p>{`City: ${item.City}`}</p>
+                                        <p>{`Address: ${item.BillToAddress}`}</p>
+                                        <p>{`Postal Code: ${item.PostalCode}`}</p>
+                                        <p>{`Phone: ${item.Phone}`}</p>
                                         <p>Order Placed:
                                             <Tag color='green'>
                                                 {item.currentDate}

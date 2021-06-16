@@ -1,6 +1,7 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useContext} from 'react'
 import { useParams, useHistory } from 'react-router-dom'
-import { getSpecificData, CapitalizeWords,CreateRecord } from '../../Utils/utils'
+import { getSpecificData, CapitalizeWords, CreateRecord } from '../../Utils/utils'
+import { UserContext } from '../../context/UserContext/UserContext'
 import { CaretLeftOutlined } from "@ant-design/icons";
 import { Goback } from '../../Utils/styles'
 import { CopyToClipboard } from 'react-copy-to-clipboard'
@@ -23,7 +24,8 @@ import {
     QuantityAndButtonDiv,
     Quantity,
     DeleteButton,
-    H3
+    H3,
+    Title
 } from '../../Utils/styles'
 
 const CustomerOrder = () => {
@@ -43,16 +45,21 @@ const CustomerOrder = () => {
             secondaryPhone: ""
         }
     )
+    const { user } = useContext(UserContext)
+    console.log('user: ', user);
     const [orderDetails, setOrderDetails] = useState()
     const [itemsList, setItemsList] = useState([])
+    console.log('itemsList: ', itemsList);
     const [disable, setDisabled] = useState(false)
+    const [items, setItems] = useState()
+    const [itemQuantity, setItemQuantity] = useState()
+    const [requiredDate, setRequiredDate] = useState();
+    const [itemPrice, setItemPrice] = useState()
+    const [discription, setDiscription] = useState('Nothing')
     let current_datetime = new Date()
     let currentDate = current_datetime.getDate() + "-" + (current_datetime.getMonth() + 1) + "-" + current_datetime.getFullYear()
     const shortid = require('shortid')
     const orderID = shortid.generate()
-    const [items, setItems] = useState()
-    const [itemQuantity, setItemQuantity] = useState()
-    const [requiredDate, setRequiredDate] = useState();
 
     const { slug, Cname } = useParams()
     const history = useHistory();
@@ -67,14 +74,18 @@ const CustomerOrder = () => {
         DisableButton()
     }, [itemsList])
     const customerOrder = () => {
-        if(!requiredDate) return message.error('Error! Select required date')
+        const UserName= user&&user[0].name
+        const UserEmail= user&&user[0].email
+
+        if (!requiredDate) return message.error('Error! Select required date')
         const { CustomerName, CompanyName, Phone, BillToAddress, State, City, PostalCode } = detailsdData
 
         const customerObeject = {
             CustomerName, CompanyName, Phone, BillToAddress, State, City, PostalCode,
-            itemsList, orderID, currentDate,requiredDate
+            itemsList, orderID, currentDate, requiredDate,UserName,UserEmail
         }
-        CreateRecord(customerObeject,'Customer_Order','Customers order has been placed')
+        console.log('customerObeject: ', customerObeject);
+        CreateRecord(customerObeject, 'Customer_Order', 'Customers order has been placed')
         setItemsList([])
         setOrderDetails('')
     }
@@ -94,14 +105,17 @@ const CustomerOrder = () => {
 
     const CreateList = () => {
         const quantity = Number(itemQuantity)
-        if (items == null) return message.error('Error! Items can not be left Empty')
-        if (isNaN(quantity) || quantity.length > 2 || quantity <= 0) return message.error('Error! Quantity amount not support')
-        if (!items || !quantity) return message.error('Error! All fields should be filed')
+        if (!items) return message.error('Error! Items can not be left Empty')
+        if (isNaN(quantity) || quantity <= 0) return message.error('Error! Quantity amount not support')
+        if (!items || !quantity || !itemPrice) return message.error('Error! All fields should be filed')
+        if (isNaN(itemPrice) || quantity <= 0) return message.error('Error! Item price not supported')
         else {
             const item = CapitalizeWords(items)
-            setItemsList([...itemsList, { item, quantity }])
+            const itemDetails = CapitalizeWords(discription)
+            setItemsList([...itemsList, { item, quantity, itemPrice, itemDetails }])
             setItems('')
             setItemQuantity('')
+            setItemPrice('')
         }
     }
 
@@ -115,15 +129,9 @@ const CustomerOrder = () => {
             <Goback onClick={e => history.goBack()}>
                 <CaretLeftOutlined /> GoBack
             </Goback>
-            <Row gutter={[10, 10]}>
-                <Col xs={24} sm={12}>
-                    <h2>
-                        Customer Order
-            </h2>
-                </Col>
-
-            </Row>
-            <Divider />
+            <Title>
+                Customer Order
+            </Title>
             <Row gutter={[10, 10]}>
                 <Col>
                     <div style={{ marginBottom: 16 }}>
@@ -209,14 +217,22 @@ const CustomerOrder = () => {
                 <H3 style={{ textAlign: 'center' }}>ITEMS</H3>
             </Divider>
             <Row gutter={[10, 10]}>
-                <Col xs={24} sm={10}>
+                <Col xs={24} sm={8}>
                     <Input type='text' value={items} placeholder='Item Name' onChange={e => setItems(e.target.value)} maxLength={25} />
                 </Col>
-                <Col xs={24} sm={10}>
+                <Col xs={24} sm={8}>
                     <Input type='text' value={itemQuantity} placeholder='Item Quantity' onChange={e => setItemQuantity(e.target.value)} maxLength={2} />
                 </Col>
-                <Col xs={24} sm={1}>
+                <Col xs={24} sm={8}>
+                    <Input type='text' value={itemPrice} placeholder='Item Price' onChange={e => setItemPrice(e.target.value)} maxLength={5} />
+                </Col>
+            </Row>
+            <Row gutter={[10, 10]}>
 
+                <Col xs={24} sm={24}>
+                    <Input type='text' value={discription} placeholder='Discription' onChange={e => setDiscription(e.target.value)} maxLength={50} />
+                </Col>
+                <Col xs={24} sm={1}>
                     <Button
                         onClick={CreateList}
                     >Add</Button>
@@ -241,11 +257,14 @@ const CustomerOrder = () => {
                             <>
                                 <ListItem key={key} xs={24} sm={12}>
                                     <ItemDiv>
-                                        {item.item}
+                                     Item Name:   {item.item}
                                     </ItemDiv>
                                     <QuantityAndButtonDiv>
                                         <Quantity>
-                                            {item.quantity}/
+                                           Quantity: {item.quantity}/
+                                        </Quantity>
+                                        <Quantity>
+                                            Total Amount: {item.quantity * item.itemPrice} Rs
                                         </Quantity>
                                         <DeleteButton>
                                             <Button danger onClick={() => deleteItem(key)}>Delete</Button>
