@@ -367,8 +367,10 @@ const getAllRFQ = () => {
       })
   })
 }
-const CreatePurchaseOrder = (newList, POiD, createdDate, requriedDate, selectVendor, POStatus) => {
+const CreatePurchaseOrder = (newList, POiD, createdDate, requriedDate, selectVendor, name, email) => {
   const PO_object = {
+    UserName: name,
+    UserEmail: email,
     newList,
     POiD,
     createdDate,

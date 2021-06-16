@@ -127,19 +127,14 @@ const PurchaseOrderDetails = () => {
                     retreiveQuantity: parseFloat(item.retreiveQuantity + inceaseBy),
                 }
             })
-            grItemList.map(items => {
-                if(items.remainingQuantity == 0){
-                    return {
-                        ...items,
-                        remainingQuantity:items.quantity
-                    }
-                }
-            })
         setGrItemList(goodReceipt)
         return goodReceipt
     }
 
+    console.log('POItemData: ', POItemData);
     const objGR = {
+        UserName:POItemData && POItemData[0].UserName,
+        UserEmail:POItemData && POItemData[0].UserEmail,
         GR_id: GRiD,
         POid: POItemData && POItemData[0].POiD,
         Vendor: POItemData && POItemData[0].selectVendor,

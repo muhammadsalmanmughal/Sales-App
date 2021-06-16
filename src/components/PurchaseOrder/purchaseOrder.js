@@ -1,6 +1,7 @@
 import React, { useState, useContext, useEffect } from 'react'
 import firebase from '../../config/Firebase/firebase';
 import { VendorCustomerContext } from '../../context/Random/random'
+import { UserContext } from '../../context/UserContext/UserContext'
 import { useHistory } from 'react-router-dom'
 import { CopyToClipboard } from 'react-copy-to-clipboard'
 import {
@@ -40,6 +41,8 @@ import { HeaderDetails, InvoiceDetails, CompanyDetails, General } from './style/
 const { TabPane } = Tabs;
 
 const PurchaseOrder = () => {
+    const { vendors, allInventoryItems } = useContext(VendorCustomerContext)
+    const { user } = useContext(UserContext)    
     const [selectedVendor, setSelectedVendor] = useState()
     const [items, setItems] = useState()
     const [requestedquantity, setQuantity] = useState()
@@ -47,7 +50,6 @@ const PurchaseOrder = () => {
     const [itemId, setItemId] = useState()
     const [radioValue, setRadioValue] = useState('A-class');
     const [itemCollectionId, setItemCollectionId] = useState()
-    const { vendors, allInventoryItems } = useContext(VendorCustomerContext)
     const [requriedDate, setRequriedDate] = useState();
     const [pricePerItem, setPricePerItem] = useState()
     const [discription, setDiscription] = useState()
@@ -60,6 +62,7 @@ const PurchaseOrder = () => {
     const [invoiceDueDate, setInvoiceDueDate] = useState()
 
     const [gRData, setGRData] = useState()
+    console.log('gRData: ', gRData);
     const [showPOModal, setShowPOModal] = useState(false)
     const [showModal, setShowModal] = useState(false);
 
@@ -122,10 +125,13 @@ const PurchaseOrder = () => {
     };
 
     const generatePurchaseOrder = () => {
+        const name= user && user[0].name
+        const email= user && user[0].email
+
         if (!selectedVendor) return message.error('Error! Invalid Vendor')
         if (!itemsList.length) return message.error('Error! Select some items')
         if (!requriedDate) return message.error('Error! Select required date')
-        CreatePurchaseOrder(itemsList, POiD, utc, requriedDate, selectedVendor)
+        CreatePurchaseOrder(itemsList, POiD, utc, requriedDate, selectedVendor,name, email)
         setItemsList([])
     }
 
@@ -607,6 +613,9 @@ const PurchaseOrder = () => {
                                         <p>{`created Date: ${item.createdDate}`}</p>
                                         <p>{`Vendor Name: ${item.selectVendor}`}</p>
                                         <p>{`Status: ${item.POStatus}`}</p>
+                                        <p>{`User Name: ${item.UserName}`}</p>
+                                        <p>{`User Email: ${item.UserEmail}`}</p>
+
                                     </div>
                                 )
                             }) : <Skeleton active />
@@ -634,10 +643,37 @@ const PurchaseOrder = () => {
                         title="GOODS RECEIPT DETAILS"
                         centered
                         visible={showModal}
-                        onOk={() => setShowModal(false)}
-                        onCancel={() => setShowModal(false)}
                         width={1000}
+                        footer={
+                            <div
+                                style={{
+                                    textAlign: 'right',
+                                }}
+                            >
+                                <Button onClick={() => setShowModal(false)} style={{ marginRight: 8 }}>
+                                    Cancel
+                                 </Button>
+                               
+                            </div>
+                        }
                     >
+                           {gRData ?
+                            gRData.map((item, key) => {
+                                return (
+                                    <div>
+                                        <p>User Name: {item.UserName}</p>
+                                        <p>User Email: {item.UserEmail}</p>
+                                        <p>Purchase Order Id: {item.POid}</p>
+                                        <p>Vendor Name: {item.Vendor}</p>
+                                        <p>GR Id: {item.GR_id}</p>
+                                        <p>GR Created Date: {item.Created_Date}</p>
+
+                                        {/* <Paragraph>Vendor Name: {item.selectVendor}</Paragraph> */}
+                                        {/* <Paragraph>Status: <Tag color={item.POStatus === 'Approved' ? 'green' : 'red'}>{item.POStatus}</Tag></Paragraph> */}
+                                    </div>
+                                )
+                            }) : <Skeleton active />
+                        }
                         <div>
                             {goods ?
                                 <Table dataSource={goods} columns={goodReceiptDetails} /> : <Skeleton />
@@ -696,6 +732,8 @@ const PurchaseOrder = () => {
                             gRData.map((item, key) => {
                                 return (
                                     <General>
+                                        <p>User Name: {item.UserName}</p>
+                                        <p>User Email: {item.UserEmail}</p>
                                         <p>Purchase Order Id: {item.POid}</p>
                                         <p>Vendor Name: {item.Vendor}</p>
                                         <p>GR Created Date: {item.Created_Date}</p>

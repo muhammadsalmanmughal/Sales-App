@@ -3,13 +3,16 @@ import { getAllInvoices, getDataById } from '../../Utils/utils'
 import {
     Button, Skeleton, Table, Space, Modal, Tag
 } from 'antd'
-import { Title } from '../../Utils/styles'
+import { Title, CName, Location} from '../../Utils/styles'
+import { HeaderDetails, CompanyDetails, InvoiceDetails, General } from '../PurchaseOrder/style/index'
 
 const AllInvoices = () => {
     const [allInvoices, setAllInvoices] = useState()
     const [showModal, setShowModal] = useState(false)
     const [invoiceDetails, setInvoiceDetails] = useState()
+    console.log('invoiceDetails: ', invoiceDetails);
     const [invoiceItemList, setInvoiceItemList] = useState()
+    console.log('invoiceItemList: ', invoiceItemList);
 
     useEffect(() => {
         getAllInvoices().then(data => {
@@ -38,7 +41,7 @@ const AllInvoices = () => {
         },
         {
             title: 'Created Date',
-            dataIndex: 'createdDate',
+            dataIndex: 'Invoice_Created',
             key: 'date',
         },
         {
@@ -70,23 +73,23 @@ const AllInvoices = () => {
         },
         {
             title: 'Price Per Item',
-            dataIndex: 'pricePerItem',
+            dataIndex: 'itemPrice',
+            key: 'price',
+        },
+        {
+            title: 'Item Quality',
+            dataIndex: 'radioValue',
             key: 'price',
         },
         {
             title: 'Requested',
-            dataIndex: 'requestedquantity',
+            dataIndex: 'quantity',
             key: 'requested',
         },
         {
             title: 'Retreive',
             dataIndex: 'retreiveQuantity',
             key: 'retreive',
-        },
-        {
-            title: 'Remaining',
-            dataIndex: 'remainingQuantity',
-            key: 'remaining',
         },
         {
             title: 'Amount',
@@ -121,6 +124,38 @@ const AllInvoices = () => {
                     </div>
                 }
             >
+                <CName>Sams Star</CName>
+                <HeaderDetails>
+                    <CompanyDetails>
+                        <h3>Address:</h3>
+                        <Location>
+                            <h3>Karachi,</h3>
+                            <h3>Sindh,</h3>
+                            <h3>123456</h3>
+                        </Location>
+                        <h3>Email: www.SamsStar.pk</h3>
+                    </CompanyDetails>
+                    <InvoiceDetails>
+                        <p>Invoice Id: {invoiceDetails&&invoiceDetails[0].Invoice_Id} </p>
+                        <p>Invoice Date:{invoiceDetails&&invoiceDetails[0].Invoice_Created}</p>
+                        <p>Invoice Due Date: {invoiceDetails&&invoiceDetails[0].Invoice_DueDate}</p>
+                    </InvoiceDetails>
+                </HeaderDetails>
+                {invoiceDetails ?
+                            invoiceDetails.map((item, key) => {
+                                return (
+                                    <General>
+                                        <p>User Name: {item.UserName}</p>
+                                        <p>User Email: {item.UserEmail}</p>
+                                        <p>Purchase Order Id: {item.PO_Id}</p>
+                                        <p>Vendor Name: {item.Vendor}</p>
+                                        <p>GR Created Date: {item.Created_Date}</p>
+                                        {/* <Paragraph>Vendor Name: {item.selectVendor}</Paragraph> */}
+                                        {/* <Paragraph>Status: <Tag color={item.POStatus === 'Approved' ? 'green' : 'red'}>{item.POStatus}</Tag></Paragraph> */}
+                                    </General>
+                                )
+                            }) : <Skeleton active />
+                        }
                 <div>
                     {invoiceItemList ?
                         <Table dataSource={invoiceItemList} columns={columns} /> : <Skeleton />
