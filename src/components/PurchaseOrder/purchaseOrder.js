@@ -3,7 +3,10 @@ import firebase from '../../config/Firebase/firebase';
 import { VendorCustomerContext } from '../../context/Random/random'
 import { useHistory } from 'react-router-dom'
 import { CopyToClipboard } from 'react-copy-to-clipboard'
-import { CreatePurchaseOrder, UpdatePOStatus, getItemsId, getDataById} from '../../Utils/utils'
+import {
+    CreatePurchaseOrder, UpdatePOStatus, getItemsId, getDataById,
+    GetAllGoodsReceipt, CreateRecord
+} from '../../Utils/utils'
 import { FaRegClipboard } from "react-icons/fa";
 import moment from 'moment'
 import {
@@ -20,7 +23,8 @@ import {
     Table,
     Space,
     Modal,
-    Skeleton
+    Skeleton,
+    Tag
 } from 'antd'
 import {
     Title,
@@ -28,8 +32,11 @@ import {
     ItemDiv,
     QuantityAndButtonDiv,
     Quantity,
-    DeleteButton
+    DeleteButton,
+    H3,
+    Paragraph, Location,CName
 } from '../../Utils/styles'
+import { HeaderDetails, InvoiceDetails, CompanyDetails, General } from './style/index'
 const { TabPane } = Tabs;
 
 const PurchaseOrder = () => {
@@ -44,17 +51,24 @@ const PurchaseOrder = () => {
     const [requriedDate, setRequriedDate] = useState();
     const [pricePerItem, setPricePerItem] = useState()
     const [discription, setDiscription] = useState()
+    const [uom, setUom] = useState()
     const [allPO, setAllPO] = useState()
     const [poData, setPOData] = useState()
+    const [allGoodsReceipt, setAllGoodsReceipt] = useState()
+    const [showInvoiceModal, setShowInvoiceModal] = useState(false);
+    const [totalInvoiceAmount, setTotalInvoiceAmount] = useState()
+    const [invoiceDueDate, setInvoiceDueDate] = useState()
+
+    const [gRData, setGRData] = useState()
+    const [showPOModal, setShowPOModal] = useState(false)
     const [showModal, setShowModal] = useState(false);
 
-
-    const { RangePicker } = DatePicker;
     // const utc = new Date().toJSON().slice(0, 10).replace(/-/g, '/');
     let current_datetime = new Date()
     let utc = current_datetime.getDate() + "-" + (current_datetime.getMonth() + 1) + "-" + current_datetime.getFullYear()
     const shortid = require('shortid')
     const POiD = shortid.generate()
+    const InvoiceId = shortid.generate()
     const retreiveQuantity = 0
     const remainingQuantity = 0
 
@@ -71,19 +85,25 @@ const PurchaseOrder = () => {
         })
         setItems(value)
     }
+    const selectUOM = e => {
+        setUom(e);
+    };
 
     const CreateList = () => {
-        if (items == null) {
-            message.error('Items can not left Empty')
-        }
-        else if (isNaN(requestedquantity) || requestedquantity.length > 2) {
-            message.error('Quantity amount not support')
-        }
+        if (!items) return message.error('Error! Invalid Items')
+        if (!uom) return message.error('Error! Invalid unit of measure')
+        if (!requestedquantity) return message.error('Error! Invalid Requested Quantity')
+        if (isNaN(requestedquantity) || requestedquantity <= 0) return message.error('Error! Invalid Requested Quantity')
+        if (isNaN(pricePerItem) || pricePerItem <= 0) return message.error('Error! Invalid Item Price')
+        if (!discription) return message.error('Error! Please add small')
 
         else {
-            setItemsList([...itemsList, { itemCollectionId, itemId, items, requestedquantity, retreiveQuantity, remainingQuantity, radioValue, pricePerItem, discription }])
+            const itemPrice = Number(pricePerItem)
+            const quantity = Number(requestedquantity)
+            setItemsList([...itemsList, { itemCollectionId, itemId, items, uom, quantity, retreiveQuantity, remainingQuantity, radioValue, itemPrice, discription }])
             setItems('')
             setQuantity('')
+            setPricePerItem('')
         }
     }
 
@@ -102,6 +122,9 @@ const PurchaseOrder = () => {
     };
 
     const generatePurchaseOrder = () => {
+        if (!selectedVendor) return message.error('Error! Invalid Vendor')
+        if (!itemsList.length) return message.error('Error! Select some items')
+        if (!requriedDate) return message.error('Error! Select required date')
         CreatePurchaseOrder(itemsList, POiD, utc, requriedDate, selectedVendor)
         setItemsList([])
     }
@@ -123,14 +146,17 @@ const PurchaseOrder = () => {
     }
 
     const getPO = (id) => {
-        setShowModal(true)
-        getDataById('PurchaseOrder',id).then(data => {
-        setPOData(data)
+        setShowPOModal(true)
+        getDataById('PurchaseOrder', id).then(data => {
+            setPOData(data)
         })
     }
 
     useEffect(() => {
         getPurchaseOrder()
+        GetAllGoodsReceipt().then(data => {
+            setAllGoodsReceipt(data)
+        })
     }, [])
 
     const poItemList = poData?.flatMap(o => o.newList)
@@ -139,16 +165,75 @@ const PurchaseOrder = () => {
         return current && current < moment().endOf('day')
     }
 
-    const disableWeekends = current => {
-        console.log('current', current);
-        return current.day() !== 0 && current.day() !== 6;
-    }
-
     const selectRequriedDate = (date, dateString) => {
-        console.log(dateString);
         setRequriedDate(dateString)
     }
+    const InvoiceDueDate = (date, dateString) => {
+        setInvoiceDueDate(dateString)
+    }
+    const showGRDetails = (id) => {
+        setShowModal(true)
+        getDataById('Goods_Receipts', id).then(data => {
+            setGRData(data.map(gritem => {
+                return {
+                    ...gritem, grItemList: gritem.grItemList.map(grlistitem => {
+                        return {
+                            ...grlistitem,
+                            itemAmount: Number(grlistitem.itemPrice) * grlistitem.retreiveQuantity
+                        }
+                    })
+                }
+            }))
 
+        })
+    }
+    const invoiceModal = (id) => {
+        setShowInvoiceModal(true)
+        getDataById('Goods_Receipts', id).then(data => {
+            setGRData(data.map(gritem => {
+                return {
+                    ...gritem, grItemList: gritem.grItemList.map(grlistitem => {
+                        return {
+                            ...grlistitem,
+                            itemAmount: Number(grlistitem.itemPrice) * grlistitem.retreiveQuantity
+                        }
+                    })
+                }
+            }))
+
+        })
+    }
+    const totalInvoice = () => {
+        const a = gRData && gRData[0].grItemList && gRData[0].grItemList.reduce((acc, current) => {
+            return acc + current.itemAmount
+        }, 0);
+        setTotalInvoiceAmount(a)
+    }
+    useEffect(() => {
+        totalInvoice()
+    }, [gRData])
+    const goods = gRData?.flatMap(goods => goods.grItemList)
+    const invoiceList = gRData?.flatMap(invoice => invoice.grItemList)
+
+    const objInvoice = {
+        CompanyName: 'Sams Star',
+        Address:'asfasdfasdfs',
+        State:'Sindh',
+        City:'Karachi',
+        PostalCode:123456,
+        Invoice_Id: InvoiceId,
+        Invoice_Created: utc,
+        Invoice_DueDate: invoiceDueDate,
+        PO_Id: gRData && gRData[0].POid,
+        Vendor: gRData && gRData[0].Vendor,
+        Invoice_Items: invoiceList,
+        Total_Amount: totalInvoiceAmount,
+        GR_Date: gRData && gRData[0].Created_Date
+    }
+    const generateInvoice = () => {
+        if (!invoiceDueDate) return message.error('Error! Invalid Due Date')
+        CreateRecord(objInvoice, 'Invoices', 'Your Invoice has been created')
+    }
     const columns = [
         {
             title: 'PO ID',
@@ -175,8 +260,8 @@ const PurchaseOrder = () => {
                         placeholder='Select Status'
                         style={{ width: 200 }}
                         onChange={e => changeStatus(e, allPO.iD)}>
-                        <Select.Option value="approved">Approved</Select.Option>
-                        <Select.Option value="rejected">Rejected</Select.Option>
+                        <Select.Option value="Approved">Approved</Select.Option>
+                        <Select.Option value="Rejected">Rejected</Select.Option>
                     </Select>
                 </Space>
             ),
@@ -210,12 +295,12 @@ const PurchaseOrder = () => {
         },
         {
             title: 'Per Price',
-            dataIndex: 'pricePerItem',
+            dataIndex: 'itemPrice',
             key: 'perPrice',
         },
         {
             title: 'Requested Quantity',
-            dataIndex: 'requestedquantity',
+            dataIndex: 'quantity',
             key: 'requestedQuantity',
         },
         {
@@ -230,6 +315,110 @@ const PurchaseOrder = () => {
         }
     ]
 
+    const goodsReceiptColumns = [
+        {
+            title: 'Purchase Order ID',
+            dataIndex: 'POid',
+            key: 'id',
+        },
+        {
+            title: 'Created At',
+            dataIndex: 'Created_Date',
+            key: 'date',
+        },
+        {
+            title: 'Vendor Name',
+            dataIndex: 'Vendor',
+            key: 'vendor_name',
+        },
+        {
+            title: 'Action',
+            key: 'action',
+            render: (good) => (
+                <Space size="middle">
+                    <Button
+                        onClick={
+                            e => showGRDetails(good.iD)
+                        }
+                    >Details</Button>
+                    <Button onClick={e => invoiceModal(good.iD)}>
+                        Create Invoice
+                    </Button>
+                </Space>
+            ),
+        },
+    ]
+
+    const goodReceiptDetails = [
+        {
+            title: 'Item ID',
+            dataIndex: 'itemId',
+            key: 'id',
+        },
+        {
+            title: 'Item Name',
+            dataIndex: 'items',
+            key: 'name',
+        },
+        {
+            title: 'Per Price',
+            dataIndex: 'itemPrice',
+            key: 'perPrice',
+        },
+        {
+            title: 'Requested Quantity',
+            dataIndex: 'quantity',
+            key: 'requestedQuantity',
+        },
+        {
+            title: 'Retreive Quantity',
+            dataIndex: 'retreiveQuantity',
+            key: 'retreiveQuantity',
+        },
+        {
+            title: 'Remaining Quanity',
+            dataIndex: 'remainingQuantity',
+            key: 'remainingQuantity',
+        }
+    ]
+
+    const invoiceTable = [
+        {
+            title: 'Item ID',
+            dataIndex: 'itemId',
+            key: 'id',
+        },
+        {
+            title: 'Item Name',
+            dataIndex: 'items',
+            key: 'name',
+        },
+        {
+            title: 'Per Price',
+            dataIndex: 'itemPrice',
+            key: 'perPrice',
+        },
+        {
+            title: 'Requested Quantity',
+            dataIndex: 'quantity',
+            key: 'requestedQuantity',
+        },
+        {
+            title: 'Retreive Quantity',
+            dataIndex: 'retreiveQuantity',
+            key: 'retreiveQuantity',
+        },
+        {
+            title: 'Remaining Quanity',
+            dataIndex: 'remainingQuantity',
+            key: 'remainingQuantity',
+        },
+        {
+            title: 'Amount Price',
+            dataIndex: 'itemAmount',
+            key: 'amountPrice',
+        }
+    ]
     return (
         <div>
             <Title>Purchase Order</Title>
@@ -254,7 +443,7 @@ const PurchaseOrder = () => {
                             </div>
                         </Col>
                         <Col xs={24} sm={4}>
-                            <h4>Date: {utc}</h4>
+                            <Paragraph>Date: {utc}</Paragraph>
                         </Col>
                     </Row>
                     <Row gutter={[24, 10]}>
@@ -295,10 +484,18 @@ const PurchaseOrder = () => {
                             />
                         </Col>
                         <Col>
+                            <Select placeholder='Unit of Measure' style={{ width: 200 }} onChange={selectUOM}>
+                                <Select.Option value="packet">Packet</Select.Option>
+                                <Select.Option value="dozen">Dozen</Select.Option>
+                                <Select.Option value="single">Single</Select.Option>
+                                <Select.Option value="sheet">Sheet</Select.Option>
+                            </Select>
+                        </Col>
+                        <Col>
                             <Select placeholder='Select Quality type' style={{ width: 200 }} onChange={selectQuality}>
-                                <Select.Option value="a">A</Select.Option>
-                                <Select.Option value="b">B</Select.Option>
-                                <Select.Option value="c">C</Select.Option>
+                                <Select.Option value="A-class">A-class</Select.Option>
+                                <Select.Option value="B-class">B-class</Select.Option>
+                                <Select.Option value="C-class">C-class</Select.Option>
                             </Select>
                         </Col>
                         <Col >
@@ -322,7 +519,7 @@ const PurchaseOrder = () => {
                     <Row gutter={[10, 10]}>
                         <Col xs={24} sm={10}>
                             <Input
-                                type='number'
+                                type='text'
                                 placeholder='Enter item Quantity'
                                 value={requestedquantity}
                                 onChange={e => setQuantity(e.target.value)}
@@ -331,11 +528,11 @@ const PurchaseOrder = () => {
                         </Col>
                         <Col xs={24} sm={10}>
                             <Input
-                                type='number'
+                                type='text'
                                 placeholder='Price per Item'
                                 value={pricePerItem}
                                 onChange={e => setPricePerItem(e.target.value)}
-                                maxLength={3}
+                                maxLength={4}
                             />
                         </Col>
 
@@ -355,7 +552,7 @@ const PurchaseOrder = () => {
                         </Col>
 
                     </Row>
-                    <Divider>ITEMS LIST</Divider>
+                    <Divider><H3>ITEMS LIST</H3></Divider>
 
                     <ul>
                         {
@@ -364,12 +561,16 @@ const PurchaseOrder = () => {
                                     <>
                                         <ListItem key={key} xs={24} sm={12}>
                                             <ItemDiv>
-                                                {item.items}
+                                                ItemName: {item.items}
                                             </ItemDiv>
                                             <QuantityAndButtonDiv>
                                                 <Quantity>
-                                                    {item.pricePerItem}/
-                      {item.radioValue}
+                                                    Requested Quantity: {item.quantity}
+                                                </Quantity>
+                                                <Quantity>
+                                                    Per item price:
+                                                {item.itemPrice}/
+                                                    {item.radioValue}
                                                 </Quantity>
                                                 <DeleteButton>
                                                     <Button danger onClick={() => deleteItem(key)}>Delete</Button>
@@ -392,9 +593,9 @@ const PurchaseOrder = () => {
                     <Modal
                         title="Purchase Order Details"
                         centered
-                        visible={showModal}
-                        onOk={() => setShowModal(false)}
-                        onCancel={() => setShowModal(false)}
+                        visible={showPOModal}
+                        onOk={() => setShowPOModal(false)}
+                        onCancel={() => setShowPOModal(false)}
                         width={1000}
                     >
                         {poData ?
@@ -423,8 +624,101 @@ const PurchaseOrder = () => {
                         <Table dataSource={allPO} columns={columns} />;
                      </div>
                 </TabPane>
+                <TabPane tab="All Goods Receipt" key="3">
+                    <div>
+                        {allGoodsReceipt ?
+                            <Table dataSource={allGoodsReceipt} columns={goodsReceiptColumns} /> : <Skeleton />
+                        }
+                    </div>
+                    <Modal
+                        title="GOODS RECEIPT DETAILS"
+                        centered
+                        visible={showModal}
+                        onOk={() => setShowModal(false)}
+                        onCancel={() => setShowModal(false)}
+                        width={1000}
+                    >
+                        <div>
+                            {goods ?
+                                <Table dataSource={goods} columns={goodReceiptDetails} /> : <Skeleton />
+                            }
+                        </div>
+                    </Modal>
+                    <Modal
+                        title="CREATE INVOICE"
+                        centered
+                        visible={showInvoiceModal}
+                        width={1000}
+                        footer={
+                            <div
+                                style={{
+                                    textAlign: 'right',
+                                }}
+                            >
+                                <Button onClick={() => setShowInvoiceModal(false)} style={{ marginRight: 8 }}>
+                                    Cancel
+                                 </Button>
+                                <Button onClick={generateInvoice} type="primary">
+                                    Create Invoice
+                                 </Button>
+                            </div>
+                        }
+                    >
+                        <CName>Sams Star</CName>
+                        <HeaderDetails>
+                            <CompanyDetails>
+                                <h3>Address:</h3>
+                                <Location>
+                                    <h3>Karachi</h3>
+                                    <h3>Sindh</h3>
+                                    <h3>123456</h3>
+                                </Location>
+                                <h3>Email: www.SamsStar.pk</h3>
+                            </CompanyDetails>
+                            <InvoiceDetails>
+                                <p>Invoice Id: {InvoiceId}</p>
+                                <p>Invoice Date: {utc}</p>
+                                <p>Invoice Due Date:</p>
+                            
+                        <Col >
+                            <DatePicker
+                                placeholder='Invoice Due Date'
+                                format="DD-MM-YYYY"
+                                disabledDate={disabledDate}
+                                style={{ width: 200 }}
+                                onChange={InvoiceDueDate}
+                            />
+                            {/* {dateTimePicker()} */}
+                        </Col>
+                        </InvoiceDetails>
+                        </HeaderDetails>
+                        {gRData ?
+                            gRData.map((item, key) => {
+                                return (
+                                    <General>
+                                        <p>Purchase Order Id: {item.POid}</p>
+                                        <p>Vendor Name: {item.Vendor}</p>
+                                        <p>GR Created Date: {item.Created_Date}</p>
+                                        {/* <Paragraph>Vendor Name: {item.selectVendor}</Paragraph> */}
+                                        {/* <Paragraph>Status: <Tag color={item.POStatus === 'Approved' ? 'green' : 'red'}>{item.POStatus}</Tag></Paragraph> */}
+                                    </General>
+                                )
+                            }) : <Skeleton active />
+                        }
+                        <Paragraph>
+                            {itemsList ?
+                                <Table dataSource={goods} columns={invoiceTable} /> : <Skeleton />
+                            }
+                        </Paragraph>
+                        <p>Total Amount is: <b>
+                            <Tag color="red">{totalInvoiceAmount} Rs.</Tag>
+                        </b>
+                        </p>
+                    </Modal>
+
+                </TabPane>
             </Tabs>
-        </div>
+        </div >
     )
 }
 export default PurchaseOrder

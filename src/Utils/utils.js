@@ -377,6 +377,7 @@ const CreatePurchaseOrder = (newList, POiD, createdDate, requriedDate, selectVen
     POStatus: 'Not Defined',
     remaining: 0
   }
+  console.log('PO_object: ', PO_object);
   firebase.firestore().collection('PurchaseOrder').add(PO_object)
     .then((response) => {
       firebase.firestore().collection('PurchaseOrder').doc(response.id).update({ iD: response.id })
