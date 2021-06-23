@@ -62,7 +62,7 @@ const routes = [
     },
     {
         path: '/invoices',
-        name: 'Vendor Invoices',
+        name: 'All Invoices',
         icon: <FaFileInvoiceDollar/>,
         component: Invoices
     },

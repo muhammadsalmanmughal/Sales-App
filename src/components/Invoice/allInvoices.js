@@ -1,18 +1,16 @@
 import React, { useState, useEffect } from 'react'
 import { getAllInvoices, getDataById } from '../../Utils/utils'
 import {
-    Button, Skeleton, Table, Space, Modal, Tag
+    Button, Skeleton, Table, Space, Modal, Tag, Row, Col
 } from 'antd'
-import { Title, CName, Location} from '../../Utils/styles'
+import { Title, CName, Location, Paragraph, H3 } from '../../Utils/styles'
 import { HeaderDetails, CompanyDetails, InvoiceDetails, General } from '../PurchaseOrder/style/index'
 
 const AllInvoices = () => {
     const [allInvoices, setAllInvoices] = useState()
     const [showModal, setShowModal] = useState(false)
     const [invoiceDetails, setInvoiceDetails] = useState()
-    console.log('invoiceDetails: ', invoiceDetails);
     const [invoiceItemList, setInvoiceItemList] = useState()
-    console.log('invoiceItemList: ', invoiceItemList);
 
     useEffect(() => {
         getAllInvoices().then(data => {
@@ -24,24 +22,29 @@ const AllInvoices = () => {
         setShowModal(true)
         getDataById('Invoices', id).then(data => {
             setInvoiceDetails(data)
-            setInvoiceItemList(data && data.flatMap(i => i.Invoice_Items))
+            setInvoiceItemList(data && data.flatMap(i => i.OrderItems))
         })
     }
 
     const invoicesTable = [
         {
-            title: 'Purchase Order Id',
-            dataIndex: 'PO_Id',
-            key: 'po_id',
+            title: 'Invoice Id',
+            dataIndex: 'InvoiceId',
+            key: 'invoice_id',
         },
         {
-            title: 'Vendor Name',
-            dataIndex: 'Vendor',
-            key: 'vendor_name',
+            title: 'Order Id',
+            dataIndex: 'CustomerOrderId',
+            key: 'order_id',
+        },
+        {
+            title: 'Customer Name',
+            dataIndex: 'CustomerName',
+            key: 'customer_Name',
         },
         {
             title: 'Created Date',
-            dataIndex: 'Invoice_Created',
+            dataIndex: 'InvoiceCreateDate',
             key: 'date',
         },
         {
@@ -62,14 +65,14 @@ const AllInvoices = () => {
 
     const columns = [
         {
-            title: 'Item Id',
-            dataIndex: 'itemId',
-            key: 'item_id',
+            title: 'Item Name',
+            dataIndex: 'item',
+            key: 'item_name',
         },
         {
-            title: 'Item Name',
-            dataIndex: 'items',
-            key: 'item_name',
+            title: 'Requested Quantity',
+            dataIndex: 'quantity',
+            key: 'requested',
         },
         {
             title: 'Price Per Item',
@@ -77,31 +80,16 @@ const AllInvoices = () => {
             key: 'price',
         },
         {
-            title: 'Item Quality',
-            dataIndex: 'radioValue',
-            key: 'price',
-        },
-        {
-            title: 'Requested',
-            dataIndex: 'quantity',
-            key: 'requested',
-        },
-        {
-            title: 'Retreive',
-            dataIndex: 'retreiveQuantity',
-            key: 'retreive',
-        },
-        {
-            title: 'Amount',
-            dataIndex: 'itemAmount',
-            key: 'amount',
+            title: 'Description',
+            dataIndex: 'discription',
+            key: 'details',
         },
 
     ];
 
     return (
         <div>
-            <Title>Vendor Invoices</Title>
+            <Title>All Invoices</Title>
             <div>
                 {allInvoices ?
                     <Table dataSource={allInvoices} columns={invoicesTable} /> : <Skeleton />
@@ -136,33 +124,72 @@ const AllInvoices = () => {
                         <h3>Email: www.SamsStar.pk</h3>
                     </CompanyDetails>
                     <InvoiceDetails>
-                        <p>Invoice Id: {invoiceDetails&&invoiceDetails[0].Invoice_Id} </p>
-                        <p>Invoice Date:{invoiceDetails&&invoiceDetails[0].Invoice_Created}</p>
-                        <p>Invoice Due Date: {invoiceDetails&&invoiceDetails[0].Invoice_DueDate}</p>
+                        <p>Invoice Id: {invoiceDetails && invoiceDetails[0].InvoiceId} </p>
+                        <p>Invoice Date:{invoiceDetails && invoiceDetails[0].InvoiceCreateDate}</p>
                     </InvoiceDetails>
                 </HeaderDetails>
+                <CompanyDetails>
+                    <H3>Bill To:</H3>
+                    <Row>
+                        <Col><h3>Customer: </h3></Col>
+                        <Col>
+                            <h3>{invoiceDetails && invoiceDetails[0].CustomerName}</h3>
+                        </Col>
+                    </Row>
+                    <Row>
+                        <Col><h3>Order Date: </h3></Col>
+                        <Col>
+                            <h3>{invoiceDetails && invoiceDetails[0].OrderCreated}</h3>
+                        </Col>
+                    </Row>
+                    <Row>
+                        <Col><h3>Order Required: </h3></Col>
+                        <Col>
+                            <h3>{invoiceDetails && invoiceDetails[0].OrderRequiredDate}</h3>
+                        </Col>
+                    </Row>
+                    <Row>
+                        <Col><h3>Phone: </h3></Col>
+                        <Col>
+                            <h3>{invoiceDetails && invoiceDetails[0].Phone}</h3>
+                        </Col>
+                    </Row>
+                    <Row>
+                        <Col><h3>City: </h3></Col>
+                        <Col>
+                            <h3>{invoiceDetails && invoiceDetails[0].City}</h3>
+                        </Col>
+                    </Row>
+                    <Row>
+                        <Col><h3>State: </h3></Col>
+                        <Col>
+                            <h3>{invoiceDetails && invoiceDetails[0].State}</h3>
+                        </Col>
+                    </Row>
+                    <Row>
+                        <Col><h3>Address: </h3></Col>
+                        <Col>
+                            <h3>{invoiceDetails && invoiceDetails[0].Address}</h3>
+                        </Col>
+                    </Row>
+                </CompanyDetails>
                 {invoiceDetails ?
-                            invoiceDetails.map((item, key) => {
-                                return (
-                                    <General>
-                                        <p>User Name: {item.UserName}</p>
-                                        <p>User Email: {item.UserEmail}</p>
-                                        <p>Purchase Order Id: {item.PO_Id}</p>
-                                        <p>Vendor Name: {item.Vendor}</p>
-                                        <p>GR Created Date: {item.Created_Date}</p>
-                                        {/* <Paragraph>Vendor Name: {item.selectVendor}</Paragraph> */}
-                                        {/* <Paragraph>Status: <Tag color={item.POStatus === 'Approved' ? 'green' : 'red'}>{item.POStatus}</Tag></Paragraph> */}
-                                    </General>
-                                )
-                            }) : <Skeleton active />
-                        }
+                    invoiceDetails.map((item, key) => {
+                        return (
+                            <General>
+                                <p>User Name: {item.UserName}</p>
+                                <p>User Email: {item.UserEmail}</p>
+                            </General>
+                        )
+                    }) : <Skeleton active />
+                }
                 <div>
                     {invoiceItemList ?
                         <Table dataSource={invoiceItemList} columns={columns} /> : <Skeleton />
                     }
                 </div>
                 <p>Total Amount : <b>
-                    <Tag color="blue">{invoiceDetails && invoiceDetails[0].Total_Amount}</Tag>
+                    <Paragraph><Tag color='#87d068'>{invoiceDetails && invoiceDetails[0].TotalAmount} Rs.</Tag></Paragraph>
                 </b>
                 </p>
             </Modal>

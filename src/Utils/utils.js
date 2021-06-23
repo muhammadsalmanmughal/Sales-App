@@ -673,7 +673,6 @@ const UpdateItemStatus = (status, id) => {
     })
 }
 const getOrdersById = (id) => {
-  console.log('get orders function id: ', id);
   return firebase
     .firestore()
     .collection('Customer_Order')

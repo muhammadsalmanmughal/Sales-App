@@ -3,7 +3,7 @@ import styled from 'styled-components'
 export const HeaderDetails = styled.div`
 display: flex;
 flex-direction: row;
-justify-content: space-around;
+justify-content: space-between;
 `
 export const InvoiceDetails = styled.div`
 // display: flex;
