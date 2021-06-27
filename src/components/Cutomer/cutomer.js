@@ -3,7 +3,7 @@ import { useFormik } from 'formik'
 import { Label } from '../Textbox/style/index'
 import { SubmitButton } from '../../Utils/styles'
 import { validationSchema } from './validationSchema'
-import { createNewCustomer, getCustomerOrder, getDataById, UpdateOrderDate, UpdateitemStatus } from '../../Utils/utils'
+import { createNewCustomer, getCustomerOrder, getDataById, UpdateOrderDate } from '../../Utils/utils'
 import { Title } from '../../Utils/styles'
 import ErrorText from '../FormError/formError'
 import AllCustomers from '../AllCustomers/allCustomers';
@@ -38,6 +38,7 @@ const CreateCustomer = () => {
     const initialValues = {
         customerName: '',
         companyName: '',
+        cnicNumber:'',
         billToAddress: '',
         city: '',
         state: '',
@@ -169,9 +170,7 @@ const CreateCustomer = () => {
                                          <Input
                                                 type='text'
                                                 name='customerName'
-                                                // value={formik.values.companyName}
-                                                // onBlur={formik.handleBlur}
-                                                // onChange={formik.handleChange}
+                                                maxLength='15'
                                                 {...formik.getFieldProps('customerName')}
                                             />
                                         </Label>
@@ -185,9 +184,7 @@ const CreateCustomer = () => {
                                          <Input
                                                 type='text'
                                                 name='companyName'
-                                                // value={formik.values.companyName}
-                                                // onBlur={formik.handleBlur}
-                                                // onChange={formik.handleChange}
+                                                maxLength='25'
                                                 {...formik.getFieldProps('companyName')}
                                             />
                                         </Label>
@@ -195,12 +192,27 @@ const CreateCustomer = () => {
                                             ? <ErrorText text={formik.errors.companyName} />
                                             : null}
                                     </Col>
-                                    <Col xs={24} sm={24}>
+                                    <Col xs={24} sm={10}>
+                                        <Label>
+                                            CNIC-Number:
+                                           <Input
+                                                type='text'
+                                                name='cnicNumber'
+                                                maxLength='13'
+                                                {...formik.getFieldProps('cnicNumber')}
+                                            />
+                                        </Label>
+                                        {formik.touched.cnicNumber && formik.errors.cnicNumber
+                                            ? <ErrorText text={formik.errors.cnicNumber} />
+                                            : null}
+                                    </Col>
+                                    <Col xs={24} sm={14}>
                                         <Label>
                                             Bill To Address:
-                                 <Input
+                                           <Input
                                                 type='text'
                                                 name='billToAddress'
+                                                maxLength='50'
                                                 {...formik.getFieldProps('billToAddress')}
                                             />
                                         </Label>
@@ -213,6 +225,7 @@ const CreateCustomer = () => {
                                     <Input
                                                 type='text'
                                                 name='city'
+                                                maxLength='20'
                                                 {...formik.getFieldProps('city')}
 
                                             />
@@ -226,6 +239,7 @@ const CreateCustomer = () => {
                                     <Input
                                                 type='text'
                                                 name='state'
+                                                maxLength='15'
                                                 {...formik.getFieldProps('state')}
                                             />
                                         </Label>
@@ -238,6 +252,7 @@ const CreateCustomer = () => {
                                     <Input
                                                 type='number'
                                                 name='postalCode'
+                                                maxLength='6'
                                                 {...formik.getFieldProps('postalCode')}
                                             />
                                         </Label>
@@ -250,6 +265,7 @@ const CreateCustomer = () => {
                                     <Input
                                                 type='number'
                                                 name='phone'
+                                                maxLength='11'
                                                 {...formik.getFieldProps('phone')}
                                             />
                                         </Label>
@@ -262,6 +278,7 @@ const CreateCustomer = () => {
                                     <Input
                                                 type='email'
                                                 name='email'
+                                                maxLength='50'
                                                 {...formik.getFieldProps('email')}
                                             />
                                         </Label>
@@ -274,6 +291,7 @@ const CreateCustomer = () => {
                                     <Input
                                                 type='text'
                                                 name='responsibleName'
+                                                maxLength='15'
                                                 value={formik.values.responsibleName}
                                                 onChange={formik.handleChange}
                                             />
@@ -287,6 +305,7 @@ const CreateCustomer = () => {
                                     <Input
                                                 type='text'
                                                 name='responsiblePhone'
+                                                maxLength='11'
                                                 value={formik.values.responsiblePhone}
                                                 onChange={formik.handleChange}
                                             />
@@ -300,6 +319,7 @@ const CreateCustomer = () => {
                                     <Input
                                                 type='text'
                                                 name='secondaryPhone'
+                                                maxLength='11'
                                                 value={formik.values.secondaryPhone}
                                                 onChange={formik.handleChange}
                                             />
@@ -314,6 +334,7 @@ const CreateCustomer = () => {
                                     <Input
                                                 type='text'
                                                 name='city'
+                                                maxLength='15'
                                                 {...formik.getFieldProps('city')}
                                             />
                                         </Label>
@@ -384,7 +405,7 @@ const CreateCustomer = () => {
                                         <p>{item.PostalCode}</p>
                                         </label>
 
-                                        <label>Phone: 
+                                        <label>Phone:
                                         <p>{item.Phone}</p>
                                         </label>
 

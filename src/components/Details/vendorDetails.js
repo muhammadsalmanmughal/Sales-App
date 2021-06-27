@@ -99,14 +99,14 @@ const VendorDetails = () => {
                 <Row gutter={[10, 10]}>
                     <Col xs={24} sm={16}>
                         <h2>State:</h2>
-                        <Input type='text' value={detailsdData.state}
+                        <Input type='text' value={detailsdData.State}
                             onChange={(e) => changeHandler(e, 'state')}
                             disabled={!isDisable}
                         />
                     </Col>
                     <Col xs={24} sm={8}>
                         <h2>City:</h2>
-                        <Input type='text' value={detailsdData.city}
+                        <Input type='text' value={detailsdData.City}
                             onChange={(e) => changeHandler(e, 'city')}
                             disabled={!isDisable}
                         />
@@ -115,14 +115,14 @@ const VendorDetails = () => {
                 <Row gutter={[10, 10]}>
                     <Col xs={24} sm={16}>
                         <h2>Address:</h2>
-                        <Input type='text' value={detailsdData.address}
+                        <Input type='text' value={detailsdData.Address}
                             onChange={(e) => changeHandler(e, 'address')}
                             disabled={!isDisable}
                         />
                     </Col>
                     <Col xs={24} sm={8}>
                         <h2>PostalCode:</h2>
-                        <Input type='text' value={detailsdData.postalCode}
+                        <Input type='text' value={detailsdData.PostalCode}
                             onChange={(e) => changeHandler(e, 'postalCode')}
                             disabled={!isDisable}
                         />
@@ -134,14 +134,14 @@ const VendorDetails = () => {
                 <Row gutter={[10, 10]}>
                     <Col xs={24} sm={16}>
                         <h2>Email:</h2>
-                        <Input type='text' value={detailsdData.email}
+                        <Input type='text' value={detailsdData.Email}
                             onChange={(e) => changeHandler(e, 'email')}
                             disabled={!isDisable}
                         />
                     </Col>
                     <Col xs={24} sm={8}>
                         <h2>Phone Number:</h2>
-                        <Input type='text' value={detailsdData.phone}
+                        <Input type='text' value={detailsdData.Phone}
                             onChange={(e) => changeHandler(e, 'phone')}
                             disabled={!isDisable}
                         />

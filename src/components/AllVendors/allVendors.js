@@ -29,12 +29,12 @@ const AllVendors = () => {
         },
         {
             title: 'Phone',
-            dataIndex: 'phone',
+            dataIndex: 'Phone',
             key: 'phone',
         },
         {
             title: 'Address',
-            dataIndex: 'address',
+            dataIndex: 'Address',
             key: 'address',
         },
         {

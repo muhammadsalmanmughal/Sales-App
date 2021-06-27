@@ -8,7 +8,6 @@ const CustomerInvoice = () => {
     const [customerOrders, setCustomerOrders] = useState()
     const [orderDetails, setOrderDetails] = useState()
     const [orderItems, setOrderItems] = useState()
-    console.log('orderItems: ', orderItems);
 
     useEffect(() => {
         getCustomerOrder().then(data => {

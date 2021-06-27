@@ -3,7 +3,7 @@ import { useFormik } from 'formik'
 import { validationSchema } from './schema'
 import { createVendor } from '../../Utils/utils'
 import { Label } from '../Textbox/style/index'
-import { VendorMainDiv, FormDiv} from './style/index'
+import { VendorMainDiv, FormDiv } from './style/index'
 import ErrorText from '../FormError/formError'
 import AllVendors from '../AllVendors/allVendors';
 import {
@@ -13,22 +13,23 @@ import {
     Input
 } from 'antd';
 import {
-    Title
-  } from '../../Utils/styles'
+    Title, SubmitButton
+} from '../../Utils/styles'
 const initialValues = {
     companyName: '',
     ownerFirstName: '',
     ownerLastName: '',
+    state: '',
+    cnicNumber: '',
     address: '',
     phone: '',
     email: '',
-    // country: '',
     city: '',
     postalCode: ''
 }
 
 const Vendor = () => {
-    const onSubmit = (values,onSubmitProps) => {
+    const onSubmit = (values, onSubmitProps) => {
         createVendor(values)
         onSubmitProps.resetForm()
     }
@@ -51,7 +52,7 @@ const Vendor = () => {
                             onSubmit={formik.handleSubmit}
                         >
                             <FormDiv>
-                               
+
                                 <Row gutter={[10, 10]}>
                                     <Col xs={24} sm={8}>
                                         <Label>
@@ -92,7 +93,21 @@ const Vendor = () => {
                                             ? <ErrorText text={formik.errors.ownerLastName} />
                                             : null}
                                     </Col>
-                                    <Col xs={24} sm={24}>
+                                    <Col xs={24} sm={10}>
+                                        <Label>
+                                            CNIC-Number:
+                                           <Input
+                                                type='text'
+                                                name='cnicNumber'
+                                                maxLength='13'
+                                                {...formik.getFieldProps('cnicNumber')}
+                                            />
+                                        </Label>
+                                        {formik.touched.cnicNumber && formik.errors.cnicNumber
+                                            ? <ErrorText text={formik.errors.cnicNumber} />
+                                            : null}
+                                    </Col>
+                                    <Col xs={24} sm={14}>
                                         <Label>Address:
                                     <Input
                                                 type='text'
@@ -128,16 +143,19 @@ const Vendor = () => {
                                             ? <ErrorText text={formik.errors.email} />
                                             : null}
                                     </Col>
-                                    {/* <Col xs={24} sm={6}>
-                                        <Label>Coutnry:
+                                    <Col xs={24} sm={8}>
+                                        <Label>State:
                                     <Input
                                                 type='text'
-                                                name='country'
-                                                value={formik.values.country}
-                                                onChange={formik.handleChange}
+                                                name='state'
+                                                maxLength='15'
+                                                {...formik.getFieldProps('state')}
                                             />
                                         </Label>
-                                    </Col> */}
+                                        {formik.touched.state && formik.errors.state
+                                            ? <ErrorText text={formik.errors.state} />
+                                            : null}
+                                    </Col>
                                     <Col xs={24} sm={6}>
                                         <Label>City:
                                     <Input
@@ -165,7 +183,7 @@ const Vendor = () => {
 
                                 </Row>
                                 <Col xs={24} sm={16}>
-                                    <button type='submit' disabled={!formik.isValid}>Submit</button>
+                                    <SubmitButton type='submit' disabled={!formik.isValid}>Submit</SubmitButton>
                                 </Col>
                             </FormDiv>
                         </form>
@@ -173,7 +191,6 @@ const Vendor = () => {
                 </TabPane>
                 <TabPane tab="All Vendors" key="2">
                     <AllVendors />
-
                 </TabPane>
 
             </Tabs>

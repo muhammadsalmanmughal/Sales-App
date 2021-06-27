@@ -53,29 +53,20 @@ const loginUser = async (email, password) => {
 };
 
 const createVendor = (vendorDetails) => {
-  const {
-    companyName,
-    ownerFirstName,
-    ownerLastName,
-    address,
-    phone,
-    email,
-    city,
-    postalCode
-  } = vendorDetails
-
   const vendorObj = {
-    companyName,
-    ownerFirstName,
-    ownerLastName,
-    address,
-    phone,
-    email,
-    city,
-    postalCode,
+    companyName:CapitalizeWords(vendorDetails.companyName),
+    ownerFirstName:CapitalizeWords(vendorDetails.ownerFirstName),
+    ownerLastName:CapitalizeWords(vendorDetails.ownerLastName),
+    CnicNumber:vendorDetails.cnicNumber,
+    State:CapitalizeWords(vendorDetails.state),
+    Address:vendorDetails.address,
+    Phone:vendorDetails.phone,
+    Email:vendorDetails.email,
+    City:vendorDetails.city,
+    PostalCode:vendorDetails.postalCode,
     iD: ''
   }
-
+  
   firebase.firestore().collection('Vendor').add(
     vendorObj
   )
@@ -111,6 +102,7 @@ const createNewCustomer = (customerDetails, CustomerId) => {
   const customerObj = {
     CustomerName: CapitalizeWords(customerDetails.customerName),
     CompanyName: CapitalizeWords(customerDetails.companyName),
+    Customer_CNIC:customerDetails.cnicNumber,
     BillToAddress:CapitalizeWords(customerDetails.billToAddress),
     Phone:customerDetails.phone,
     Email:customerDetails.email,
