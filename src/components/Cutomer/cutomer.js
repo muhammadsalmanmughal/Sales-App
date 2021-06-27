@@ -3,7 +3,7 @@ import { useFormik } from 'formik'
 import { Label } from '../Textbox/style/index'
 import { SubmitButton } from '../../Utils/styles'
 import { validationSchema } from './validationSchema'
-import { createNewCustomer, getCustomerOrder,getDataById } from '../../Utils/utils'
+import { createNewCustomer, getCustomerOrder, getDataById, UpdateOrderDate } from '../../Utils/utils'
 import { Title } from '../../Utils/styles'
 import ErrorText from '../FormError/formError'
 import AllCustomers from '../AllCustomers/allCustomers';
@@ -19,7 +19,9 @@ import {
     Button,
     Skeleton,
     Modal,
-    Tag
+    Tag,
+    DatePicker,
+    message
 } from 'antd';
 
 const { TabPane } = Tabs;
@@ -29,7 +31,11 @@ const CreateCustomer = () => {
 
     const [allOrders, setAllOrders] = useState([])
     const [orderDetails, setOrderDetails] = useState()
+    const [previousDate, setPreviousDate] = useState()
+    const [newOrderDate, setNewOrderDate] = useState()
+    const [collecId, setCollecId] = useState()
     const [showModal, setShowModal] = useState(false);
+    const [showDateModal, setShowDateModal] = useState()
 
     const shortid = require('shortid')
     const orderID = shortid.generate()
@@ -37,13 +43,13 @@ const CreateCustomer = () => {
     const orderItems = orderDetails?.flatMap(item => item.itemsList)
 
     const onSubmit = (values, onSubmitProps) => {
-        createNewCustomer(values,orderID)
+        createNewCustomer(values, orderID)
         onSubmitProps.resetForm()
     }
 
     const initialValues = {
         customerName: '',
-        companyName:'',
+        companyName: '',
         billToAddress: '',
         city: '',
         state: '',
@@ -65,14 +71,30 @@ const CreateCustomer = () => {
         })
     }, [])
 
-   
+
     const ShowOrderDetails = (id) => {
-        getDataById('Customer_Order',id).then(data => {
+        getDataById('Customer_Order', id).then(data => {
             console.log('data: ', data);
             setOrderDetails(data)
         })
         setShowModal(true)
-        console.log('order id: ', id);
+    }
+
+    const setNewDate = (id) => {
+        setCollecId(id)
+        setShowDateModal(true)
+    }
+    const changaDate = (date, dateString) => {
+        setNewOrderDate(dateString)
+        setPreviousDate(allOrders?.[0].requiredDate)
+
+    }
+    const updateOrderDate = () => {
+        if (!newOrderDate) return message.error('Error! No date selected.')
+        if (newOrderDate == previousDate) return message.error('Error! New date and Previous date are same.')
+        UpdateOrderDate(newOrderDate, collecId)
+        console.log('previousDate: ', previousDate);
+        console.log(newOrderDate)
 
     }
     const allOrderTable = [
@@ -97,6 +119,11 @@ const CreateCustomer = () => {
             key: 'due_Date',
         },
         {
+            title: 'New Due Date',
+            dataIndex: 'newOrderDate',
+            key: 'due_Date',
+        },
+        {
             title: 'Action',
             key: 'action',
             render: (order) => (
@@ -109,7 +136,21 @@ const CreateCustomer = () => {
                 </Space>
             ),
         },
+        {
+            title: 'Change Order date',
+            key: 'changeOrderDate',
+            render: (allOrders) => (
+                <Space>
+                    <Button
+                        onClick={
+                            e => setNewDate(allOrders.iD)
+                        }
+                    >Change Date</Button>
+                </Space>
+            ),
+        },
     ]
+
     const orderItemList = [
         {
             title: 'Item Name',
@@ -127,6 +168,7 @@ const CreateCustomer = () => {
             key: 'price',
         }
     ]
+
     return (
         <div>
             <Title>Customer</Title>
@@ -340,21 +382,44 @@ const CreateCustomer = () => {
                             orderDetails.map((item, key) => {
                                 return (
                                     <div>
-                                        <p>{`Customer Name: ${item.CustomerName}`}</p>
-                                        <p>{`Company Name: ${item.CompanyName}`}</p>
-                                        <p>{`State: ${item.State}`}</p>
-                                        <p>{`City: ${item.City}`}</p>
-                                        <p>{`Address: ${item.BillToAddress}`}</p>
-                                        <p>{`Postal Code: ${item.PostalCode}`}</p>
-                                        <p>{`Phone: ${item.Phone}`}</p>
+                                        <label>Customer Name:
+                                         <p>{item.CustomerName}</p>
+                                        </label>
+                                        <label>Company Name:
+                                         <p>{item.CompanyName}</p>
+                                        </label>
+                                        <label>State:
+                                        <p>{item.State}</p>
+                                        </label>
+                                        <label>City:
+                                        <p>{item.City}</p>
+                                        </label>
+
+                                        <label>Address:
+                                        <p>{item.BillToAddress}</p>
+                                        </label>
+
+                                        <label>Postal Code:
+                                        <p>{item.PostalCode}</p>
+                                        </label>
+
+                                        <label>Phone: 
+                                        <p>{item.Phone}</p>
+                                        </label>
+
                                         <p>Order Placed:
-                                            <Tag color='green'>
+                                            <Tag color='blue'>
                                                 {item.currentDate}
                                             </Tag>
                                         </p>
                                         <p>Due Date:
-                                            <Tag color='red'>
+                                            <Tag color='volcano'>
                                                 {item.requiredDate}
+                                            </Tag>
+                                        </p>
+                                        <p>New Due Date:
+                                            <Tag color='red'>
+                                                {item.newOrderDate}
                                             </Tag>
                                         </p>
                                     </div>
@@ -366,6 +431,35 @@ const CreateCustomer = () => {
                                 <Table dataSource={orderItems} columns={orderItemList} /> : <Skeleton />
                             }
                         </div>
+                    </Modal>
+                    <Modal
+                        title="Change Order Date"
+                        centered
+                        visible={showDateModal}
+                        width={500}
+                        footer={
+                            <div
+                                style={{
+                                    textAlign: 'right'
+                                }}
+                            >
+                                <Button onClick={() => setShowDateModal(false)} style={{ marginRight: 8 }}>
+                                    Close
+                           </Button>
+                                <Button type='primary' onClick={updateOrderDate} style={{ marginRight: 8 }}>
+                                    Set Date
+                           </Button>
+                            </div>
+                        }>
+                        <label>Set new date:
+                         <DatePicker
+                                placeholder='Requried Date'
+                                format="DD-MM-YYYY"
+                                //   disabledDate={disabledDate}
+                                style={{ width: 200 }}
+                                onChange={changaDate}
+                            />
+                        </label>
                     </Modal>
                 </TabPane>
 

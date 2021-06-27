@@ -234,6 +234,15 @@ const getCustomerOrder = () => {
     })
 }
 
+const UpdateOrderDate = (newdate, id) => {
+  firebase.firestore().collection('Customer_Order').doc(id)
+    .update({
+      newOrderDate: newdate,
+      // previousDate: previuos,
+    })
+    message.success (`New Order updated to ${newdate}`)
+}
+
 const UpdateVendor = (vendorDetail, id) => {
   firebase.firestore().collection('Vendor').doc(id)
     .update({
@@ -714,6 +723,7 @@ export {
   getAllVendors,
   createNewCustomer,
   getCustomerOrder,
+  UpdateOrderDate,
   getAllCustomers,
   getSpecificData,
   UpdateCustomer,

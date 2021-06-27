@@ -46,10 +46,8 @@ const CustomerOrder = () => {
         }
     )
     const { user } = useContext(UserContext)
-    console.log('user: ', user);
     const [orderDetails, setOrderDetails] = useState()
     const [itemsList, setItemsList] = useState([])
-    console.log('itemsList: ', itemsList);
     const [disable, setDisabled] = useState(false)
     const [items, setItems] = useState()
     const [itemQuantity, setItemQuantity] = useState()
@@ -82,9 +80,9 @@ const CustomerOrder = () => {
 
         const customerObeject = {
             CustomerName, CompanyName, Phone, BillToAddress, State, City, PostalCode,
-            itemsList, orderID, currentDate, requiredDate,UserName,UserEmail
+            itemsList, orderID, currentDate, requiredDate,UserName,UserEmail,newOrderDate:'Not-Set',
+            previousDate:''
         }
-        console.log('customerObeject: ', customerObeject);
         CreateRecord(customerObeject, 'Customer_Order', 'Customers order has been placed')
         setItemsList([])
         setOrderDetails('')
