@@ -3,27 +3,15 @@ import { useFormik } from 'formik'
 import { Label } from '../Textbox/style/index'
 import { SubmitButton } from '../../Utils/styles'
 import { validationSchema } from './validationSchema'
-import { createNewCustomer, getCustomerOrder, getDataById, UpdateOrderDate } from '../../Utils/utils'
+import { createNewCustomer, getCustomerOrder, getDataById, UpdateOrderDate, UpdateitemStatus } from '../../Utils/utils'
 import { Title } from '../../Utils/styles'
 import ErrorText from '../FormError/formError'
 import AllCustomers from '../AllCustomers/allCustomers';
 import { VendorMainDiv, FormDiv } from '../Vendor/style/index'
 
 import {
-    Tabs,
-    Row,
-    Col,
-    Input,
-    Space,
-    Table,
-    Button,
-    Skeleton,
-    Modal,
-    Tag,
-    DatePicker,
-    message
+    Tabs, Row, Col, Input, Space, Table, Button, Skeleton, Modal, Tag, DatePicker, message, Select
 } from 'antd';
-
 const { TabPane } = Tabs;
 
 
@@ -93,10 +81,8 @@ const CreateCustomer = () => {
         if (!newOrderDate) return message.error('Error! No date selected.')
         if (newOrderDate == previousDate) return message.error('Error! New date and Previous date are same.')
         UpdateOrderDate(newOrderDate, collecId)
-        console.log('previousDate: ', previousDate);
-        console.log(newOrderDate)
-
     }
+
     const allOrderTable = [
         {
             title: 'Order ID',
@@ -161,11 +147,6 @@ const CreateCustomer = () => {
             title: 'Quantity',
             dataIndex: 'quantity',
             key: 'quantity',
-        },
-        {
-            title: 'Item Quantity',
-            dataIndex: 'itemPrice',
-            key: 'price',
         }
     ]
 
@@ -462,7 +443,6 @@ const CreateCustomer = () => {
                         </label>
                     </Modal>
                 </TabPane>
-
             </Tabs>
         </div>
     )

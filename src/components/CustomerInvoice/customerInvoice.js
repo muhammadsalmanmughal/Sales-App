@@ -8,6 +8,7 @@ const CustomerInvoice = () => {
     const [customerOrders, setCustomerOrders] = useState()
     const [orderDetails, setOrderDetails] = useState()
     const [orderItems, setOrderItems] = useState()
+    console.log('orderItems: ', orderItems);
 
     useEffect(() => {
         getCustomerOrder().then(data => {
@@ -69,7 +70,7 @@ const CustomerInvoice = () => {
             <Row gutter={[10, 10]}>
                 <Col xs={24} sm={6}>
                     <Select
-                        placeholder='Select Production ID'
+                        placeholder='Select Order Id'
                         style={{ width: 200 }}
                         onChange={orderId => getOrderDetails(orderId)}
                     >

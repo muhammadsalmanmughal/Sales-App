@@ -5,12 +5,7 @@ import { useHistory } from 'react-router-dom'
 import { VendorCustomerContext } from '../../context/Random/random'
 import { UserContext } from '../../context/UserContext/UserContext'
 import {
-    getCustomerOrder,
-    getDataById,
-    getOrdersById,
-    getAllInventoryItems,
-    CreateRecord,
-    CapitalizeWords,
+    getCustomerOrder, getDataById, getOrdersById, getAllInventoryItems, CreateRecord, CapitalizeWords,
     getProductionOrders,
     UpdateProductionStatus,
     UpdateItemStatus
@@ -20,14 +15,7 @@ import {
     Divider, Input, Button, Tooltip, message, Select, Tabs, Row, Col, Space, Table, Skeleton, Modal, Tag
 } from 'antd'
 import {
-    Title, H3,
-    ListItem,
-    ItemDiv,
-    QuantityAndButtonDiv,
-    Quantity,
-    ItemsListMainDiv,
-    ItemsListOne,
-    ItemsListTwo
+    Title, H3, ListItem, ItemDiv, QuantityAndButtonDiv, Quantity, ItemsListMainDiv, ItemsListOne, ItemsListTwo
 } from '../../Utils/styles'
 import { FaRegClipboard, FaDiagnoses } from 'react-icons/fa'
 import TextArea from 'antd/lib/input/TextArea'
@@ -141,7 +129,7 @@ const Production = () => {
             ItemsList: newBomList,
             Discription: CapitalizeWords(discription)
         }
-        CreateRecord(PO_Object,'Production_Orders','Production Order created, Inventory Updated')
+        CreateRecord(PO_Object, 'Production_Orders', 'Production Order created, Inventory Updated')
         setItemQuantity('')
         setNewBomList([])
         setDiscription('')
@@ -157,7 +145,7 @@ const Production = () => {
 
     const ShowOrderDetails = (id) => {
         setShowModal(true)
-        getDataById('Production_Orders',id).then(data => {
+        getDataById('Production_Orders', id).then(data => {
             setOrderDetails(data)
         })
     }
@@ -173,6 +161,11 @@ const Production = () => {
             key: 'customer_Name',
         },
         {
+            title: 'Item',
+            dataIndex: 'BomItems',
+            key: 'item_Name',
+        },
+        {
             title: 'Due Date',
             dataIndex: 'DueDate',
             key: 'due_Date',
@@ -185,7 +178,7 @@ const Production = () => {
                     <Select
                         defaultValue={allPO.OrderStatus}
                         placeholder='Select Status'
-                        style={{ width: 200 }}
+                        style={{ width: 150 }}
                         onChange={e => changeStatus(e, allPO.iD)}
                     >
                         <Select.Option value="In-progress">In-progress</Select.Option>
@@ -203,7 +196,7 @@ const Production = () => {
                         defaultValue={allPO.ItemStatus}
                         // disabled={allPO.ItemStatus == 'In-progress'? false : true}
                         placeholder='Item Status'
-                        style={{ width: 200 }}
+                        style={{ width: 150 }}
                         onChange={e => changeItemStatus(e, allPO.iD)}
                     >
                         <Select.Option value="Cutting">Cutting</Select.Option>
@@ -347,7 +340,7 @@ const Production = () => {
                     </Divider>
                     <ItemsListMainDiv>
                         <ItemsListOne>
-                        <H3>Cutomer Order</H3>
+                            <H3>Cutomer Order</H3>
                             <ul>
                                 {
                                     orderItemslist?.map((items, key) => {
@@ -371,8 +364,8 @@ const Production = () => {
                             </ul>
                         </ItemsListOne>
                         <ItemsListTwo>
-                        <H3>BOM Items</H3>
-                        <ul>
+                            <H3>BOM Items</H3>
+                            <ul>
                                 {
                                     newBomList?.map((item, key) => {
                                         return (

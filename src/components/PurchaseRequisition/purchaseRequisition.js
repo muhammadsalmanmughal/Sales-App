@@ -165,7 +165,7 @@ const PurchaseRequisition = () => {
             render: (allPO) => (
                 <Space size="middle">
                     <Select
-                        defaultValue={allPO.Status}
+                        value={allPO.Status}
                         placeholder='Select Status'
                         style={{ width: 200 }}
                         onChange={e => changeStatus(e, allPO.iD)}>
