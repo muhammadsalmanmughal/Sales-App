@@ -73,7 +73,7 @@ const PurchaseOrder = () => {
     const POiD = shortid.generate()
     const InvoiceId = shortid.generate()
     const retreiveQuantity = 0
-    const remainingQuantity = 0
+    const remainingQuantity = requestedquantity
 
     const history = useHistory()
 
@@ -308,16 +308,6 @@ const PurchaseOrder = () => {
             title: 'Requested Quantity',
             dataIndex: 'quantity',
             key: 'requestedQuantity',
-        },
-        {
-            title: 'Retreive Quantity',
-            dataIndex: 'retreiveQuantity',
-            key: 'retreiveQuantity',
-        },
-        {
-            title: 'Remaining Quanity',
-            dataIndex: 'remainingQuantity',
-            key: 'remainingQuantity',
         }
     ]
 

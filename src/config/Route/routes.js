@@ -47,7 +47,6 @@ const routes = [
         icon: <FaFileAlt />,
         component: RequestForQuotation
     },
-    
     {
         path: '/purchase-order',
         name: 'Purchase Order',
@@ -60,12 +59,7 @@ const routes = [
         icon: <FaWarehouse/>,
         component: Inventory
     },
-    {
-        path: '/invoices',
-        name: 'All Customer Invoices',
-        icon: <FaFileInvoiceDollar/>,
-        component: Invoices
-    },
+   
     {
         path: '/production',
         name: 'Production',
@@ -83,7 +77,13 @@ const routes = [
         name: 'Create Invoices',
         icon: <FaFileInvoiceDollar/>,
         component: CustomerInvoice
-    }
+    },
+    {
+        path: '/invoices',
+        name: 'All Customer Invoices',
+        icon: <FaFileInvoiceDollar/>,
+        component: Invoices
+    },
 
 
 ]
