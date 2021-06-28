@@ -124,7 +124,6 @@ const CreateCustomer = () => {
             title: 'Action',
             key: 'action',
             render: (order) => (
-                <Space size="middle">
                     <Radio.Group  >
                         <Radio.Button
                             onClick={
@@ -134,9 +133,8 @@ const CreateCustomer = () => {
                             () => setNewDate(order.iD)
                         }>Change Date</Radio.Button>
                     </Radio.Group>
-                </Space>
             ),
-        },
+        }
     ]
 
     const orderItemList = [

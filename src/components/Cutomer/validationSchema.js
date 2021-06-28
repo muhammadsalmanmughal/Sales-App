@@ -4,7 +4,7 @@ export const validationSchema = Yup.object({
     customerName: Yup.string().required('Required'),
     responsibleName: Yup.string().required('Required'),
     companyName: Yup.string().required('Required').min(4,'Minimum 4 characters').max(15, 'Maximum 10 characters'),
-    cnicNumber: Yup.number().required('Required').positive('Invalid cnic number').min(13, 'Required 13 digits').max(13, 'Required 13 digits'),
+    cnicNumber: Yup.number().required('Required').positive('Invalid cnic number').min(13, 'Required 13 digits'),
     billToAddress: Yup.string().required('Required').min(10, 'Minimum 10 characters').max(30, 'Maximum 30 characters'),
     phone: Yup.number().required('Required').positive('Invalid phone number').min(11, 'Required 11 digits'),
     responsiblePhone: Yup.number().required('Required').positive('Invalid phone number').min(11, 'Required 11 digits'),

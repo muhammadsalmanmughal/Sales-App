@@ -3,46 +3,26 @@ import firebase from '../../config/Firebase/firebase';
 import { VendorCustomerContext } from '../../context/Random/random'
 import { UserContext } from '../../context/UserContext/UserContext'
 import { useHistory } from 'react-router-dom'
-import { CopyToClipboard } from 'react-copy-to-clipboard'
 import {
     CreatePurchaseOrder, UpdatePOStatus, getItemsId, getDataById,
     GetAllGoodsReceipt, CreateRecord
 } from '../../Utils/utils'
-import { FaRegClipboard } from "react-icons/fa";
-import moment from 'moment'
 import {
-    Divider,
-    message,
-    Row,
-    Col,
-    Input,
-    Button,
-    Tooltip,
-    Select,
-    DatePicker,
-    Tabs,
-    Table,
-    Space,
-    Modal,
-    Skeleton,
-    Tag
+    Divider, message, Row, Col, Input, Button, Tooltip, Select, DatePicker, Tabs, Table, Space, Modal,
+    Skeleton, Tag, Radio
 } from 'antd'
 import {
-    Title,
-    ListItem,
-    ItemDiv,
-    QuantityAndButtonDiv,
-    Quantity,
-    DeleteButton,
-    H3,
-    Paragraph, Location,CName
+    Title, ListItem, ItemDiv, QuantityAndButtonDiv, Quantity, DeleteButton, H3, Paragraph, Location, CName
 } from '../../Utils/styles'
 import { HeaderDetails, InvoiceDetails, CompanyDetails, General } from './style/index'
+import { CopyToClipboard } from 'react-copy-to-clipboard'
+import { FaRegClipboard } from "react-icons/fa";
+import moment from 'moment'
 const { TabPane } = Tabs;
 
 const PurchaseOrder = () => {
     const { vendors, allInventoryItems } = useContext(VendorCustomerContext)
-    const { user } = useContext(UserContext)    
+    const { user } = useContext(UserContext)
     const [selectedVendor, setSelectedVendor] = useState()
     const [items, setItems] = useState()
     const [requestedquantity, setQuantity] = useState()
@@ -125,13 +105,13 @@ const PurchaseOrder = () => {
     };
 
     const generatePurchaseOrder = () => {
-        const name= user && user[0].name
-        const email= user && user[0].email
+        const name = user && user[0].name
+        const email = user && user[0].email
 
         if (!selectedVendor) return message.error('Error! Invalid Vendor')
         if (!itemsList.length) return message.error('Error! Select some items')
         if (!requriedDate) return message.error('Error! Select required date')
-        CreatePurchaseOrder(itemsList, POiD, utc, requriedDate, selectedVendor,name, email)
+        CreatePurchaseOrder(itemsList, POiD, utc, requriedDate, selectedVendor, name, email)
         setItemsList([])
     }
 
@@ -223,10 +203,10 @@ const PurchaseOrder = () => {
 
     const objInvoice = {
         CompanyName: 'Sams Star',
-        Address:'asfasdfasdfs',
-        State:'Sindh',
-        City:'Karachi',
-        PostalCode:123456,
+        Address: 'asfasdfasdfs',
+        State: 'Sindh',
+        City: 'Karachi',
+        PostalCode: 123456,
         Invoice_Id: InvoiceId,
         Invoice_Created: utc,
         Invoice_DueDate: invoiceDueDate,
@@ -276,14 +256,17 @@ const PurchaseOrder = () => {
             title: 'Action',
             key: 'action',
             render: (allPO) => (
-                <Space size="middle">
-                    <Button onClick={e => getPO(allPO.compId)}
-                    >Details</Button>
-                    <Button onClick={() =>
-                        history.push(`/home/purchase-order-details/${allPO.compId}`)
-                    }
-                    >Create GR</Button>
-                </Space>
+                <Radio.Group  >
+                    <Radio.Button
+                        onClick={
+                            e => getPO(allPO.compId)
+                        } >
+                        Details
+                    </Radio.Button>
+                    <Radio.Button value="default" onClick={
+                        () => history.push(`/home/purchase-order-details/${allPO.compId}`)
+                    }>Create GR</Radio.Button>
+                </Radio.Group>
             ),
         }
     ];
@@ -331,18 +314,17 @@ const PurchaseOrder = () => {
             title: 'Action',
             key: 'action',
             render: (good) => (
-                <Space size="middle">
-                    <Button
+                <Radio.Group  >
+                    <Radio.Button
                         onClick={
                             e => showGRDetails(good.iD)
-                        }
-                    >Details</Button>
-                    <Button onClick={e => invoiceModal(good.iD)}>
-                        Create Invoice
-                    </Button>
-                </Space>
+                        } >Details</Radio.Button>
+                    <Radio.Button
+                        value="default"
+                     onClick={e => invoiceModal(good.iD)}>Create Invoice</Radio.Button>
+                </Radio.Group>
             ),
-        },
+        }
     ]
 
     const goodReceiptDetails = [
@@ -643,11 +625,11 @@ const PurchaseOrder = () => {
                                 <Button onClick={() => setShowModal(false)} style={{ marginRight: 8 }}>
                                     Cancel
                                  </Button>
-                               
+
                             </div>
                         }
                     >
-                           {gRData ?
+                        {gRData ?
                             gRData.map((item, key) => {
                                 return (
                                     <div>
@@ -705,18 +687,18 @@ const PurchaseOrder = () => {
                                 <p>Invoice Id: {InvoiceId}</p>
                                 <p>Invoice Date: {utc}</p>
                                 <p>Invoice Due Date:</p>
-                            
-                        <Col >
-                            <DatePicker
-                                placeholder='Invoice Due Date'
-                                format="DD-MM-YYYY"
-                                disabledDate={disabledDate}
-                                style={{ width: 200 }}
-                                onChange={InvoiceDueDate}
-                            />
-                            {/* {dateTimePicker()} */}
-                        </Col>
-                        </InvoiceDetails>
+
+                                <Col >
+                                    <DatePicker
+                                        placeholder='Invoice Due Date'
+                                        format="DD-MM-YYYY"
+                                        disabledDate={disabledDate}
+                                        style={{ width: 200 }}
+                                        onChange={InvoiceDueDate}
+                                    />
+                                    {/* {dateTimePicker()} */}
+                                </Col>
+                            </InvoiceDetails>
                         </HeaderDetails>
                         {gRData ?
                             gRData.map((item, key) => {

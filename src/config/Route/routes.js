@@ -59,7 +59,6 @@ const routes = [
         icon: <FaWarehouse/>,
         component: Inventory
     },
-   
     {
         path: '/production',
         name: 'Production',
