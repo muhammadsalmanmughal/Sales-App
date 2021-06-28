@@ -183,7 +183,7 @@ const Vendor = () => {
 
                                 </Row>
                                 <Col xs={24} sm={16}>
-                                    <SubmitButton type='submit' disabled={!formik.isValid}>Submit</SubmitButton>
+                                    <SubmitButton type='submit' disabled={!formik.isValid}>Create Vendor</SubmitButton>
                                 </Col>
                             </FormDiv>
                         </form>

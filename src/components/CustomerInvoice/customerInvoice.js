@@ -1,5 +1,5 @@
-import React, { useState, useEffect} from 'react'
-import { getCustomerOrder, getOrdersById,CreateRecord } from '../../Utils/utils'
+import React, { useState, useEffect } from 'react'
+import { getCustomerOrder, getOrdersById, CreateRecord,UpdateStatus } from '../../Utils/utils'
 import { Row, Col, List, Button, Tag, Select, Divider, message } from 'antd';
 import { H3, Title, Paragraph, } from '../../Utils/styles'
 import { Details } from './style'
@@ -32,26 +32,28 @@ const CustomerInvoice = () => {
     }, 0);
 
     const createInvoice = () => {
-        if(!orderDetails || !orderItems) return message.error('Error! Select customer id to retreive data')
+        if (!orderDetails || !orderItems) return message.error('Error! Select customer id to retreive data')
+        if (orderDetails && orderDetails[0].Status == 'Finished') return message.error('Invoice Aleardy Created')
         const InvoiceObject = {
             InvoiceId: invoiceId,
-            CustomerName:orderDetails && orderDetails[0].CustomerName,
-            CompanyName:orderDetails && orderDetails[0].CompanyName,
-            Phone:orderDetails && orderDetails[0].Phone,
-            Address:orderDetails && orderDetails[0].BillToAddress,
-            City:orderDetails && orderDetails[0].City,
-            State:orderDetails && orderDetails[0].State,
+            CustomerName: orderDetails && orderDetails[0].CustomerName,
+            CompanyName: orderDetails && orderDetails[0].CompanyName,
+            Phone: orderDetails && orderDetails[0].Phone,
+            Address: orderDetails && orderDetails[0].BillToAddress,
+            City: orderDetails && orderDetails[0].City,
+            State: orderDetails && orderDetails[0].State,
             PostalCode: orderDetails && orderDetails[0].PostalCode,
-            InvoiceCreateDate:currentDate,
-            CustomerOrderId:orderDetails && orderDetails[0].orderID,
-            OrderCreated:orderDetails && orderDetails[0].currentDate,
-            OrderRequiredDate:orderDetails && orderDetails[0].requiredDate,
-            UserName:orderDetails && orderDetails[0].UserName,
+            InvoiceCreateDate: currentDate,
+            CustomerOrderId: orderDetails && orderDetails[0].orderID,
+            OrderCreated: orderDetails && orderDetails[0].currentDate,
+            OrderRequiredDate: orderDetails && orderDetails[0].requiredDate,
+            UserName: orderDetails && orderDetails[0].UserName,
             UserEmail: orderDetails && orderDetails[0].UserEmail,
             OrderItems: orderItems,
             TotalAmount: invoiceTotal
         }
-        CreateRecord(InvoiceObject,'Invoices', 'Your Invoice has been created')
+        CreateRecord(InvoiceObject, 'Invoices', 'Your Invoice has been created')
+        UpdateStatus('Customer_Order', 'Finished', orderDetails?.[0].iD)
         setOrderDetails('')
         setOrderItems('')
     }
@@ -111,6 +113,14 @@ const CustomerInvoice = () => {
                     <Row gutter={[10, 10]}>
                         <Col><Paragraph>Postal Code: </Paragraph></Col>
                         <Col>{orderDetails && orderDetails[0].PostalCode}</Col>
+                    </Row>
+                    <Row gutter={[10, 10]}>
+                        <Col><Paragraph>Order Is: </Paragraph></Col>
+                        <Col>
+                            <Tag color={orderDetails&& orderDetails[0].Status == 'In-Progress' ? 'orange' : 'green'}>
+                                {orderDetails&& orderDetails[0].Status}
+                            </Tag>
+                        </Col>
                     </Row>
                 </div>
                 <div>

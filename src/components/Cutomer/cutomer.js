@@ -8,9 +8,8 @@ import { Title } from '../../Utils/styles'
 import ErrorText from '../FormError/formError'
 import AllCustomers from '../AllCustomers/allCustomers';
 import { VendorMainDiv, FormDiv } from '../Vendor/style/index'
-
 import {
-    Tabs, Row, Col, Input, Space, Table, Button, Skeleton, Modal, Tag, DatePicker, message, Select
+    Tabs, Row, Col, Input, Space, Table, Button, Skeleton, Modal, Tag, DatePicker, message, Radio
 } from 'antd';
 const { TabPane } = Tabs;
 
@@ -38,7 +37,7 @@ const CreateCustomer = () => {
     const initialValues = {
         customerName: '',
         companyName: '',
-        cnicNumber:'',
+        cnicNumber: '',
         billToAddress: '',
         city: '',
         state: '',
@@ -111,28 +110,30 @@ const CreateCustomer = () => {
             key: 'due_Date',
         },
         {
+            title: 'Order Status',
+            key: 'status',
+            render: order => (
+                <span>
+                    <Tag color={order.Status == 'Finished' ? 'green' : 'orange'}>
+                        {order.Status}
+                    </Tag>
+                </span>
+            ),
+        },
+        {
             title: 'Action',
             key: 'action',
             render: (order) => (
                 <Space size="middle">
-                    <Button
-                        onClick={
-                            e => ShowOrderDetails(order.iD)
-                        }
-                    >Details</Button>
-                </Space>
-            ),
-        },
-        {
-            title: 'Change Order date',
-            key: 'changeOrderDate',
-            render: (allOrders) => (
-                <Space>
-                    <Button
-                        onClick={
-                            e => setNewDate(allOrders.iD)
-                        }
-                    >Change Date</Button>
+                    <Radio.Group  >
+                        <Radio.Button
+                            onClick={
+                                () => ShowOrderDetails(order.iD)
+                            } >Details</Radio.Button>
+                        <Radio.Button value="default" onClick={
+                            () => setNewDate(order.iD)
+                        }>Change Date</Radio.Button>
+                    </Radio.Group>
                 </Space>
             ),
         },

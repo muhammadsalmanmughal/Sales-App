@@ -89,7 +89,7 @@ const AllInvoices = () => {
 
     return (
         <div>
-            <Title>All Invoices</Title>
+            <Title>All Customer Invoices</Title>
             <div>
                 {allInvoices ?
                     <Table dataSource={allInvoices} columns={invoicesTable} /> : <Skeleton />

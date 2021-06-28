@@ -307,6 +307,7 @@ const UpdatePOStatus = (status, id) => {
     })
 }
 const UpdateStatus = (collectionName,status, id) => {
+  console.log('collectionName,status, id: ', collectionName,status, id);
   firebase.firestore().collection(collectionName).doc(id)
     .update({
       Status: status

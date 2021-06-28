@@ -62,7 +62,7 @@ const routes = [
     },
     {
         path: '/invoices',
-        name: 'All Invoices',
+        name: 'All Customer Invoices',
         icon: <FaFileInvoiceDollar/>,
         component: Invoices
     },
@@ -80,7 +80,7 @@ const routes = [
     },
     {
         path: '/customer-invoice',
-        name: 'Customer Invoices',
+        name: 'Create Invoices',
         icon: <FaFileInvoiceDollar/>,
         component: CustomerInvoice
     }

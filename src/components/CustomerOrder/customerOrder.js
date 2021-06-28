@@ -81,7 +81,7 @@ const CustomerOrder = () => {
         const customerObeject = {
             CustomerName, CompanyName, Phone, BillToAddress, State, City, PostalCode,
             itemsList, orderID, currentDate, requiredDate,UserName,UserEmail,newOrderDate:'Not-Set',
-            previousDate:''
+            Status:'In-Progress',previousDate:''
         }
         CreateRecord(customerObeject, 'Customer_Order', 'Customers order has been placed')
         setItemsList([])
