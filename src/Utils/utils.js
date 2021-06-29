@@ -54,19 +54,19 @@ const loginUser = async (email, password) => {
 
 const createVendor = (vendorDetails) => {
   const vendorObj = {
-    companyName:CapitalizeWords(vendorDetails.companyName),
-    ownerFirstName:CapitalizeWords(vendorDetails.ownerFirstName),
-    ownerLastName:CapitalizeWords(vendorDetails.ownerLastName),
-    CnicNumber:vendorDetails.cnicNumber,
-    State:CapitalizeWords(vendorDetails.state),
-    Address:vendorDetails.address,
-    Phone:vendorDetails.phone,
-    Email:vendorDetails.email,
-    City:vendorDetails.city,
-    PostalCode:vendorDetails.postalCode,
+    companyName: CapitalizeWords(vendorDetails.companyName),
+    ownerFirstName: CapitalizeWords(vendorDetails.ownerFirstName),
+    ownerLastName: CapitalizeWords(vendorDetails.ownerLastName),
+    CnicNumber: vendorDetails.cnicNumber,
+    State: CapitalizeWords(vendorDetails.state),
+    Address: vendorDetails.address,
+    Phone: vendorDetails.phone,
+    Email: vendorDetails.email,
+    City: vendorDetails.city,
+    PostalCode: vendorDetails.postalCode,
     iD: ''
   }
-  
+
   firebase.firestore().collection('Vendor').add(
     vendorObj
   )
@@ -102,18 +102,18 @@ const createNewCustomer = (customerDetails, CustomerId) => {
   const customerObj = {
     CustomerName: CapitalizeWords(customerDetails.customerName),
     CompanyName: CapitalizeWords(customerDetails.companyName),
-    Customer_CNIC:customerDetails.cnicNumber,
-    BillToAddress:CapitalizeWords(customerDetails.billToAddress),
-    Phone:customerDetails.phone,
-    Email:customerDetails.email,
-    City:CapitalizeWords(customerDetails.city),
-    State:CapitalizeWords(customerDetails.state),
+    Customer_CNIC: customerDetails.cnicNumber,
+    BillToAddress: CapitalizeWords(customerDetails.billToAddress),
+    Phone: customerDetails.phone,
+    Email: customerDetails.email,
+    City: CapitalizeWords(customerDetails.city),
+    State: CapitalizeWords(customerDetails.state),
     ResponsibleName: CapitalizeWords(customerDetails.responsibleName),
-    ResponsiblePhone:customerDetails.responsiblePhone,
-    SecondaryPhone:customerDetails.secondaryPhone,
-    PostalCode:customerDetails.postalCode,
-    customerId:CustomerId,
-    iD:''
+    ResponsiblePhone: customerDetails.responsiblePhone,
+    SecondaryPhone: customerDetails.secondaryPhone,
+    PostalCode: customerDetails.postalCode,
+    customerId: CustomerId,
+    iD: ''
   }
 
   firebase.firestore().collection('Customer').add(customerObj)
@@ -193,15 +193,15 @@ const UpdateCustomer = (customerDetail, id) => {
     })
 }
 
-const CreateRecord = (dataObject , collectionName,textMessage) => {
+const CreateRecord = (dataObject, collectionName, textMessage) => {
   firebase.firestore().collection(collectionName).add(dataObject)
-  .then((response) => {
-    firebase.firestore().collection(collectionName).doc(response.id).update({ iD: response.id })
-    message.success(textMessage)
-  })
-  .catch((error) => {
-    message.error(error.message)
-  })
+    .then((response) => {
+      firebase.firestore().collection(collectionName).doc(response.id).update({ iD: response.id })
+      message.success(textMessage)
+    })
+    .catch((error) => {
+      message.error(error.message)
+    })
 }
 
 const getCustomerOrder = () => {
@@ -232,7 +232,7 @@ const UpdateOrderDate = (newdate, id) => {
       newOrderDate: newdate,
       // previousDate: previuos,
     })
-    message.success (`New Order updated to ${newdate}`)
+  message.success(`New Order updated to ${newdate}`)
 }
 
 const UpdateVendor = (vendorDetail, id) => {
@@ -258,14 +258,14 @@ const UpdateVendor = (vendorDetail, id) => {
 
 const CreatePR = (prData) => {
   const object_PR = {
-    RequisitionId:prData.PR_iD,
+    RequisitionId: prData.PR_iD,
     RequesterName: CapitalizeWords(prData.requesterName),
-    RequesterEmail:prData.requesterEmail,
-    RequesterPosition:CapitalizeWords(prData.position),
-    CreatedDate:prData.createdDate,
-    RequriedDate:prData.requriedDate,
-    ItemsList:prData.itemsList,
-    Status:'Not-Defined'
+    RequesterEmail: prData.requesterEmail,
+    RequesterPosition: CapitalizeWords(prData.position),
+    CreatedDate: prData.createdDate,
+    RequriedDate: prData.requriedDate,
+    ItemsList: prData.itemsList,
+    Status: 'Not-Defined'
   }
   firebase.firestore().collection('PurchaseRequisitions').add(object_PR)
     .then((response) => {
@@ -279,25 +279,25 @@ const CreatePR = (prData) => {
 
 const getPrById = (id) => {
   return firebase
-  .firestore()
-  .collection('PurchaseRequisitions')
-  .where('RequisitionId', '==', id)
-  .get()
-  .then(function (querySnapshot) {
-    const comlist = []
-    querySnapshot.forEach(function (doc) {
-      if (doc.exists) {
-        const comp = doc.data()
-        comlist.push({ ...comp, compId: doc.id })
-      } else {
-        message.info('No such document!')
-      }
+    .firestore()
+    .collection('PurchaseRequisitions')
+    .where('RequisitionId', '==', id)
+    .get()
+    .then(function (querySnapshot) {
+      const comlist = []
+      querySnapshot.forEach(function (doc) {
+        if (doc.exists) {
+          const comp = doc.data()
+          comlist.push({ ...comp, compId: doc.id })
+        } else {
+          message.info('No such document!')
+        }
+      })
+      return comlist
     })
-    return comlist
-  })
-  .catch(function (error) {
-    console.log('Error getting documents: ', error)
-  })
+    .catch(function (error) {
+      console.log('Error getting documents: ', error)
+    })
 }
 
 const UpdatePOStatus = (status, id) => {
@@ -306,20 +306,20 @@ const UpdatePOStatus = (status, id) => {
       POStatus: status
     })
 }
-const UpdateStatus = (collectionName,status, id) => {
-  console.log('collectionName,status, id: ', collectionName,status, id);
+const UpdateStatus = (collectionName, status, id) => {
+  console.log('collectionName,status, id: ', collectionName, status, id);
   firebase.firestore().collection(collectionName).doc(id)
     .update({
       Status: status
     })
-    message.success (`Status updated to ${status}`)
+  message.success(`Status updated to ${status}`)
 }
 
 const CreateRFQ = (QuoationData) => {
-
-  firebase.firestore().collection('RFQ').add(QuoationData)
+    firebase.firestore().collection('RFQ').add(QuoationData)
     .then((response) => {
-      message.success('RFQ created')
+      firebase.firestore().collection('RFQ').doc(response.id).update({ iD: response.id })
+      message.success('Request for quotation is created')
     })
     .catch((error) => {
       message.error(error.message)
@@ -330,7 +330,7 @@ const getRFQById = (id) => {
   return firebase
     .firestore()
     .collection('RFQ')
-    .where('Id', '==', id)
+    .where('iD', '==', id)
     .get()
     .then(function (querySnapshot) {
       const goodsReceipt = []
@@ -349,26 +349,6 @@ const getRFQById = (id) => {
     })
 }
 
-
-const getAllRFQ = () => {
-  return new Promise((resolve, reject) => {
-    firebase
-      .firestore()
-      .collection('RFQ')
-      .onSnapshot(function (querySnapshot) {
-        const allInventoryItems = []
-        querySnapshot.forEach(function (doc) {
-          if (doc.exists) {
-            const comp = doc.data()
-            allInventoryItems.push({ ...comp, compId: doc.id })
-          } else {
-            reject(message.info('No data to show.'))
-          }
-        })
-        resolve(allInventoryItems)
-      })
-  })
-}
 const CreatePurchaseOrder = (newList, POiD, createdDate, requriedDate, selectVendor, name, email) => {
   const PO_object = {
     UserName: name,
@@ -555,19 +535,19 @@ const getAllInvoices = () => {
       console.log('Error!', error.message)
     })
 }
-const createDelivery = (deliveryData,id,orderItems) => {
+const createDelivery = (deliveryData, id, orderItems) => {
   const objDelivery = {
-    CustomerName:CapitalizeWords(deliveryData.name),
-    Organization:CapitalizeWords(deliveryData.organization),
-    State:CapitalizeWords(deliveryData.state),
-    City:CapitalizeWords(deliveryData.city),
-    Address:CapitalizeWords(deliveryData.address),
-    Phone:deliveryData.phone,
-    Alternate_Phone:deliveryData.alternatePhone,
-    Email:deliveryData.email,
-    PostalCode:deliveryData.postalCode,
-    DeliveryId:id,
-    DeliveryItems:orderItems
+    CustomerName: CapitalizeWords(deliveryData.name),
+    Organization: CapitalizeWords(deliveryData.organization),
+    State: CapitalizeWords(deliveryData.state),
+    City: CapitalizeWords(deliveryData.city),
+    Address: CapitalizeWords(deliveryData.address),
+    Phone: deliveryData.phone,
+    Alternate_Phone: deliveryData.alternatePhone,
+    Email: deliveryData.email,
+    PostalCode: deliveryData.postalCode,
+    DeliveryId: id,
+    DeliveryItems: orderItems
   }
   firebase.firestore().collection('Delivery').add(objDelivery)
     .then((response) => {
@@ -581,24 +561,24 @@ const createDelivery = (deliveryData,id,orderItems) => {
 
 const getAllDeliveries = () => {
   return firebase
-  .firestore()
-  .collection('Delivery')
-  .get()
-  .then(function (querySnapshot) {
-    const deliveryData = []
-    querySnapshot.forEach(function (doc) {
-      if (doc.exists) {
-        const comp = doc.data()
-        deliveryData.push({ ...comp, compId: doc.id })
-      } else {
-        message.info('No such document!')
-      }
+    .firestore()
+    .collection('Delivery')
+    .get()
+    .then(function (querySnapshot) {
+      const deliveryData = []
+      querySnapshot.forEach(function (doc) {
+        if (doc.exists) {
+          const comp = doc.data()
+          deliveryData.push({ ...comp, compId: doc.id })
+        } else {
+          message.info('No such document!')
+        }
+      })
+      return deliveryData
     })
-    return deliveryData
-  })
-  .catch(function (error) {
-    console.log('Error!', error.message)
-  })
+    .catch(function (error) {
+      console.log('Error!', error.message)
+    })
 }
 
 const CreateBom = (Id, Name, Type, Date, List) => {
@@ -724,7 +704,6 @@ export {
   CreatePR,
   getPrById,
   CreateRFQ,
-  getAllRFQ,
   getRFQById,
   CreatePurchaseOrder,
   UpdatePOStatus,

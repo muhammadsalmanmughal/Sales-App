@@ -1,6 +1,7 @@
 import React, { useState, useContext, useEffect } from 'react'
+import firebase from '../../config/Firebase/firebase';
 import { VendorCustomerContext } from '../../context/Random/random'
-import { CreateRFQ, getPR, getPrById, getAllRFQ, getRFQById } from '../../Utils/utils'
+import { CreateRFQ, getPR, getPrById, getRFQById } from '../../Utils/utils'
 import {
   Title, Paragraph, CName, CompanyDetails, Location,
   Contact, H3
@@ -29,6 +30,7 @@ const RequestForQuatation = () => {
   const [prStatus, setPrStatus] = useState()
   const [allRFQ, setAllRFQ] = useState()
   const [rfqDetails, setRfqDetails] = useState()
+  console.log('rfqDetails: ', rfqDetails);
   const [showModal, setShowModal] = useState(false);
 
 
@@ -37,13 +39,32 @@ const RequestForQuatation = () => {
 
   const { TabPane } = Tabs;
 
+  const getAllRFQ = () => {
+    firebase
+      .firestore()
+      .collection('RFQ')
+      .onSnapshot(function (querySnapshot) {
+        const allRFQs = []
+        querySnapshot.forEach(function (doc) {
+          if (doc.exists) {
+            const comp = doc.data()
+            allRFQs.push({ ...comp, compId: doc.id })
+          } else {
+            message.info('No data to show.')
+          }
+        })
+        setAllRFQ(allRFQs)
+      })
+      // .catch(function (error) {
+      //   message.error('Error!', error.message)
+      // })
+  }
+
   useEffect(() => {
     getPR().then(data => {
       setAllPRData(data)
     })
-    getAllRFQ().then(data => {
-      setAllRFQ(data)
-    })
+    getAllRFQ()
   }, [])
 
   const utc = new Date().toJSON().slice(0, 10).replace(/-/g, '/');
@@ -97,7 +118,7 @@ const RequestForQuatation = () => {
   const tbl_RFQ = [
     {
       title: 'RFQ Id',
-      dataIndex: 'Id',
+      dataIndex: 'RFQ_Id',
       key: 'id',
     },
     {
@@ -113,7 +134,7 @@ const RequestForQuatation = () => {
     ,
     {
       title: 'Requester Email',
-      dataIndex: 'RequesterEmail',
+      dataIndex: 'PR_RequesterEmail',
       key: 'requesterEmail',
     },
     {
@@ -146,7 +167,7 @@ const RequestForQuatation = () => {
 
           <Button
             onClick={() =>
-              getRFQDetails(rfq.Id)
+              getRFQDetails(rfq.iD)
             }
           >Details</Button>
         </Space>
@@ -243,11 +264,11 @@ const RequestForQuatation = () => {
               <div>
                 {/* <p>{`PO-ID: ${item.POiD}`}</p> */}
                 <p>{`Requisition Id: ${item.RequisitionId}`}</p>
-                <p>{`Requester Name: ${item.RequesterName}`}</p>
-                <p>{`Requester Email: ${item.RequesterEmail}`}</p>
+                <p>{`Requester Name: ${item.PR_RequesterName}`}</p>
+                <p>{`Requester Email: ${item.PR_RequesterEmail}`}</p>
                 <p>Status: <Tag color={item.Status == 'approved' ? 'green' : 'red'}>{item.Status}</Tag></p>
                 <p>{`Created Date: ${item.CreatedDate}`}</p>
-                <p>{`Required Date: ${item.RequriedDate}`}</p>
+                <p>{`Required Date: ${item.PR_RequiredDate}`}</p>
               </div>
             )
           })
@@ -308,7 +329,7 @@ const RequestForQuatation = () => {
                     <p>{`State: ${item.State}`}</p>
                     <p>{`Postal Code: ${item.PostalCode}`}</p>
                     <p>{`Phone: ${item.Phone}`}</p>
-                    <p>Requisition Id: <Tag color='blue'>{item.RequisitionId}</Tag></p>
+                    <p>Requisition Id: {item.Requisition_Id}</p>
                     <p>{`Requisition Created: ${item.PR_Created}`}</p>
                     <p>{`Requisation Required: ${item.PR_RequiredDate}`}</p>
                     <p>{`Status: ${item.PR_Status}`}</p>

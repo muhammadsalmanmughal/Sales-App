@@ -1,15 +1,33 @@
-import React, { useState, useEffect, useContext } from 'react'
-import { getAllVendors } from '../../Utils/utils'
+import React, { useState, useEffect } from 'react'
+import firebase from '../../config/Firebase/firebase';
 import { useHistory } from 'react-router-dom'
-import { Skeleton, Table, Space, Button } from 'antd';
-
-import { VendorCustomerContext } from '../../context/Random/random'
+import { Skeleton, Table, Space, Button, message } from 'antd';
 
 const AllVendors = () => {
     const history = useHistory()
     const [allVendors, setAllVendors] = useState()
 
-    const { vendors } = useContext(VendorCustomerContext)
+    const getAllVendors = () => {
+          firebase
+            .firestore()
+            .collection('Vendor')
+            .onSnapshot(function (querySnapshot) {
+              const vendorList = []
+              querySnapshot.forEach(function (doc) {
+                if (doc.exists) {
+                  const comp = doc.data()
+                  vendorList.push({ ...comp, compId: doc.id })
+                } else {
+                  message.error('no data in vendors')
+                }
+            })
+            setAllVendors(vendorList)
+        })
+      }
+
+      useEffect(() => {
+        getAllVendors()
+    }, [])
 
     const columns = [
         {
@@ -50,13 +68,7 @@ const AllVendors = () => {
             ),
         },
     ];
-    useEffect(() => {
-        getAllVendors().then(data => {
-            setAllVendors(data)
-        })
-    }, [])
 
-    console.log('All vendros', vendors);
     return (
         <div>
 

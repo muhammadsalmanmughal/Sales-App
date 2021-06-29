@@ -5,7 +5,7 @@ import { UserContext } from '../../context/UserContext/UserContext'
 import { useHistory } from 'react-router-dom'
 import {
     CreatePurchaseOrder, UpdatePOStatus, getItemsId, getDataById,
-    GetAllGoodsReceipt, CreateRecord
+    CreateRecord
 } from '../../Utils/utils'
 import {
     Divider, message, Row, Col, Input, Button, Tooltip, Select, DatePicker, Tabs, Table, Space, Modal,
@@ -32,7 +32,7 @@ const PurchaseOrder = () => {
     const [itemCollectionId, setItemCollectionId] = useState()
     const [requriedDate, setRequriedDate] = useState();
     const [pricePerItem, setPricePerItem] = useState()
-    const [discription, setDiscription] = useState()
+    const [discription, setDiscription] = useState('Nothing')
     const [uom, setUom] = useState()
     const [allPO, setAllPO] = useState()
     const [poData, setPOData] = useState()
@@ -42,7 +42,6 @@ const PurchaseOrder = () => {
     const [invoiceDueDate, setInvoiceDueDate] = useState()
 
     const [gRData, setGRData] = useState()
-    console.log('gRData: ', gRData);
     const [showPOModal, setShowPOModal] = useState(false)
     const [showModal, setShowModal] = useState(false);
 
@@ -74,13 +73,13 @@ const PurchaseOrder = () => {
 
     const CreateList = () => {
         if (!items) return message.error('Error! Invalid Items')
-        if (itemsList.length && itemsList.includes(items)) return message.error(`${items} already exist in the list`)
+        const found = itemsList.some(el => el.items == items)
+        if (found) return message.error(`${items} already exist in the list`)
         if (!uom) return message.error('Error! Invalid unit of measure')
         if (!requestedquantity) return message.error('Error! Invalid Requested Quantity')
         if (isNaN(requestedquantity) || requestedquantity <= 0) return message.error('Error! Invalid Requested Quantity')
         if (isNaN(pricePerItem) || pricePerItem <= 0) return message.error('Error! Invalid Item Price')
         if (!discription) return message.error('Error! Please add small')
-
         else {
             const itemPrice = Number(pricePerItem)
             const quantity = Number(requestedquantity)
@@ -132,6 +131,24 @@ const PurchaseOrder = () => {
             });
     }
 
+    const GetAllGoodsReceipt = () => {
+        firebase
+          .firestore()
+          .collection('Goods_Receipts')
+          .onSnapshot(function (querySnapshot) {
+            const goodsReceipt = []
+            querySnapshot.forEach(function (doc) {
+              if (doc.exists) {
+                const comp = doc.data()
+                goodsReceipt.push({ ...comp, compId: doc.id })
+              } else {
+                message.info('No such document!')
+              }
+            })
+            setAllGoodsReceipt(goodsReceipt)
+          })
+      }
+
     const getPO = (id) => {
         setShowPOModal(true)
         getDataById('PurchaseOrder', id).then(data => {
@@ -141,9 +158,7 @@ const PurchaseOrder = () => {
 
     useEffect(() => {
         getPurchaseOrder()
-        GetAllGoodsReceipt().then(data => {
-            setAllGoodsReceipt(data)
-        })
+        GetAllGoodsReceipt()
     }, [])
 
     const poItemList = poData?.flatMap(o => o.newList)
@@ -518,6 +533,7 @@ const PurchaseOrder = () => {
                         <Col xs={24} sm={20}>
                             <Input
                                 type='text'
+                                value={discription}
                                 placeholder='Enter a small discription'
                                 onChange={e => setDiscription(e.target.value)}
                                 maxLength={100} />
@@ -583,8 +599,8 @@ const PurchaseOrder = () => {
                                     <div>
                                         <p>{`PO-ID: ${item.POiD}`}</p>
                                         <p>{`Requried Date: ${item.requriedDate}`}</p>
-                                        <p>{`created Date: ${item.createdDate}`}</p>
-                                        <p>{`Vendor Name: ${item.selectVendor}`}</p>
+                                        <p>{`Created Date: ${item.createdDate}`}</p>
+                                        <p>{`Vendor Company: ${item.selectVendor}`}</p>
                                         <p>{`Status: ${item.POStatus}`}</p>
                                         <p>{`User Name: ${item.UserName}`}</p>
                                         <p>{`User Email: ${item.UserEmail}`}</p>

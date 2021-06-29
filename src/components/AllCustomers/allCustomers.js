@@ -1,16 +1,30 @@
 import React, { useState,useEffect } from 'react'
+import firebase from '../../config/Firebase/firebase';
 import { useHistory } from 'react-router-dom'
-import { Table, Skeleton, Radio, message } from 'antd';
-import { getAllCustomers } from '../../Utils/utils'
+import { Table, Skeleton, Radio } from 'antd';
 
 const AllCustomers = () => {
     const history = useHistory()
     const [customers, setCustomers] = useState()
 
+    const getAllCustomers = () => {
+          firebase
+            .firestore()
+            .collection('Customer')
+            .onSnapshot(function (querySnapshot) {
+              const customerList = []
+              querySnapshot.forEach(function (doc) {
+                if (doc.exists) {
+                  const comp = doc.data()
+                  customerList.push({ ...comp, compId: doc.id })
+                }
+              })
+           setCustomers(customerList)
+            })
+      }
+
     useEffect(()=>{
-        getAllCustomers().then(data => {
-            setCustomers(data)
-          })
+        getAllCustomers()
     },[])
 
     const customerTable = [

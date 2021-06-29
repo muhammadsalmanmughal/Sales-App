@@ -1,6 +1,8 @@
 import React, { useState, useEffect, useContext } from 'react'
+import firebase from '../../config/Firebase/firebase';
 import { VendorCustomerContext } from '../../context/Random/random'
-import { CreatePR, getPR, getDataById, UpdateStatus } from '../../Utils/utils'
+import { UserContext } from '../../context/UserContext/UserContext'
+import { CreatePR, getDataById, UpdateStatus } from '../../Utils/utils'
 import {
     Title,
     ListItem,
@@ -22,9 +24,8 @@ import { FaRegClipboard } from "react-icons/fa";
 
 const PurchaseRequisition = () => {
     const { allInventoryItems } = useContext(VendorCustomerContext)
+    const { user } = useContext(UserContext)
     const [itemName, setItemName] = useState()
-    const [requesterName, setRequesterName] = useState()
-    const [requesterEmail, setRequesterEmail] = useState()
     const [position, setPosition] = useState()
     const [requriedDate, setRequriedDate] = useState();
     const [qualityValue, setQualityValue] = useState('A-class');
@@ -38,12 +39,30 @@ const PurchaseRequisition = () => {
 
     const { TabPane } = Tabs;
 
+    const getPR = () => {
+        firebase
+          .firestore()
+          .collection('PurchaseRequisitions')
+          .onSnapshot(function (querySnapshot) {
+            const prData = []
+            querySnapshot.forEach(function (doc) {
+              if (doc.exists) {
+                const comp = doc.data()
+                prData.push({ ...comp, compId: doc.id })
+              } else {
+                message.info('No such document!')
+              }
+            })
+            setAllPRData(prData)
+          })
+      }
+
     useEffect(() => {
-        getPR().then(data => {
-            setAllPRData(data)
-        })
+        getPR()
     }, [])
 
+    const UserName= user && user[0].name
+    const UserEmail= user && user[0].email
     let current_datetime = new Date()
     let createdDate = current_datetime.getDate() + "-" + (current_datetime.getMonth() + 1) + "-" + current_datetime.getFullYear()
     const itemQuantity = Number(requestedquantity)
@@ -100,26 +119,19 @@ const PurchaseRequisition = () => {
     }
 
     const generatePurchaseRequisition = () => {
-        var pattern = /^[A-Za-z._]{3,}@[A_Za-z]{3,}[.]{1}[A-Za-z.]{2,6}$/
-        if (!requesterName) return message.error('Error! Invalid requester name.')
+        // var pattern = /^[A-Za-z._]{3,}@[A_Za-z]{3,}[.]{1}[A-Za-z.]{2,6}$/
         if (!position) return message.error('Error! Select requester position.')
-        if(!requesterEmail) return message.error('Error! Invalid email')
-        if(pattern.test(requesterEmail )){
             const PRData={
                 PR_iD,
-                requesterName,
-                requesterEmail,
+                UserName,
+                UserEmail,
                 position,
                 createdDate,
                 requriedDate,
                 itemsList
             }
             CreatePR(PRData)
-        }
-        else return  message.error('Error! Invalid email')
         setItemsList([])
-        setRequesterEmail('')
-        setRequesterName('')
     }
 
     const getPRDetails = (id) => {
@@ -168,7 +180,7 @@ const PurchaseRequisition = () => {
                     <Select
                         value={allPO.Status}
                         placeholder='Select Status'
-                        style={{ width: 200 }}
+                        style={{ width: 120 }}
                         onChange={e => changeStatus(e, allPO.iD)}>
                         <Select.Option value="approved">Approved</Select.Option>
                         <Select.Option value="rejected">Rejected</Select.Option>
@@ -254,18 +266,16 @@ const PurchaseRequisition = () => {
                         <Col xs={24} sm={6}>
                             <Input
                                 type='text'
-                                value={requesterName}
-                                placeholder='Requester Name'
-                                onChange={e => setRequesterName(e.target.value)}
+                                value={UserName}
+                                disabled
                                 maxLength={25}
                             />
                         </Col>
                         <Col xs={24} sm={11}>
                             <Input
-                                type='email'
-                                value={requesterEmail}
-                                placeholder='Requester Email'
-                                onChange={e => setRequesterEmail(e.target.value)}
+                                type='text'
+                                value={UserEmail}
+                                disabled
                                 maxLength={25}
                             />
                         </Col>
