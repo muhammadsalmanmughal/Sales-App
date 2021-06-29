@@ -2,9 +2,9 @@ import React, { useState, useEffect } from 'react'
 import { useHistory, useParams } from 'react-router-dom'
 import { CaretLeftOutlined } from "@ant-design/icons";
 import { Goback } from '../../Utils/styles'
-import { updateInventoryItem, CreateRecord, getDataById } from '../../Utils/utils'
+import { updateInventoryItem, CreateRecord, getDataById,UpdatePO } from '../../Utils/utils'
 import {
-    Input, Button, Skeleton, Table, Space, message, Drawer, Tabs, Tag, Empty
+    Input, Button, Skeleton, Table, Space, message, Drawer, Tag, Empty
 } from 'antd'
 
 import {
@@ -35,13 +35,13 @@ const PurchaseOrderDetails = () => {
     useEffect(() => {
         getDataById('PurchaseOrder', slug).then(data => {
             setPOItemData(data)
-            setGrItemList(data.flatMap(O => O.newList))
+            setGrItemList(data.flatMap(O => O.itemsList))
         })
     }, [])
     const shortid = require('shortid')
     const GRiD = shortid.generate()
 
-    const itemsList = POItemData?.flatMap(O => O.newList)
+    const itemsList = POItemData?.flatMap(O => O.itemsList)
 
     // ------------Drawer-------------
     const showDrawer = (itemId, quantity, docId, name) => {
@@ -95,8 +95,8 @@ const PurchaseOrderDetails = () => {
             key: 'requested_quantity',
         },
         {
-            title: 'Class',
-            dataIndex: 'radioValue',
+            title: 'Quality',
+            dataIndex: 'itemQuality',
             key: 'class',
         },
         {
@@ -131,19 +131,20 @@ const PurchaseOrderDetails = () => {
         return goodReceipt
     }
 
-    console.log('POItemData: ', POItemData);
     const objGR = {
-        UserName:POItemData && POItemData[0].UserName,
-        UserEmail:POItemData && POItemData[0].UserEmail,
+        UserName: POItemData && POItemData[0].UserName,
+        UserEmail: POItemData && POItemData[0].UserEmail,
         GR_id: GRiD,
         POid: POItemData && POItemData[0].POiD,
-        Vendor: POItemData && POItemData[0].selectVendor,
+        Vendor: POItemData && POItemData[0].selectedVendor,
         Created_Date: formatted_date,
         grItemList
     }
-    
+
     const createGRDoc = () => {
+        if(POItemData && POItemData [0].GR_against_PO == 'GR-Created') return message.error('Goods already received against this Purchase Order.')
         CreateRecord(objGR, 'Goods_Receipts', 'Goods Receipt created')
+        UpdatePO('GR-Created', POItemData && POItemData [0].iD)
         setUpdatedItem([])
     }
 

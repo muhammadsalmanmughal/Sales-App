@@ -315,6 +315,13 @@ const UpdateStatus = (collectionName, status, id) => {
   message.success(`Status updated to ${status}`)
 }
 
+const UpdatePO = (status, id) => {
+  firebase.firestore().collection('PurchaseOrder').doc(id)
+    .update({
+      GR_against_PO: status
+    })
+}
+
 const CreateRFQ = (QuoationData) => {
     firebase.firestore().collection('RFQ').add(QuoationData)
     .then((response) => {
@@ -349,20 +356,8 @@ const getRFQById = (id) => {
     })
 }
 
-const CreatePurchaseOrder = (newList, POiD, createdDate, requriedDate, selectVendor, name, email) => {
-  const PO_object = {
-    UserName: name,
-    UserEmail: email,
-    newList,
-    POiD,
-    createdDate,
-    requriedDate,
-    selectVendor,
-    POStatus: 'Not Defined',
-    remaining: 0
-  }
-  console.log('PO_object: ', PO_object);
-  firebase.firestore().collection('PurchaseOrder').add(PO_object)
+const CreatePurchaseOrder = (PO_Object) => {
+  firebase.firestore().collection('PurchaseOrder').add(PO_Object)
     .then((response) => {
       firebase.firestore().collection('PurchaseOrder').doc(response.id).update({ iD: response.id })
       message.success('Purchase order created')
@@ -721,5 +716,6 @@ export {
   UpdateItemStatus,
   CreateRecord,
   getOrdersById,
-  UpdateStatus
+  UpdateStatus,
+  UpdatePO
 }

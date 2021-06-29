@@ -28,7 +28,7 @@ const PurchaseOrder = () => {
     const [requestedquantity, setQuantity] = useState()
     const [itemsList, setItemsList] = useState([])
     const [itemId, setItemId] = useState()
-    const [radioValue, setRadioValue] = useState('A-class');
+    const [itemQuality, setItemQuality] = useState('A-class');
     const [itemCollectionId, setItemCollectionId] = useState()
     const [requriedDate, setRequriedDate] = useState();
     const [pricePerItem, setPricePerItem] = useState()
@@ -83,7 +83,7 @@ const PurchaseOrder = () => {
         else {
             const itemPrice = Number(pricePerItem)
             const quantity = Number(requestedquantity)
-            setItemsList([...itemsList, { itemCollectionId, itemId, items, uom, quantity, retreiveQuantity, remainingQuantity, radioValue, itemPrice, discription }])
+            setItemsList([...itemsList, { itemCollectionId, itemId, items, uom, quantity, retreiveQuantity, remainingQuantity, itemQuality, itemPrice, discription }])
             setItems('')
             setQuantity('')
             setPricePerItem('')
@@ -97,7 +97,7 @@ const PurchaseOrder = () => {
     }
 
     const selectQuality = e => {
-        setRadioValue(e);
+        setItemQuality(e);
     };
 
     const changeStatus = (e, id) => {
@@ -111,7 +111,19 @@ const PurchaseOrder = () => {
         if (!selectedVendor) return message.error('Error! Invalid Vendor')
         if (!itemsList.length) return message.error('Error! Select some items')
         if (!requriedDate) return message.error('Error! Select required date')
-        CreatePurchaseOrder(itemsList, POiD, utc, requriedDate, selectedVendor, name, email)
+        const PO_Object = {
+            POiD,
+            createdDate:utc,
+            requriedDate,
+            selectedVendor,
+            UserName: name,
+            UserEmail: email,
+            itemsList,
+            GR_against_PO: 'Not-Created',
+            POStatus: 'Not Defined',
+            remaining: 0
+        }
+        CreatePurchaseOrder(PO_Object)
         setItemsList([])
     }
 
@@ -133,21 +145,21 @@ const PurchaseOrder = () => {
 
     const GetAllGoodsReceipt = () => {
         firebase
-          .firestore()
-          .collection('Goods_Receipts')
-          .onSnapshot(function (querySnapshot) {
-            const goodsReceipt = []
-            querySnapshot.forEach(function (doc) {
-              if (doc.exists) {
-                const comp = doc.data()
-                goodsReceipt.push({ ...comp, compId: doc.id })
-              } else {
-                message.info('No such document!')
-              }
+            .firestore()
+            .collection('Goods_Receipts')
+            .onSnapshot(function (querySnapshot) {
+                const goodsReceipt = []
+                querySnapshot.forEach(function (doc) {
+                    if (doc.exists) {
+                        const comp = doc.data()
+                        goodsReceipt.push({ ...comp, compId: doc.id })
+                    } else {
+                        message.info('No such document!')
+                    }
+                })
+                setAllGoodsReceipt(goodsReceipt)
             })
-            setAllGoodsReceipt(goodsReceipt)
-          })
-      }
+    }
 
     const getPO = (id) => {
         setShowPOModal(true)
@@ -161,7 +173,7 @@ const PurchaseOrder = () => {
         GetAllGoodsReceipt()
     }, [])
 
-    const poItemList = poData?.flatMap(o => o.newList)
+    const poItemList = poData?.flatMap(o => o.itemsList)
 
     function disabledDate(current) {
         return current && current < moment().endOf('day')
@@ -214,6 +226,7 @@ const PurchaseOrder = () => {
     useEffect(() => {
         totalInvoice()
     }, [gRData])
+
     const goods = gRData?.flatMap(goods => goods.grItemList)
     const invoiceList = gRData?.flatMap(invoice => invoice.grItemList)
 
@@ -299,6 +312,11 @@ const PurchaseOrder = () => {
             key: 'name',
         },
         {
+            title: 'Item Quality',
+            dataIndex: 'itemQuality',
+            key: 'name',
+        },
+        {
             title: 'Per Price',
             dataIndex: 'itemPrice',
             key: 'perPrice',
@@ -337,7 +355,7 @@ const PurchaseOrder = () => {
                         } >Details</Radio.Button>
                     <Radio.Button
                         value="default"
-                     onClick={e => invoiceModal(good.iD)}>Create Invoice</Radio.Button>
+                        onClick={e => invoiceModal(good.iD)}>Create Invoice</Radio.Button>
                 </Radio.Group>
             ),
         }
@@ -565,7 +583,7 @@ const PurchaseOrder = () => {
                                                 <Quantity>
                                                     Per item price:
                                                 {item.itemPrice}/
-                                                    {item.radioValue}
+                                                    {item.itemQuality}
                                                 </Quantity>
                                                 <DeleteButton>
                                                     <Button danger onClick={() => deleteItem(key)}>Delete</Button>
@@ -604,6 +622,7 @@ const PurchaseOrder = () => {
                                         <p>{`Status: ${item.POStatus}`}</p>
                                         <p>{`User Name: ${item.UserName}`}</p>
                                         <p>{`User Email: ${item.UserEmail}`}</p>
+                                        <p>{`Vendor: ${item.selectedVendor}`}</p>
 
                                     </div>
                                 )
