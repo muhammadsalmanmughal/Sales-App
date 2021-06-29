@@ -7,10 +7,7 @@ import { VendorMainDiv, FormDiv } from './style/index'
 import ErrorText from '../FormError/formError'
 import AllVendors from '../AllVendors/allVendors';
 import {
-    Tabs,
-    Row,
-    Col,
-    Input
+    Tabs, Row, Col, Input, message
 } from 'antd';
 import {
     Title, SubmitButton
@@ -30,6 +27,9 @@ const initialValues = {
 
 const Vendor = () => {
     const onSubmit = (values, onSubmitProps) => {
+        if(values.cnicNumber.length < 13) return message.error('Error! Invalid CNIC number')
+        if(values.phone.length < 11) return message.error('Error! Invalid phone number')
+        if(values.postalCode.length < 6) return message.error('Error! Invalid postal code')
         createVendor(values)
         onSubmitProps.resetForm()
     }
@@ -122,7 +122,7 @@ const Vendor = () => {
                                     <Col xs={24} sm={6}>
                                         <Label>Phone#:
                                     <Input
-                                                type='number'
+                                                type='text'
                                                 name='phone'
                                                 {...formik.getFieldProps('phone')}
                                             />
@@ -171,7 +171,7 @@ const Vendor = () => {
                                     <Col xs={24} sm={6}>
                                         <Label>Postl Code:
                                     <Input
-                                                type='number'
+                                                type='text'
                                                 name='postalCode'
                                                 {...formik.getFieldProps('postalCode')}
                                             />

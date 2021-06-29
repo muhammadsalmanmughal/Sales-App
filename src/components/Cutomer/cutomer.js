@@ -9,7 +9,7 @@ import ErrorText from '../FormError/formError'
 import AllCustomers from '../AllCustomers/allCustomers';
 import { VendorMainDiv, FormDiv } from '../Vendor/style/index'
 import {
-    Tabs, Row, Col, Input, Space, Table, Button, Skeleton, Modal, Tag, DatePicker, message, Radio
+    Tabs, Row, Col, Input, Table, Button, Skeleton, Modal, Tag, DatePicker, message, Radio
 } from 'antd';
 const { TabPane } = Tabs;
 
@@ -30,6 +30,11 @@ const CreateCustomer = () => {
     const orderItems = orderDetails?.flatMap(item => item.itemsList)
 
     const onSubmit = (values, onSubmitProps) => {
+        if(values.phone.length < 11) return message.error('Error! Invalid phone number')
+        if(values.responsiblePhone.length < 11) return message.error('Error! Invalid phone number')
+        if(values.secondaryPhone.length < 11) return message.error('Error! Invalid phone number')
+        if(values.postalCode.length < 6) return message.error('Error! Invalid postal code')
+        if(values.cnicNumber.length < 13) return message.error('Error! Invalid CNIC number')
         createNewCustomer(values, orderID)
         onSubmitProps.resetForm()
     }
@@ -46,9 +51,11 @@ const CreateCustomer = () => {
         email: '',
         responsibleName: '',
         responsiblePhone: '',
-        secondaryPhone: ''
+        secondaryPhone: '',
+        reponsiblecity: ''
     }
     const formik = useFormik({
+
         initialValues,
         onSubmit,
         validationSchema,
@@ -124,15 +131,15 @@ const CreateCustomer = () => {
             title: 'Action',
             key: 'action',
             render: (order) => (
-                    <Radio.Group  >
-                        <Radio.Button
-                            onClick={
-                                () => ShowOrderDetails(order.iD)
-                            } >Details</Radio.Button>
-                        <Radio.Button value="default" onClick={
-                            () => setNewDate(order.iD)
-                        }>Change Date</Radio.Button>
-                    </Radio.Group>
+                <Radio.Group  >
+                    <Radio.Button
+                        onClick={
+                            () => ShowOrderDetails(order.iD)
+                        } >Details</Radio.Button>
+                    <Radio.Button value="default" onClick={
+                        () => setNewDate(order.iD)
+                    }>Change Date</Radio.Button>
+                </Radio.Group>
             ),
         }
     ]
@@ -249,7 +256,7 @@ const CreateCustomer = () => {
                                     <Col xs={24} sm={8}>
                                         <Label>Postl Code:
                                     <Input
-                                                type='number'
+                                                type='text'
                                                 name='postalCode'
                                                 maxLength='6'
                                                 {...formik.getFieldProps('postalCode')}
@@ -262,10 +269,11 @@ const CreateCustomer = () => {
                                     <Col xs={24} sm={8}>
                                         <Label>Phone#:
                                     <Input
-                                                type='number'
+                                                type='text'
                                                 name='phone'
                                                 maxLength='11'
                                                 {...formik.getFieldProps('phone')}
+                                                
                                             />
                                         </Label>
                                         {formik.touched.phone && formik.errors.phone
@@ -291,8 +299,7 @@ const CreateCustomer = () => {
                                                 type='text'
                                                 name='responsibleName'
                                                 maxLength='15'
-                                                value={formik.values.responsibleName}
-                                                onChange={formik.handleChange}
+                                                {...formik.getFieldProps('responsibleName')}
                                             />
                                         </Label>
                                         {formik.touched.responsibleName && formik.errors.responsibleName
@@ -305,8 +312,8 @@ const CreateCustomer = () => {
                                                 type='text'
                                                 name='responsiblePhone'
                                                 maxLength='11'
-                                                value={formik.values.responsiblePhone}
-                                                onChange={formik.handleChange}
+                                                {...formik.getFieldProps('responsiblePhone')}
+
                                             />
                                         </Label>
                                         {formik.touched.responsiblePhone && formik.errors.responsiblePhone
@@ -319,8 +326,7 @@ const CreateCustomer = () => {
                                                 type='text'
                                                 name='secondaryPhone'
                                                 maxLength='11'
-                                                value={formik.values.secondaryPhone}
-                                                onChange={formik.handleChange}
+                                                {...formik.getFieldProps('secondaryPhone')}
                                             />
                                         </Label>
                                         {formik.touched.secondaryPhone && formik.errors.secondaryPhone
@@ -332,13 +338,13 @@ const CreateCustomer = () => {
                                         <Label>City:
                                     <Input
                                                 type='text'
-                                                name='city'
+                                                name='reponsiblecity'
                                                 maxLength='15'
-                                                {...formik.getFieldProps('city')}
+                                                {...formik.getFieldProps('reponsiblecity')}
                                             />
                                         </Label>
-                                        {formik.touched.city && formik.errors.city
-                                            ? <ErrorText text={formik.errors.city} />
+                                        {formik.touched.reponsiblecity && formik.errors.reponsiblecity
+                                            ? <ErrorText text={formik.errors.reponsiblecity} />
                                             : null}
                                     </Col>
 
