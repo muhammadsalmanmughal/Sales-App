@@ -79,6 +79,7 @@ const PurchaseRequisition = () => {
     const CreateList = () => {
         if (!requriedDate) return message.error('Error! Select required date.')
         if (!itemName) return message.error('Error! Select Item Name.')
+        if (itemsList.length && itemsList.includes(itemName)) return message.error(`${itemName} already exist in the list`)
         if (isNaN(requestedquantity)) return message.error('Error! Invalid Quantity.')
         if (!requestedquantity || requestedquantity.length > 2 || requestedquantity <= 0) return message.error('Error! Quantity not support')
         if (!uom) return message.error('Error! Select unit of meassure.')

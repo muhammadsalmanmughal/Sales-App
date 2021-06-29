@@ -56,6 +56,7 @@ const BillOfMaterial = () => {
   const CreateList = () => {
     if (!requestedquantity) return message.error('Error! Quantity is not in format')
     if (items == null || items == '') return message.error('Error! Items can not left Empty')
+    if (itemsList.length && itemsList.includes(items)) return message.error(`${items} already exist in the list`)
     if (!unitOfMeassure) return message.error('Error! Select Unit Of Meassure')
     if (isNaN(requestedquantity) || requestedquantity.length > 2 || requestedquantity <= 0) return message.error('Quantity amount not support')
     else {

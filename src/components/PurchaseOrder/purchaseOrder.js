@@ -74,6 +74,7 @@ const PurchaseOrder = () => {
 
     const CreateList = () => {
         if (!items) return message.error('Error! Invalid Items')
+        if (itemsList.length && itemsList.includes(items)) return message.error(`${items} already exist in the list`)
         if (!uom) return message.error('Error! Invalid unit of measure')
         if (!requestedquantity) return message.error('Error! Invalid Requested Quantity')
         if (isNaN(requestedquantity) || requestedquantity <= 0) return message.error('Error! Invalid Requested Quantity')

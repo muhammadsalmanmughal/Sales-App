@@ -265,7 +265,7 @@ const CreatePR = (prData) => {
     CreatedDate:prData.createdDate,
     RequriedDate:prData.requriedDate,
     ItemsList:prData.itemsList,
-    status:'Not-Defined'
+    Status:'Not-Defined'
   }
   firebase.firestore().collection('PurchaseRequisitions').add(object_PR)
     .then((response) => {
