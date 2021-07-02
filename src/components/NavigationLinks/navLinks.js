@@ -19,6 +19,7 @@ import Production from '../Production/production'
 import BillOfMaterial from '../BOM/bom'
 import CustomerInvoice from '../CustomerInvoice/customerInvoice'
 import PageNotFound from '../404/pagenotfound'
+import CreateReport from '../PurchaseOrder/createReport'
 export {
     SideBar,Header,
     Dashboard,
@@ -39,5 +40,6 @@ export {
     BillOfMaterial,
     Delivery,
     CustomerInvoice,
+    CreateReport,
     PageNotFound
 }

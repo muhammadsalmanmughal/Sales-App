@@ -3990,7 +3990,7 @@
   "resolved" "https://registry.npmjs.org/copy-descriptor/-/copy-descriptor-0.1.1.tgz"
   "version" "0.1.1"
 
-"copy-to-clipboard@^3.2.0":
+"copy-to-clipboard@^3", "copy-to-clipboard@^3.2.0":
   "integrity" "sha512-i13qo6kIHTTpCm8/Wup+0b1mVWETvu2kIMzKoK8FpkLkFxlt0znUAHcMzox+T8sPlqtZXq3CulEjQHsYiGFJUw=="
   "resolved" "https://registry.npmjs.org/copy-to-clipboard/-/copy-to-clipboard-3.3.1.tgz"
   "version" "3.3.1"
@@ -9689,7 +9689,7 @@
     "kleur" "^3.0.3"
     "sisteransi" "^1.0.5"
 
-"prop-types@^15.6.2", "prop-types@^15.7.2":
+"prop-types@^15.5.8", "prop-types@^15.6.2", "prop-types@^15.7.2":
   "integrity" "sha512-8QQikdH7//R2vurIJSutZ1smHYTcLpRWEOlHnzcWHmBYrOGUysKwSsrC89BCiFj3CbrfJ/nXFdJepOVrY1GCHQ=="
   "resolved" "https://registry.npmjs.org/prop-types/-/prop-types-15.7.2.tgz"
   "version" "15.7.2"
@@ -10223,6 +10223,14 @@
     "regenerator-runtime" "^0.13.7"
     "whatwg-fetch" "^3.4.1"
 
+"react-copy-to-clipboard@^5.0.3":
+  "integrity" "sha512-9S3j+m+UxDZOM0Qb8mhnT/rMR0NGSrj9A/073yz2DSxPMYhmYFBMYIdI2X4o8AjOjyFsSNxDRnCX6s/gRxpriw=="
+  "resolved" "https://registry.npmjs.org/react-copy-to-clipboard/-/react-copy-to-clipboard-5.0.3.tgz"
+  "version" "5.0.3"
+  dependencies:
+    "copy-to-clipboard" "^3"
+    "prop-types" "^15.5.8"
+
 "react-dev-utils@^11.0.1":
   "integrity" "sha512-rlgpCupaW6qQqvu0hvv2FDv40QG427fjghV56XyPcP5aKtOAPzNAhQ7bHqk1YdS2vpW1W7aSV3JobedxuPlBAA=="
   "resolved" "https://registry.npmjs.org/react-dev-utils/-/react-dev-utils-11.0.1.tgz"
@@ -10253,7 +10261,7 @@
     "strip-ansi" "6.0.0"
     "text-table" "0.2.0"
 
-"react-dom@^17.0.1":
+"react-dom@^15.0.0 || ^16.0.0 || ^17.0.0", "react-dom@^17.0.1":
   "integrity" "sha512-6eV150oJZ9U2t9svnsspTMrWNyHc6chX0KzDeAOXftRa8bNeOKTTfCJ7KorIwenkHd2xqVTBTCZd79yk/lx/Ug=="
   "resolved" "https://registry.npmjs.org/react-dom/-/react-dom-17.0.1.tgz"
   "version" "17.0.1"
@@ -10271,6 +10279,11 @@
   "integrity" "sha512-suNP+J1VU1MWFKcyt7RtjiSWUjvidmQSlqu+eHslq+342xCbGTYmC0mEhPCOHxlW0CywylOC1u2DFAT+bv4dBw=="
   "resolved" "https://registry.npmjs.org/react-fast-compare/-/react-fast-compare-2.0.4.tgz"
   "version" "2.0.4"
+
+"react-icons@^4.2.0":
+  "integrity" "sha512-rmzEDFt+AVXRzD7zDE21gcxyBizD/3NqjbX6cmViAgdqfJ2UiLer8927/QhhrXQV7dEj/1EGuOTPp7JnLYVJKQ=="
+  "resolved" "https://registry.npmjs.org/react-icons/-/react-icons-4.2.0.tgz"
+  "version" "4.2.0"
 
 "react-is@^16.12.0", "react-is@^16.6.0", "react-is@^16.7.0", "react-is@^16.8.1":
   "integrity" "sha512-24e6ynE2H+OKt4kqsOvNd8kBpV65zoxbA4BVsEOB3ARVWQki/DHzaUoC5KuON/BiccDaCCTZBuOcfZs70kR8bQ=="
@@ -10382,7 +10395,14 @@
   optionalDependencies:
     "fsevents" "^2.1.3"
 
-"react@^17.0.1", "react@>=16.8.0":
+"react-to-print@^2.12.6":
+  "integrity" "sha512-O4hpQZX8pOd3W910n+WkT9Jvpd3tFcEWqTFHrm69bCGI/Nh5g2CoLrzaXObQW9BA9mK1K4+3qG88Q6DAJs+oWg=="
+  "resolved" "https://registry.npmjs.org/react-to-print/-/react-to-print-2.12.6.tgz"
+  "version" "2.12.6"
+  dependencies:
+    "prop-types" "^15.7.2"
+
+"react@*", "react@^15.0.0 || ^16.0.0 || ^17.0.0", "react@^15.3.0 || ^16.0.0 || ^17.0.0", "react@^17.0.1":
   "integrity" "sha512-lG9c9UuMHdcAexXtigOZLX8exLWkW0Ku29qPRU8uhF2R9BN96dLCt0psvzPLlHc5OWkgymP3qwTRgbnw5BKx3w=="
   "resolved" "https://registry.npmjs.org/react/-/react-17.0.1.tgz"
   "version" "17.0.1"

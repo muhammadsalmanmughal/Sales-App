@@ -26,7 +26,7 @@ const PurchaseRequisition = () => {
     const { allInventoryItems } = useContext(VendorCustomerContext)
     const { user } = useContext(UserContext)
     const [itemName, setItemName] = useState()
-    const [position, setPosition] = useState()
+    const [UserPosition, setPosition] = useState()
     const [requriedDate, setRequriedDate] = useState();
     const [qualityValue, setQualityValue] = useState('A-class');
     const [requestedquantity, setQuantity] = useState()
@@ -120,12 +120,12 @@ const PurchaseRequisition = () => {
 
     const generatePurchaseRequisition = () => {
         // var pattern = /^[A-Za-z._]{3,}@[A_Za-z]{3,}[.]{1}[A-Za-z.]{2,6}$/
-        if (!position) return message.error('Error! Select requester position.')
+        if (!UserPosition) return message.error('Error! Select requester position.')
             const PRData={
                 PR_iD,
                 UserName,
                 UserEmail,
-                position,
+                UserPosition,
                 createdDate,
                 requriedDate,
                 itemsList

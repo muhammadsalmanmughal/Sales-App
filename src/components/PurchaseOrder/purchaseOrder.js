@@ -1,20 +1,20 @@
-import React, { useState, useContext, useEffect } from 'react'
+import React, { useState, useContext, useEffect, useRef } from 'react'
 import firebase from '../../config/Firebase/firebase';
 import { VendorCustomerContext } from '../../context/Random/random'
 import { UserContext } from '../../context/UserContext/UserContext'
 import { useHistory } from 'react-router-dom'
+import CreateReport from './createReport';
 import {
     CreatePurchaseOrder, UpdatePOStatus, getItemsId, getDataById,
     CreateRecord
 } from '../../Utils/utils'
 import {
     Divider, message, Row, Col, Input, Button, Tooltip, Select, DatePicker, Tabs, Table, Space, Modal,
-    Skeleton, Tag, Radio
+    Skeleton,Radio
 } from 'antd'
 import {
     Title, ListItem, ItemDiv, QuantityAndButtonDiv, Quantity, DeleteButton, H3, Paragraph, Location, CName
 } from '../../Utils/styles'
-import { HeaderDetails, InvoiceDetails, CompanyDetails, General } from './style/index'
 import { CopyToClipboard } from 'react-copy-to-clipboard'
 import { FaRegClipboard } from "react-icons/fa";
 import moment from 'moment'
@@ -37,15 +37,11 @@ const PurchaseOrder = () => {
     const [allPO, setAllPO] = useState()
     const [poData, setPOData] = useState()
     const [allGoodsReceipt, setAllGoodsReceipt] = useState()
-    const [showInvoiceModal, setShowInvoiceModal] = useState(false);
     const [totalInvoiceAmount, setTotalInvoiceAmount] = useState()
-    const [invoiceDueDate, setInvoiceDueDate] = useState()
-
     const [gRData, setGRData] = useState()
     const [showPOModal, setShowPOModal] = useState(false)
     const [showModal, setShowModal] = useState(false);
 
-    // const utc = new Date().toJSON().slice(0, 10).replace(/-/g, '/');
     let current_datetime = new Date()
     let utc = current_datetime.getDate() + "-" + (current_datetime.getMonth() + 1) + "-" + current_datetime.getFullYear()
     const shortid = require('shortid')
@@ -53,7 +49,6 @@ const PurchaseOrder = () => {
     const InvoiceId = shortid.generate()
     const retreiveQuantity = 0
     const remainingQuantity = requestedquantity
-
     const history = useHistory()
 
     function selectVednor(value) {
@@ -67,6 +62,7 @@ const PurchaseOrder = () => {
         })
         setItems(value)
     }
+
     const selectUOM = e => {
         setUom(e);
     };
@@ -113,7 +109,7 @@ const PurchaseOrder = () => {
         if (!requriedDate) return message.error('Error! Select required date')
         const PO_Object = {
             POiD,
-            createdDate:utc,
+            createdDate: utc,
             requriedDate,
             selectedVendor,
             UserName: name,
@@ -182,9 +178,7 @@ const PurchaseOrder = () => {
     const selectRequriedDate = (date, dateString) => {
         setRequriedDate(dateString)
     }
-    const InvoiceDueDate = (date, dateString) => {
-        setInvoiceDueDate(dateString)
-    }
+
     const showGRDetails = (id) => {
         setShowModal(true)
         getDataById('Goods_Receipts', id).then(data => {
@@ -201,28 +195,14 @@ const PurchaseOrder = () => {
 
         })
     }
-    const invoiceModal = (id) => {
-        setShowInvoiceModal(true)
-        getDataById('Goods_Receipts', id).then(data => {
-            setGRData(data.map(gritem => {
-                return {
-                    ...gritem, grItemList: gritem.grItemList.map(grlistitem => {
-                        return {
-                            ...grlistitem,
-                            itemAmount: Number(grlistitem.itemPrice) * grlistitem.retreiveQuantity
-                        }
-                    })
-                }
-            }))
 
-        })
-    }
     const totalInvoice = () => {
         const a = gRData && gRData[0].grItemList && gRData[0].grItemList.reduce((acc, current) => {
             return acc + current.itemAmount
         }, 0);
         setTotalInvoiceAmount(a)
     }
+
     useEffect(() => {
         totalInvoice()
     }, [gRData])
@@ -230,25 +210,25 @@ const PurchaseOrder = () => {
     const goods = gRData?.flatMap(goods => goods.grItemList)
     const invoiceList = gRData?.flatMap(invoice => invoice.grItemList)
 
-    const objInvoice = {
-        CompanyName: 'Sams Star',
-        Address: 'asfasdfasdfs',
-        State: 'Sindh',
-        City: 'Karachi',
-        PostalCode: 123456,
-        Invoice_Id: InvoiceId,
-        Invoice_Created: utc,
-        Invoice_DueDate: invoiceDueDate,
-        PO_Id: gRData && gRData[0].POid,
-        Vendor: gRData && gRData[0].Vendor,
-        Invoice_Items: invoiceList,
-        Total_Amount: totalInvoiceAmount,
-        GR_Date: gRData && gRData[0].Created_Date
-    }
-    const generateInvoice = () => {
-        if (!invoiceDueDate) return message.error('Error! Invalid Due Date')
-        CreateRecord(objInvoice, 'Invoices', 'Your Invoice has been created')
-    }
+    // const objInvoice = {
+    //     CompanyName: 'Sams Star',
+    //     Address: 'asfasdfasdfs',
+    //     State: 'Sindh',
+    //     City: 'Karachi',
+    //     PostalCode: 123456,
+    //     Invoice_Id: InvoiceId,
+    //     Invoice_Created: utc,
+    //     PO_Id: gRData && gRData[0].POid,
+    //     Vendor: gRData && gRData[0].Vendor,
+    //     Invoice_Items: invoiceList,
+    //     Total_Amount: totalInvoiceAmount,
+    //     GR_Date: gRData && gRData[0].Created_Date
+    // }
+
+    // const generateInvoice = () => {
+    //     CreateRecord(objInvoice, 'VendorInvoices', 'Your Invoice has been created')
+    // }
+
     const columns = [
         {
             title: 'PO ID',
@@ -355,7 +335,9 @@ const PurchaseOrder = () => {
                         } >Details</Radio.Button>
                     <Radio.Button
                         value="default"
-                        onClick={e => invoiceModal(good.iD)}>Create Invoice</Radio.Button>
+                        onClick={() => history.push(`/home/createInvoice/${good.iD}`, good.iD)}
+                        >
+                            Create-Invoice</Radio.Button>
                 </Radio.Group>
             ),
         }
@@ -393,6 +375,7 @@ const PurchaseOrder = () => {
             key: 'remainingQuantity',
         }
     ]
+
 
     const invoiceTable = [
         {
@@ -688,80 +671,6 @@ const PurchaseOrder = () => {
                             }
                         </div>
                     </Modal>
-                    <Modal
-                        title="CREATE INVOICE"
-                        centered
-                        visible={showInvoiceModal}
-                        width={1000}
-                        footer={
-                            <div
-                                style={{
-                                    textAlign: 'right',
-                                }}
-                            >
-                                <Button onClick={() => setShowInvoiceModal(false)} style={{ marginRight: 8 }}>
-                                    Cancel
-                                 </Button>
-                                <Button onClick={generateInvoice} type="primary">
-                                    Create Invoice
-                                 </Button>
-                            </div>
-                        }
-                    >
-                        <CName>Sams Star</CName>
-                        <HeaderDetails>
-                            <CompanyDetails>
-                                <h3>Address:</h3>
-                                <Location>
-                                    <h3>Karachi</h3>
-                                    <h3>Sindh</h3>
-                                    <h3>123456</h3>
-                                </Location>
-                                <h3>Email: www.SamsStar.pk</h3>
-                            </CompanyDetails>
-                            <InvoiceDetails>
-                                <p>Invoice Id: {InvoiceId}</p>
-                                <p>Invoice Date: {utc}</p>
-                                <p>Invoice Due Date:</p>
-
-                                <Col >
-                                    <DatePicker
-                                        placeholder='Invoice Due Date'
-                                        format="DD-MM-YYYY"
-                                        disabledDate={disabledDate}
-                                        style={{ width: 200 }}
-                                        onChange={InvoiceDueDate}
-                                    />
-                                    {/* {dateTimePicker()} */}
-                                </Col>
-                            </InvoiceDetails>
-                        </HeaderDetails>
-                        {gRData ?
-                            gRData.map((item, key) => {
-                                return (
-                                    <General>
-                                        <p>User Name: {item.UserName}</p>
-                                        <p>User Email: {item.UserEmail}</p>
-                                        <p>Purchase Order Id: {item.POid}</p>
-                                        <p>Vendor Name: {item.Vendor}</p>
-                                        <p>GR Created Date: {item.Created_Date}</p>
-                                        {/* <Paragraph>Vendor Name: {item.selectVendor}</Paragraph> */}
-                                        {/* <Paragraph>Status: <Tag color={item.POStatus === 'Approved' ? 'green' : 'red'}>{item.POStatus}</Tag></Paragraph> */}
-                                    </General>
-                                )
-                            }) : <Skeleton active />
-                        }
-                        <Paragraph>
-                            {itemsList ?
-                                <Table dataSource={goods} columns={invoiceTable} /> : <Skeleton />
-                            }
-                        </Paragraph>
-                        <p>Total Amount is: <b>
-                            <Tag color="red">{totalInvoiceAmount} Rs.</Tag>
-                        </b>
-                        </p>
-                    </Modal>
-
                 </TabPane>
             </Tabs>
         </div >
