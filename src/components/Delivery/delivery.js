@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react'
+import firebase from '../../config/Firebase/firebase'
 import { useFormik } from 'formik'
 import { Label } from '../Textbox/style/index'
 import { validationSchema } from './validationSchema'
 import { SubmitButton, H3, Title } from '../../Utils/styles'
 import { FormDiv } from '../Vendor/style/index'
-import { createDelivery, getCustomerOrder, getAllDeliveries, getDataById } from '../../Utils/utils'
+import { createDelivery, getCustomerOrder, getDataById } from '../../Utils/utils'
 import ErrorText from '../FormError/formError'
 import {
     Input, Tabs, Row, Col, Select, List, message, Table, Skeleton, Modal, Space, Button
@@ -38,7 +39,11 @@ const Delivery = () => {
     }
     const onSubmit = (values, onSubmitProps) => {
         if (!orderItems) return message.error('Error! Select customer Order')
-        createDelivery(values, deliveryId, orderItems)
+        if(orderList && orderList[0].Status !== 'Finished') return message.error('Error! Order is not Finished yet')
+        if(values.phone.length < 11) return message.error('Error! Invalid phone number')
+        if(values.alternatePhone.length < 11) return message.error('Error! Invalid phone number')
+        if(values.postalCode.length < 6) return message.error('Error! Invalid postal code')
+        createDelivery(values, deliveryId, orderItems, utc)
         onSubmitProps.resetForm()
     }
 
@@ -48,14 +53,32 @@ const Delivery = () => {
         validationSchema,
     })
 
+    const getAllDeliveries = () => {
+        firebase
+          .firestore()
+          .collection('Delivery')
+          .onSnapshot(function (querySnapshot) {
+            const deliveryData = []
+            querySnapshot.forEach(function (doc) {
+              if (doc.exists) {
+                const comp = doc.data()
+                deliveryData.push({ ...comp, compId: doc.id })
+              } else {
+                message.info('No such document!')
+              }
+            })
+            setDeliveries(deliveryData)
+          })
+      }
+
     useEffect(() => {
         getCustomerOrder().then(data => {
             setAllOrders(data)
         })
-        getAllDeliveries().then(data => {
-            setDeliveries(data)
-        })
+        getAllDeliveries()
     }, [])
+
+     
 
     const getCustomerName = (id) => {
         getOrdersById(id).then(data => {
@@ -161,7 +184,7 @@ const Delivery = () => {
                                 <Col xs={24} sm={12}>
                                     <Label>
                                         Name:
-                                         <Input
+                                        <Input
                                             type='text'
                                             name='name'
                                             {...formik.getFieldProps('name')}
@@ -175,7 +198,7 @@ const Delivery = () => {
                                 <Col xs={24} sm={12}>
                                     <Label>
                                         Organization:
-                                 <Input
+                                        <Input
                                             type='text'
                                             name='organization'
                                             {...formik.getFieldProps('organization')}
@@ -189,7 +212,7 @@ const Delivery = () => {
                                 <Col xs={24} sm={24}>
                                     <Label>
                                         Address:
-                                 <Input
+                                        <Input
                                             type='text'
                                             name='address'
                                             {...formik.getFieldProps('address')}
@@ -202,7 +225,7 @@ const Delivery = () => {
                                 </Col>
                                 <Col xs={24} sm={8}>
                                     <Label>City:
-                                    <Input
+                                        <Input
                                             type='text'
                                             name='city'
                                             {...formik.getFieldProps('city')}
@@ -215,7 +238,7 @@ const Delivery = () => {
                                 </Col>
                                 <Col xs={24} sm={8}>
                                     <Label>State:
-                                    <Input
+                                        <Input
                                             type='text'
                                             name='state'
                                             {...formik.getFieldProps('state')}
@@ -228,11 +251,11 @@ const Delivery = () => {
                                 </Col>
                                 <Col xs={24} sm={8}>
                                     <Label>Postl Code:
-                                    <Input
+                                        <Input
                                             type='text'
                                             name='postalCode'
                                             {...formik.getFieldProps('postalCode')}
-                                            maxLength={10}
+                                            maxLength={6}
                                         />
                                     </Label>
                                     {formik.touched.postalCode && formik.errors.postalCode
@@ -241,7 +264,7 @@ const Delivery = () => {
                                 </Col>
                                 <Col xs={24} sm={6}>
                                     <Label>Phone#:
-                                    <Input
+                                        <Input
                                             type='text'
                                             name='phone'
                                             {...formik.getFieldProps('phone')}
@@ -254,7 +277,7 @@ const Delivery = () => {
                                 </Col>
                                 <Col xs={24} sm={12}>
                                     <Label>Email:
-                                    <Input
+                                        <Input
                                             type='email'
                                             name='email'
                                             {...formik.getFieldProps('email')}
@@ -267,12 +290,12 @@ const Delivery = () => {
                                 </Col>
                                 <Col xs={24} sm={6}>
                                     <Label>Alternate Phone:
-                                    <Input
+                                        <Input
                                             type='text'
                                             name='alternatePhone'
-                                            value={formik.values.alternatePhone}
-                                            onChange={formik.handleChange}
                                             maxLength={11}
+                                            {...formik.getFieldProps('alternatePhone')}
+
                                         />
                                     </Label>
                                     {formik.touched.alternatePhone && formik.errors.alternatePhone
@@ -291,7 +314,13 @@ const Delivery = () => {
                         size='small'
                         itemLayout="horizontal"
                         bordered
-                        header={<H3>Order ITem</H3>}
+                        header={<h3
+                            style={{
+                                textAlign: 'center',
+                                color: orderList && orderList[0].Status == 'Finished' ? 'green' : 'red',
+                                fontWeight: 'bold'
+                            }}
+                        >Order ITem</h3>}
                         dataSource={orderItems}
                         style={{ marginTop: '15px', transistion: '1s' }}
                         renderItem={items => (
@@ -323,7 +352,7 @@ const Delivery = () => {
                             >
                                 <Button onClick={() => setShowModal(false)} style={{ marginRight: 8 }}>
                                     Close
-                              </Button>
+                                </Button>
                             </div>
                         }
                     >
@@ -335,6 +364,7 @@ const Delivery = () => {
                                         <p>{`Organization Name: ${item.Organization}`}</p>
                                         <p>{`Email: ${item.Email}`}</p>
                                         <p>{`Alternate Phone: ${item.Alternate_Phone}`}</p>
+                                        <p>{`Delivery Date: ${item.DeliveryDate}`}</p>
                                     </div>
                                 )
                             }) : <Skeleton active />

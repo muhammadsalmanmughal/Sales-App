@@ -533,7 +533,7 @@ const getAllInvoices = () => {
       console.log('Error!', error.message)
     })
 }
-const createDelivery = (deliveryData, id, orderItems) => {
+const createDelivery = (deliveryData, id, orderItems, date) => {
   const objDelivery = {
     CustomerName: CapitalizeWords(deliveryData.name),
     Organization: CapitalizeWords(deliveryData.organization),
@@ -545,7 +545,8 @@ const createDelivery = (deliveryData, id, orderItems) => {
     Email: deliveryData.email,
     PostalCode: deliveryData.postalCode,
     DeliveryId: id,
-    DeliveryItems: orderItems
+    DeliveryItems: orderItems,
+    DeliveryDate: date
   }
   firebase.firestore().collection('Delivery').add(objDelivery)
     .then((response) => {
@@ -554,28 +555,6 @@ const createDelivery = (deliveryData, id, orderItems) => {
     })
     .catch((error) => {
       message.error(error.message)
-    })
-}
-
-const getAllDeliveries = () => {
-  return firebase
-    .firestore()
-    .collection('Delivery')
-    .get()
-    .then(function (querySnapshot) {
-      const deliveryData = []
-      querySnapshot.forEach(function (doc) {
-        if (doc.exists) {
-          const comp = doc.data()
-          deliveryData.push({ ...comp, compId: doc.id })
-        } else {
-          message.info('No such document!')
-        }
-      })
-      return deliveryData
-    })
-    .catch(function (error) {
-      console.log('Error!', error.message)
     })
 }
 
@@ -687,7 +666,6 @@ export {
   GetAllGoodsReceipt,
   getAllInvoices,
   createDelivery,
-  getAllDeliveries,
   getDataById,
   getPR,
   CreateBom,
