@@ -53,7 +53,7 @@ const CustomerInvoice = () => {
             TotalAmount: invoiceTotal
         }
         CreateRecord(InvoiceObject, 'Invoices', 'Your Invoice has been created')
-        UpdateStatus('Customer_Order', 'Finished', orderDetails?.[0].iD)
+        UpdateStatus('Customer_Order', 'Finished', orderDetails?.[0].iD, true)
         setOrderDetails('')
         setOrderItems('')
     }

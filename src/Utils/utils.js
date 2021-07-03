@@ -259,14 +259,15 @@ const UpdateVendor = (vendorDetail, id) => {
 const CreatePR = (prData) => {
   const object_PR = {
     RequisitionId: prData.PR_iD,
-    RequesterName: CapitalizeWords(prData.requesterName),
-    RequesterEmail: prData.requesterEmail,
-    RequesterPosition: CapitalizeWords(prData.position),
+    RequesterName: CapitalizeWords(prData.UserName),
+    RequesterEmail: prData.UserEmail,
+    RequesterPosition: CapitalizeWords(prData.UserPosition),
     CreatedDate: prData.createdDate,
     RequriedDate: prData.requriedDate,
     ItemsList: prData.itemsList,
     Status: 'Not-Defined'
   }
+  console.log('object_PR', object_PR)
   firebase.firestore().collection('PurchaseRequisitions').add(object_PR)
     .then((response) => {
       firebase.firestore().collection('PurchaseRequisitions').doc(response.id).update({ iD: response.id })
@@ -306,13 +307,15 @@ const UpdatePOStatus = (status, id) => {
       POStatus: status
     })
 }
-const UpdateStatus = (collectionName, status, id) => {
+const UpdateStatus = (collectionName, status, id, toastMessage) => {
   console.log('collectionName,status, id: ', collectionName, status, id);
   firebase.firestore().collection(collectionName).doc(id)
     .update({
       Status: status
     })
-  message.success(`Status updated to ${status}`)
+    if(toastMessage){
+       message.success(`Status updated to ${status}`)
+    } 
 }
 
 const UpdatePO = (status, id) => {
@@ -323,7 +326,7 @@ const UpdatePO = (status, id) => {
 }
 
 const CreateRFQ = (QuoationData) => {
-    firebase.firestore().collection('RFQ').add(QuoationData)
+  firebase.firestore().collection('RFQ').add(QuoationData)
     .then((response) => {
       firebase.firestore().collection('RFQ').doc(response.id).update({ iD: response.id })
       message.success('Request for quotation is created')
@@ -615,28 +618,6 @@ const GetAllBom = () => {
     })
 }
 
-const getProductionOrders = () => {
-  return firebase
-    .firestore()
-    .collection('Production_Orders')
-    .get()
-    .then(function (querySnapshot) {
-      const orderData = []
-      querySnapshot.forEach(function (doc) {
-        if (doc.exists) {
-          const comp = doc.data()
-          orderData.push({ ...comp, compId: doc.id })
-        } else {
-          message.info('No such document!')
-        }
-      })
-      return orderData
-    })
-    .catch(function (error) {
-      console.log('Error getting documents: ', error)
-    })
-}
-
 const UpdateProductionStatus = (status, id) => {
   firebase.firestore().collection('Production_Orders').doc(id)
     .update({
@@ -711,7 +692,6 @@ export {
   getPR,
   CreateBom,
   GetAllBom,
-  getProductionOrders,
   UpdateProductionStatus,
   UpdateItemStatus,
   CreateRecord,

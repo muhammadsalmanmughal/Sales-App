@@ -1,22 +1,18 @@
 import React, { useState, useEffect, useContext } from 'react'
+import firebase from '../../config/Firebase/firebase';
 import { useHistory } from 'react-router-dom'
 import { CopyToClipboard } from 'react-copy-to-clipboard'
 import { VendorCustomerContext } from '../../context/Random/random'
 import { Divider, Row, Col, Tooltip, Input, Select, Button, message, Tabs, Space, Table, Modal } from 'antd'
-import { CreateBom, GetAllBom, getDataById } from '../../Utils/utils'
+import { CreateBom, getDataById } from '../../Utils/utils'
 import {
-  Title, H3, Goback,
-  ListItem,
-  ItemDiv,
-  QuantityAndButtonDiv,
-  Quantity,
-  DeleteButton
+  Title, H3, Goback, ListItem, ItemDiv, QuantityAndButtonDiv, Quantity, DeleteButton 
 } from '../../Utils/styles'
 import { FaRegClipboard } from 'react-icons/fa'
 import { CaretLeftOutlined } from '@ant-design/icons'
 
 const BillOfMaterial = () => {
-  const { allInventoryItems, bomItems } = useContext(VendorCustomerContext)
+  const { allInventoryItems } = useContext(VendorCustomerContext)
   const [productName, setProductName] = useState()
   const [BomType, setBomType] = useState()
   const [items, setItem] = useState('')
@@ -35,22 +31,35 @@ const BillOfMaterial = () => {
   const utc = current_datetime.getDate() + '-' + (current_datetime.getMonth() + 1) + '-' + current_datetime.getFullYear()
 
   useEffect(() => {
-    GetAllBom().then(data => {
-      // setAvailableBom(data)
-      // setBomItems(data)
-    })
+    GetAllBom()
   }, [])
+  const GetAllBom = () => {
+    firebase
+      .firestore()
+      .collection('BillOfMaterial')
+      .onSnapshot(function (querySnapshot) {
+        const allInvoices = []
+        querySnapshot.forEach(function (doc) {
+          if (doc.exists) {
+            const comp = doc.data()
+            allInvoices.push({ ...comp, compId: doc.id })
+          } else {
+            message.info('No such document!')
+          }
+        })
+        setAvailableBom(allInvoices)
+      })
+  }
 
-  console.log('bomItems',bomItems);
   const details = bomData?.flatMap(d => d.List)
 
-  function selectItem (value) {
+  function selectItem(value) {
     setItem(value)
   }
-  function selectBomType (value) {
+  function selectBomType(value) {
     setBomType(value)
   }
-  function selectUOM (value) {
+  function selectUOM(value) {
     setUnitOfMeassure(value)
   }
   const CreateList = () => {
@@ -144,7 +153,7 @@ const BillOfMaterial = () => {
         <CaretLeftOutlined /> GoBack
       </Goback>
       <Title>
-        Bill of Material :
+        Bill of Material
       </Title>
       {/* <Divider /> */}
       <Tabs defaultActiveKey='1'>
@@ -162,7 +171,7 @@ const BillOfMaterial = () => {
                         />
                       </CopyToClipboard>
                     </Tooltip>
-                                }
+                  }
                   value={Bom_Id}
                   disabled
                 />
@@ -191,14 +200,14 @@ const BillOfMaterial = () => {
                 onChange={selectItem}
               >
                 {
-                                    allInventoryItems && allInventoryItems.map(items => <Select.Option
-                                      value={items.itemsName}
-                                                                                        >
-                                      {items.itemsName}
-                                                                                        </Select.Option>
+                  allInventoryItems && allInventoryItems.map(items => <Select.Option
+                    value={items.itemsName}
+                  >
+                    {items.itemsName}
+                  </Select.Option>
 
-                                    )
-                                }
+                  )
+                }
               </Select>
             </Col>
             <Col xs={24} sm={6}>
@@ -221,28 +230,28 @@ const BillOfMaterial = () => {
           </Divider>
           <ul>
             {
-                            itemsList.map((item, key) => {
-                              return (
-                                <>
-                                  <ListItem key={key} xs={24} sm={12}>
-                                    <ItemDiv>
-                                      {item.items}
-                                    </ItemDiv>
-                                    <QuantityAndButtonDiv>
-                                      <Quantity>
-                                        {item.quantity}/
-                                        {item.unitOfMeassure}
-                                      </Quantity>
-                                      <DeleteButton>
-                                        <Button danger onClick={() => deleteItem(key)}>Delete</Button>
-                                      </DeleteButton>
-                                    </QuantityAndButtonDiv>
+              itemsList.map((item, key) => {
+                return (
+                  <>
+                    <ListItem key={key} xs={24} sm={12}>
+                      <ItemDiv>
+                        {item.items}
+                      </ItemDiv>
+                      <QuantityAndButtonDiv>
+                        <Quantity>
+                          {item.quantity}/
+                          {item.unitOfMeassure}
+                        </Quantity>
+                        <DeleteButton>
+                          <Button danger onClick={() => deleteItem(key)}>Delete</Button>
+                        </DeleteButton>
+                      </QuantityAndButtonDiv>
 
-                                  </ListItem>
-                                </>
-                              )
-                            })
-                        }
+                    </ListItem>
+                  </>
+                )
+              })
+            }
           </ul>
           <Button onClick={Bom}>
             Create BOM
@@ -250,10 +259,10 @@ const BillOfMaterial = () => {
         </TabPane>
         <TabPane tab='Available BOM' key='2'>
           <div>
-            <Table dataSource={bomItems} columns={columns} />;
+            <Table dataSource={availableBom} columns={columns} />;
           </div>
           <Modal
-            title='Purchase Order Details'
+            title='Bill of materila items'
             centered
             visible={showModal}
             width={1000}
@@ -267,7 +276,7 @@ const BillOfMaterial = () => {
                   Close
                 </Button>
               </div>
-                        }
+            }
           >
             <div>
               <Table dataSource={details} columns={bomDetails} />

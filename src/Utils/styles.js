@@ -140,6 +140,7 @@ margin-top:15px;
 `
 export const ItemsListMainDiv = styled.div`
 display: flex;
+justify-content: space-around;
 flex-direction: row;
 width:100%;
 ${media.tablet`
@@ -153,7 +154,7 @@ transition: 1.5s;
 export const ItemsListOne = styled.div`
 // display:flex;
 flex-direction: column;
-width:50%;
+width:49%;
 ${media.tablet`
 width: 100%;
 text-align: center;

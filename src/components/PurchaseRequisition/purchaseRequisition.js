@@ -141,7 +141,7 @@ const PurchaseRequisition = () => {
         })
     }
     const changeStatus = (status, id) => {
-        UpdateStatus('PurchaseRequisitions', status, id)
+        UpdateStatus('PurchaseRequisitions', status, id, true)
     };
 
 

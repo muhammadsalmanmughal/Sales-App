@@ -1,4 +1,4 @@
-import React, { useContext, useEffect } from 'react'
+import React, { useState, useContext, useEffect } from 'react'
 import firebase from '../../config/Firebase/firebase'
 import 'firebase/firestore';
 import { useHistory } from 'react-router-dom'
@@ -6,22 +6,18 @@ import { VendorCustomerContext } from '../../context/Random/random'
 import { UserContext } from '../../context/UserContext/UserContext'
 import {
     getCustomerOrder, getDataById, getOrdersById, getAllInventoryItems, CreateRecord, CapitalizeWords,
-    getProductionOrders,
-    UpdateProductionStatus,
-    UpdateItemStatus
+    UpdateProductionStatus, UpdateItemStatus, UpdateStatus
 } from '../../Utils/utils'
 import { CopyToClipboard } from 'react-copy-to-clipboard'
 import {
-    Divider, Input, Button, Tooltip, message, Select, Tabs, Row, Col, Space, Table, Skeleton, Modal, Tag
+    Divider, Input, Button, Tooltip, message, Select, Tabs, Row, Col, Space, Table, Skeleton, Modal,
+    Tag, List, notification
 } from 'antd'
-import {
-    Title, H3, ListItem, ItemDiv, QuantityAndButtonDiv, Quantity, ItemsListMainDiv, ItemsListOne, ItemsListTwo
-} from '../../Utils/styles'
+import { Title, H3, ItemsListMainDiv, ItemsListOne, ItemsListTwo, Paragraph } from '../../Utils/styles'
 import { FaRegClipboard, FaDiagnoses } from 'react-icons/fa'
-import TextArea from 'antd/lib/input/TextArea'
-import { useState } from 'react/cjs/react.development'
 
 const Production = () => {
+    const { TextArea } = Input;
     const { bomItems } = useContext(VendorCustomerContext)
     const { user } = useContext(UserContext)
     const [customerId, setCustomerId] = useState()
@@ -35,9 +31,12 @@ const Production = () => {
     const [allInventory, setAllInventory] = useState([])
     const [customerOrder, setCustomerOrder] = useState()
     const [allOrders, setAllOrders] = useState()
+    const [customerCollectionId, setCustomerCollectionId] = useState()
     const [orderDetails, setOrderDetails] = useState()
     const [showModal, setShowModal] = useState(false);
     const [orderItemslist, setOrderItemslist] = useState()
+    const [ordersById, setOrdersById] = useState()
+    console.log('ordersById: ', ordersById);
 
     useEffect(() => {
         getCustomerOrder().then(data => {
@@ -46,11 +45,25 @@ const Production = () => {
         getAllInventoryItems().then(data => {
             setAllInventory(data)
         })
-        getProductionOrders().then(data => {
-            setAllOrders(data)
-        })
+        getProductionOrders()
     }, [])
-
+    const getProductionOrders = () => {
+        firebase
+            .firestore()
+            .collection('Production_Orders')
+            .onSnapshot(function (querySnapshot) {
+                const orderData = []
+                querySnapshot.forEach(function (doc) {
+                    if (doc.exists) {
+                        const comp = doc.data()
+                        orderData.push({ ...comp, compId: doc.id })
+                    } else {
+                        message.info('No such document!')
+                    }
+                })
+                setAllOrders(orderData)
+            })
+    }
     const name = user && user.map(user => user.name)
     const userName = name && name.toString()
     const { TabPane } = Tabs
@@ -67,6 +80,7 @@ const Production = () => {
         getOrdersById(id).then(data => {
             setCustomerName(data[0].CustomerName)
             setOrderDate(data[0].requiredDate)
+            setCustomerCollectionId(data[0].iD)
             setCustomerId(id)
         })
         const orderList = customerOrder?.filter(item => {
@@ -74,6 +88,29 @@ const Production = () => {
         })
         const orderItem = orderList.flatMap(i => i.itemsList)
         setOrderItemslist(orderItem)
+
+    }
+
+    const getOrderItems = (id) => {
+        firebase
+            .firestore()
+            .collection('Production_Orders')
+            .where('CustomerId', '==', id)
+            .onSnapshot(function (querySnapshot) {
+                const goodsReceipt = []
+                querySnapshot.forEach(function (doc) {
+                    if (doc.exists) {
+                        const comp = doc.data()
+                        goodsReceipt.push({ ...comp, compId: doc.id })
+                    } else {
+                        message.info('No such document!')
+                    }
+                })
+                setOrdersById(goodsReceipt)
+            })
+        // getOrdersById(id).then(data => {
+        //     const orderItemById = data.flatMap(i => i.itemsList)
+        // })
     }
 
     const selectOrderType = (value) => {
@@ -116,6 +153,7 @@ const Production = () => {
         })
         const PO_Object = {
             POiD,
+            CustomerCollectionId: customerCollectionId,
             UserName: CapitalizeWords(userName),
             CustomerId: customerId,
             CustomerName: CapitalizeWords(customerName),
@@ -135,8 +173,28 @@ const Production = () => {
         setDiscription('')
     }
 
-    const changeStatus = (e, id) => {
+    const changeStatus = (e, id, collecId) => {
+        console.log('e, id, collecId: ', e, id, collecId);
         UpdateProductionStatus(e, id)
+        // message.success(`Production `)
+        notification.success({
+            message: 'Status Updated',
+            description:
+                `Order status of this item is set to ${e}.
+            ${e == "On-Hold" ? "Now you cannot change item status." : ''} `
+        });
+        UpdateStatus('Customer_Order', e, collecId,false)
+    }
+
+    const updateCOS = (e) => {
+        console.log('e: ', e);
+        console.log('orderby id collection', ordersById[0].CustomerCollectionId);
+        UpdateStatus('Customer_Order', e, ordersById[0].CustomerCollectionId, false)
+        notification.success({
+            message: 'Status Updated',
+            description:
+                `Order status of this item is set to ${e}. `
+        });
     }
 
     const changeItemStatus = (e, id) => {
@@ -149,6 +207,7 @@ const Production = () => {
             setOrderDetails(data)
         })
     }
+
     const allOrderTable = [
         {
             title: 'Order ID',
@@ -179,7 +238,7 @@ const Production = () => {
                         defaultValue={allPO.OrderStatus}
                         placeholder='Select Status'
                         style={{ width: 150 }}
-                        onChange={e => changeStatus(e, allPO.iD)}
+                        onChange={e => changeStatus(e, allPO.iD, allPO.CustomerCollectionId)}
                     >
                         <Select.Option value="In-progress">In-progress</Select.Option>
                         <Select.Option value="On-Hold">On-Hold</Select.Option>
@@ -194,7 +253,7 @@ const Production = () => {
                 <Space size="middle">
                     <Select
                         defaultValue={allPO.ItemStatus}
-                        // disabled={allPO.ItemStatus == 'In-progress'? false : true}
+                        disabled={allPO.OrderStatus == 'On-Hold' ? true : false}
                         placeholder='Item Status'
                         style={{ width: 150 }}
                         onChange={e => changeItemStatus(e, allPO.iD)}
@@ -202,7 +261,7 @@ const Production = () => {
                         <Select.Option value="Cutting">Cutting</Select.Option>
                         <Select.Option value="Fixing">Fixing</Select.Option>
                         <Select.Option value="Polishing">Polishing</Select.Option>
-                        <Select.Option value="Polishing">Complete</Select.Option>
+                        <Select.Option value="Finished">Finished</Select.Option>
                     </Select>
                 </Space>
             ),
@@ -221,6 +280,7 @@ const Production = () => {
             ),
         },
     ]
+
     const tableOrderDetails = [
         {
             title: 'Item Name',
@@ -238,6 +298,7 @@ const Production = () => {
             key: 'umo',
         }
     ]
+
     return (
         <div>
             <Title>Production</Title>
@@ -340,52 +401,32 @@ const Production = () => {
                     </Divider>
                     <ItemsListMainDiv>
                         <ItemsListOne>
-                            <H3>Cutomer Order</H3>
-                            <ul>
-                                {
-                                    orderItemslist?.map((items, key) => {
-                                        return (
-                                            <>
-                                                <ListItem key={key} xs={24} sm={12}>
-                                                    <ItemDiv>
-                                                        {items.item}
-                                                    </ItemDiv>
-                                                    <QuantityAndButtonDiv>
-                                                        <Quantity>
-                                                            {items.quantity}
-                                                        </Quantity>
-                                                    </QuantityAndButtonDiv>
-
-                                                </ListItem>
-                                            </>
-                                        )
-                                    })
+                            <List
+                                size="large"
+                                header={<H3>Customer Order</H3>}
+                                bordered
+                                dataSource={orderItemslist}
+                                renderItem={items =>
+                                    <div>
+                                        <List.Item>
+                                            <Paragraph>Item: {items.item}</Paragraph> Quantity:  {items.quantity}</List.Item>
+                                    </div>
                                 }
-                            </ul>
+                            />
                         </ItemsListOne>
                         <ItemsListTwo>
-                            <H3>BOM Items</H3>
-                            <ul>
-                                {
-                                    newBomList?.map((item, key) => {
-                                        return (
-                                            <>
-                                                <ListItem key={key} xs={24} sm={12}>
-                                                    <ItemDiv>
-                                                        {item.items}
-                                                    </ItemDiv>
-                                                    <QuantityAndButtonDiv>
-                                                        <Quantity>
-                                                            {item.quantity}-{item.unitOfMeassure}
-                                                        </Quantity>
-                                                    </QuantityAndButtonDiv>
-
-                                                </ListItem>
-                                            </>
-                                        )
-                                    })
+                            <List
+                                size="large"
+                                header={<H3>BOM Items</H3>}
+                                bordered
+                                dataSource={newBomList}
+                                renderItem={item =>
+                                    <div>
+                                        <List.Item>
+                                            <Paragraph>Item: {item.items}</Paragraph> Quantity:  {item.quantity}</List.Item>
+                                    </div>
                                 }
-                            </ul>
+                            />
                         </ItemsListTwo>
                     </ItemsListMainDiv>
                     <Button onClick={createPO}>Create Production Order</Button>
@@ -410,7 +451,7 @@ const Production = () => {
                             >
                                 <Button onClick={() => setShowModal(false)} style={{ marginRight: 8 }}>
                                     Close
-                              </Button>
+                                </Button>
                             </div>
                         }
                     >
@@ -421,7 +462,7 @@ const Production = () => {
                                         <p>{`Item: ${item.BomItems}`}</p>
                                         <p>{`Customer Name: ${item.CustomerName}`}</p>
                                         <p>Order Status:
-                                           <Tag color={item.OrderStatus === 'In-progress' ? 'blue' : 'default'}>
+                                            <Tag color={item.OrderStatus === 'In-progress' ? 'green' : 'volcano'}>
                                                 {item.OrderStatus}</Tag>
                                         </p>
                                         <p>{`Discription: ${item.Discription}`}</p>
@@ -435,6 +476,66 @@ const Production = () => {
                             }
                         </div>
                     </Modal>
+                </TabPane>
+                <TabPane tab='Search orders by id' key='3'>
+                    <Row gutter={[10, 10]}>
+                        <Col xs={24} sm={12}>
+                            <Select
+                                style={{ width: '100%' }}
+                                placeholder='Cutomer order Id'
+                                onChange={getOrderItems}
+                            >
+                                {customerOrder && customerOrder.map(item => <Select.Option
+                                    value={item.orderID}
+                                >
+                                    {item.orderID}
+                                </Select.Option>
+                                )}
+                            </Select>
+                        </Col>
+                        <Col xs={24} sm={12}>
+                            <Select
+                                placeholder='Change customer order status'
+                                disabled={!ordersById?.length}
+                                style={{ width: '100%' }}
+                                onChange={e => updateCOS(e)}
+                            >
+                                <Select.Option value="Finished">Finished</Select.Option>
+                                {/* <Select.Option value="In-Progress">In-Progress</Select.Option> */}
+                            </Select>
+                        </Col>
+                    </Row>
+                    <Row gutter={[10, 10]}>
+                        <Col xs={24} sm={24}>
+                            {console.log('orderby id in return', ordersById)}
+                            <List
+                                size="large"
+                                header={<H3>Order Items</H3>}
+                                bordered
+                                dataSource={ordersById}
+                                renderItem={items =>
+                                    <div>
+                                        <List.Item>
+                                            <Paragraph>Item: {items.BomItems}</Paragraph> Quantity:  {items.Quantity}</List.Item>
+                                        <List.Item>
+                                            <Paragraph>Order Status :&nbsp;
+                                                <Tag color={items.OrderStatus !== 'In-progress' ? 'volcano' : 'green'}>
+                                                    {items.OrderStatus}
+                                                </Tag>
+                                            </Paragraph>
+                                            <Paragraph>Item Status :&nbsp;
+                                                <Tag color={items.ItemStatus !== 'Finished' ? 'blue' : 'green'}>
+                                                    {items.ItemStatus}
+                                                </Tag>
+                                            </Paragraph>
+                                        </List.Item>
+                                        <List.Item></List.Item>
+
+                                    </div>
+                                }
+                            />
+                        </Col>
+                    </Row>
                 </TabPane>
             </Tabs>
         </div>
