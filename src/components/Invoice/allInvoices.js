@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from 'react'
-import { getAllInvoices, getDataById } from '../../Utils/utils'
+import firebase from '../../config/Firebase/firebase'
+import { useHistory } from 'react-router-dom'
+import { getDataById } from '../../Utils/utils'
 import {
-    Button, Skeleton, Table, Space, Modal, Tag, Row, Col
+    Button, Skeleton, Table, Space, Modal, Tag, Row, Col, message, Radio
 } from 'antd'
 import { Title, CName, Location, Paragraph, H3 } from '../../Utils/styles'
 import { HeaderDetails, CompanyDetails, InvoiceDetails, General } from '../PurchaseOrder/style/index'
@@ -13,10 +15,26 @@ const AllInvoices = () => {
     const [invoiceItemList, setInvoiceItemList] = useState()
 
     useEffect(() => {
-        getAllInvoices().then(data => {
-            setAllInvoices(data)
-        })
+        getAllInvoices()
     }, [])
+    const history = useHistory()
+    const getAllInvoices = () => {
+        firebase
+          .firestore()
+          .collection('Invoices')
+          .onSnapshot(function (querySnapshot) {
+            const allInvoices = []
+            querySnapshot.forEach(function (doc) {
+              if (doc.exists) {
+                const comp = doc.data()
+                allInvoices.push({ ...comp, compId: doc.id })
+              } else {
+                message.info('No such document!')
+              }
+            })
+            setAllInvoices(allInvoices)
+          })
+      }
 
     const getInvoiceDetails = (id) => {
         setShowModal(true)
@@ -51,13 +69,24 @@ const AllInvoices = () => {
             title: 'Action',
             key: 'action',
             render: (allPO) => (
-                <Space size="middle">
-                    <Button
-                        onClick={
-                            e => getInvoiceDetails(allPO.compId)
-                        }
-                    >Details</Button>
-                </Space>
+                // <Space size="middle">
+                //     <Button
+                //         onClick={
+                //             e => getInvoiceDetails(allPO.compId)
+                //         }
+                //     >Details</Button>
+                // </Space>
+                <Radio.Group  >
+                <Radio.Button
+                    onClick={
+                        e => getInvoiceDetails(allPO.compId)
+                    } >Details</Radio.Button>
+                <Radio.Button
+                    value="default"
+                    onClick={() => history.push(`/home/customerInvoice/${allPO.iD}`, allPO.iD)}
+                    >
+                        Create-Invoice</Radio.Button>
+            </Radio.Group>
             ),
         },
 
@@ -78,13 +107,7 @@ const AllInvoices = () => {
             title: 'Price Per Item',
             dataIndex: 'itemPrice',
             key: 'price',
-        },
-        {
-            title: 'Description',
-            dataIndex: 'discription',
-            key: 'details',
-        },
-
+        }
     ];
 
     return (

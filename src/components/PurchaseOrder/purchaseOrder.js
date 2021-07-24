@@ -75,7 +75,7 @@ const PurchaseOrder = () => {
         if (!requestedquantity) return message.error('Error! Invalid Requested Quantity')
         if (isNaN(requestedquantity) || requestedquantity <= 0) return message.error('Error! Invalid Requested Quantity')
         if (isNaN(pricePerItem) || pricePerItem <= 0) return message.error('Error! Invalid Item Price')
-        if (!discription) return message.error('Error! Please add small')
+        if (!discription) return message.error('Error! Please add some description')
         else {
             const itemPrice = Number(pricePerItem)
             const quantity = Number(requestedquantity)
@@ -537,7 +537,7 @@ const PurchaseOrder = () => {
                                 value={discription}
                                 placeholder='Enter a small discription'
                                 onChange={e => setDiscription(e.target.value)}
-                                maxLength={100} />
+                                maxLength={50} />
                         </Col>
 
                         <Col xs={24} sm={1}>

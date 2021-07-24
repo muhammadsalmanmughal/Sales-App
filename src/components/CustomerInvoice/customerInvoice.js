@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { getCustomerOrder, getOrdersById, CreateRecord,UpdateStatus } from '../../Utils/utils'
+import { getCustomerOrder, getOrdersById, CreateRecord,UpdateStatus,UpdateInvoice } from '../../Utils/utils'
 import { Row, Col, List, Button, Tag, Select, Divider, message } from 'antd';
 import { H3, Title, Paragraph, } from '../../Utils/styles'
 import { Details } from './style'
@@ -7,6 +7,7 @@ import { Details } from './style'
 const CustomerInvoice = () => {
     const [customerOrders, setCustomerOrders] = useState()
     const [orderDetails, setOrderDetails] = useState()
+    console.log('orderDetails: ', orderDetails);
     const [orderItems, setOrderItems] = useState()
 
     useEffect(() => {
@@ -33,7 +34,7 @@ const CustomerInvoice = () => {
 
     const createInvoice = () => {
         if (!orderDetails || !orderItems) return message.error('Error! Select customer id to retreive data')
-        if (orderDetails && orderDetails[0].Status == 'Finished') return message.error('Invoice Aleardy Created')
+        if (orderDetails && orderDetails[0].isInvoice == 'Created') return message.error('Invoice Aleardy Created')
         const InvoiceObject = {
             InvoiceId: invoiceId,
             CustomerName: orderDetails && orderDetails[0].CustomerName,
@@ -53,7 +54,7 @@ const CustomerInvoice = () => {
             TotalAmount: invoiceTotal
         }
         CreateRecord(InvoiceObject, 'Invoices', 'Your Invoice has been created')
-        UpdateStatus('Customer_Order', 'Finished', orderDetails?.[0].iD, true)
+        UpdateInvoice('Created', orderDetails?.[0].iD)
         setOrderDetails('')
         setOrderItems('')
     }
@@ -119,6 +120,14 @@ const CustomerInvoice = () => {
                         <Col>
                             <Tag color={orderDetails&& orderDetails[0].Status == 'In-Progress' ? 'orange' : 'green'}>
                                 {orderDetails&& orderDetails[0].Status}
+                            </Tag>
+                        </Col>
+                    </Row>
+                    <Row gutter={[10, 10]}>
+                        <Col><Paragraph>Invoice: </Paragraph></Col>
+                        <Col>
+                            <Tag color={orderDetails&& orderDetails[0].isInvoice == 'Created' ? 'green' : 'volcano'}>
+                                {orderDetails&& orderDetails[0].isInvoice}
                             </Tag>
                         </Col>
                     </Row>

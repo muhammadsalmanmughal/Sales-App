@@ -20,7 +20,7 @@ font-family: 'DM Serif Text', serif;
 font-weight: bold;
 font-size: 22px;
 `
-export const CompanyDetails =styled.div`
+export const CompanyDetails = styled.div`
 display: flex;
 `
 export const Location = styled.div`
@@ -35,7 +35,7 @@ flex-direction: column;
 `}
 `
 
-export const Contact =styled.div`
+export const Contact = styled.div`
 margin-left:40px;
 display: flex;
 flex-direction: row;
@@ -166,4 +166,14 @@ ${media.tablet`
 width: 100%;
 text-align: center;
 `}
+`
+export const InvoiceDetails = styled.div`
+background-color: #e9ebf0;
+padding: 15px;
+border-radius: 3px;
+margin-bottom:10px;
+`
+export const InvoiceDetailsData = styled.div`
+display: flex;
+justify-content: space-around;
 `

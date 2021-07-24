@@ -5,8 +5,7 @@ import Logo from '../../assets/logo.png'
 import { Goback, } from '../../Utils/styles'
 import { getDataById } from '../../Utils/utils'
 import { Button, Skeleton, Tag, Table } from 'antd'
-import { Details, DetailsData } from './style/index'
-import { Location,Title } from '../../Utils/styles'
+import { Location,Title,InvoiceDetails, InvoiceDetailsData } from '../../Utils/styles'
 import { CaretLeftOutlined } from '@ant-design/icons'
 
 class CreateReport extends React.Component {
@@ -102,10 +101,10 @@ class CreateReport extends React.Component {
                     </div>
                 </Location>
 
-                <Details>
+                <InvoiceDetails>
                     {this.state.gRData.map(item => {
                         return <div>
-                            <DetailsData>
+                            <InvoiceDetailsData>
                                 <div>
                                     <h3>Vendor:</h3>
                                     <p>{item.Vendor}</p>
@@ -117,10 +116,10 @@ class CreateReport extends React.Component {
                                     <p>GR No#: {item.GR_id}</p>
                                 </div>
 
-                            </DetailsData>
+                            </InvoiceDetailsData>
                         </div>
                     })}
-                </Details>
+                </InvoiceDetails>
                 <div>
                     {itemsList ?
                         <Table dataSource={itemsList} columns={goodReceiptDetails} /> : <Skeleton />

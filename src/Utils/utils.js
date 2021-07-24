@@ -236,17 +236,19 @@ const UpdateOrderDate = (newdate, id) => {
 }
 
 const UpdateVendor = (vendorDetail, id) => {
+  console.log('vendorDetail: ', vendorDetail);
+
   firebase.firestore().collection('Vendor').doc(id)
     .update({
-      address: vendorDetail.address,
+      address: vendorDetail.Address,
       ownerFirstName: vendorDetail.ownerFirstName,
       ownerLastName: vendorDetail.ownerLastName,
       companyName: vendorDetail.companyName,
-      state: vendorDetail.state,
-      city: vendorDetail.city,
-      postalCode: vendorDetail.postalCode,
-      phone: vendorDetail.phone,
-      email: vendorDetail.email
+      state: vendorDetail.State,
+      city: vendorDetail.City,
+      postalCode: vendorDetail.PostalCode,
+      phone: vendorDetail.Phone,
+      email: vendorDetail.Email
     })
     .then(() => {
       message.success('Data updated')
@@ -316,6 +318,14 @@ const UpdateStatus = (collectionName, status, id, toastMessage) => {
     if(toastMessage){
        message.success(`Status updated to ${status}`)
     } 
+}
+
+const UpdateInvoice = (status, id) => {
+  console.log('status', status, id);
+  firebase.firestore().collection('Customer_Order').doc(id)
+    .update({
+      isInvoice: status
+    })
 }
 
 const UpdatePO = (status, id) => {
@@ -512,27 +522,7 @@ const getDataById = (dbName, id) => {
       console.log('Error!', error.message)
     })
 }
-const getAllInvoices = () => {
-  return firebase
-    .firestore()
-    .collection('Invoices')
-    .get()
-    .then(function (querySnapshot) {
-      const allInvoices = []
-      querySnapshot.forEach(function (doc) {
-        if (doc.exists) {
-          const comp = doc.data()
-          allInvoices.push({ ...comp, compId: doc.id })
-        } else {
-          message.info('No such document!')
-        }
-      })
-      return allInvoices
-    })
-    .catch(function (error) {
-      console.log('Error!', error.message)
-    })
-}
+
 const createDelivery = (deliveryData, id, orderItems, date) => {
   const objDelivery = {
     CustomerName: CapitalizeWords(deliveryData.name),
@@ -664,7 +654,6 @@ export {
   UpdatePOStatus,
   CapitalizeWords,
   GetAllGoodsReceipt,
-  getAllInvoices,
   createDelivery,
   getDataById,
   getPR,
@@ -675,5 +664,6 @@ export {
   CreateRecord,
   getOrdersById,
   UpdateStatus,
-  UpdatePO
+  UpdatePO,
+  UpdateInvoice
 }

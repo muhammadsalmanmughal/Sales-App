@@ -81,7 +81,7 @@ const CustomerOrder = () => {
         const customerObeject = {
             CustomerName, CompanyName, Phone, BillToAddress, State, City, PostalCode,
             itemsList, orderID, currentDate, requiredDate,UserName,UserEmail,newOrderDate:'Not-Set',
-            Status:'Not-Started',previousDate:''
+            Status:'Not-Started',previousDate:'', isInvoice:'Not-Created'
         }
         CreateRecord(customerObeject, 'Customer_Order', 'Customers order has been placed')
         setItemsList([])
@@ -107,6 +107,7 @@ const CustomerOrder = () => {
         if (isNaN(quantity) || quantity <= 0) return message.error('Error! Quantity amount not support')
         if (!items || !quantity || !itemPrice) return message.error('Error! All fields should be filed')
         if (isNaN(itemPrice) || quantity <= 0) return message.error('Error! Item price not supported')
+        if (!discription) return message.error('Error! Enter some Description')
         else {
             const item = CapitalizeWords(items)
             const itemDetails = CapitalizeWords(discription)
@@ -222,7 +223,7 @@ const CustomerOrder = () => {
                     <Input type='text' value={itemQuantity} placeholder='Item Quantity' onChange={e => setItemQuantity(e.target.value)} maxLength={2} />
                 </Col>
                 <Col xs={24} sm={8}>
-                    <Input type='text' value={itemPrice} placeholder='Item Price' onChange={e => setItemPrice(e.target.value)} maxLength={5} />
+                    <Input type='text' value={itemPrice} placeholder='Item Price' onChange={e => setItemPrice(e.target.value)} maxLength={6} />
                 </Col>
             </Row>
             <Row gutter={[10, 10]}>

@@ -3,6 +3,7 @@ import firebase from '../../config/Firebase/firebase'
 import { useHistory } from 'react-router-dom'
 import { message } from 'antd';
 import { UserContext } from '../../context/UserContext/UserContext'
+import CompanyLogo  from '../../assets/logo.png'
 import {
     Navbar,
     Logo,
@@ -126,7 +127,7 @@ const Header = () => {
     return (
         <div>
             <Navbar>
-                <Logo src='https://1000logos.net/wp-content/uploads/2017/08/CAT-logo.png' />
+                <Logo src={CompanyLogo}/>
                 <User>
                     <UserName>User First Name</UserName>
                     <UserAvatar>

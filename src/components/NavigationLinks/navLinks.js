@@ -20,6 +20,8 @@ import BillOfMaterial from '../BOM/bom'
 import CustomerInvoice from '../CustomerInvoice/customerInvoice'
 import PageNotFound from '../404/pagenotfound'
 import CreateReport from '../PurchaseOrder/createReport'
+import CustomerInvoicePDF from '../CustomerInvoice/invoicePDFReport'
+
 export {
     SideBar,Header,
     Dashboard,
@@ -41,5 +43,6 @@ export {
     Delivery,
     CustomerInvoice,
     CreateReport,
+    CustomerInvoicePDF,
     PageNotFound
 }

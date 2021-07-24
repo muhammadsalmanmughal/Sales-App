@@ -20,13 +20,3 @@ display: flex;
 justify-content: space-evenly;
 margin-top: 25px;
 `
-export const Details = styled.div`
-background-color: #e9ebf0;
-padding: 15px;
-border-radius: 3px;
-margin-bottom:10px;
-`
-export const DetailsData = styled.div`
-display: flex;
-justify-content: space-around;
-`

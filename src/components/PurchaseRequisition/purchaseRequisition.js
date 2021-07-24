@@ -184,7 +184,7 @@ const PurchaseRequisition = () => {
                         onChange={e => changeStatus(e, allPO.iD)}>
                         <Select.Option value="approved">Approved</Select.Option>
                         <Select.Option value="rejected">Rejected</Select.Option>
-                        <Select.Option value="cancle">Cancle</Select.Option>
+                        {/* <Select.Option value="cancle">Cancle</Select.Option> */}
                     </Select>
                 </Space>
             ),

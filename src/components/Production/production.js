@@ -390,7 +390,7 @@ const Production = () => {
                                 value={discription}
                                 placeholder='Discription Optional'
                                 showCount
-                                maxLength={150}
+                                maxLength={50}
                                 size='small'
                                 onChange={e => setDiscription(e.target.value)} />
                         </Col>

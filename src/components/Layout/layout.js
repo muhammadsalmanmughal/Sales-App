@@ -22,6 +22,7 @@ import {
   Production,
   CustomerInvoice,
   CreateReport,
+  CustomerInvoicePDF,
   PageNotFound
 } from '../NavigationLinks/navLinks'
 import { VendorCustomerContext } from '../../context/Random/random'
@@ -85,6 +86,7 @@ function Layout () {
                     <Route path='/home/customer-invoice' component={CustomerInvoice} />
                     <Route path='/home/delivery' component={Delivery} />
                     <Route path='/home/createInvoice/:slug' component={CreateReport} />
+                    <Route path='/home/customerInvoice/:slug' component={CustomerInvoicePDF} />
                     <Route component={PageNotFound} />
 
                   </Switch>

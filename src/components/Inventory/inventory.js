@@ -45,7 +45,7 @@ const Inventory = () => {
     const handleOk = () => {
         if (!itemName) return message.error('Items can not be left empty')
         if (!unitOfMeassure) return message.error('Select Unit of Meassure')
-        if (itemID < 0) return message.error('Items Id not acceptable')
+        if (itemID <= 0 || isNaN(itemID)) return message.error('Items Id invalid')
         CreateRecord(itemDataObj, 'Item_Master', 'Items added succesfully')
         setItemsName('')
     }
